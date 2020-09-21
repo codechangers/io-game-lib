@@ -1,13 +1,6 @@
-const Phaser = require('phaser');
-const Colyseus = require('colyseus.js');
-const clone = require('clone');
-
-const gameConfig = require('./../../config.json');
-
-const endpoint = (window.location.hostname === "localhost")
-  ? `ws://localhost:${gameConfig.serverDevPort}` // development (local)
-  : `${window.location.protocol.replace("http", "ws")}//${window.location.hostname}` // production (remote)
-
+const ClientLib = require('./client-lib');
+const g = new ClientLib();
+const { Phaser, Colyseus, clone, gameConfig, endpoint } = g.getImports();
 const colyseus = new Colyseus.Client(endpoint);
 
 module.exports = class Game extends Phaser.Scene {
