@@ -1,6 +1,5 @@
-const ClientLib = require('./client-lib');
-const g = new ClientLib();
-const { Phaser, Colyseus, clone, gameConfig, endpoint } = g.getImports();
+const client = require('./client-lib')();
+const { Phaser, Colyseus, endpoint } = client.getImports();
 const colyseus = new Colyseus.Client(endpoint);
 
 module.exports = class Game extends Phaser.Scene {

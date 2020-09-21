@@ -1,4 +1,5 @@
 const Room = require('colyseus').Room;
+const server = require('./server-lib')();
 
 module.exports = class MyRoom extends Room {
 
