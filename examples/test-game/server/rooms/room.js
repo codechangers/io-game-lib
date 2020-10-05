@@ -1,5 +1,6 @@
 const Room = require('colyseus').Room;
-const server = require('./server-lib')();
+const ServerLib = require('./server-lib');
+const server = new ServerLib();
 
 module.exports = class MyRoom extends Room {
 
@@ -21,18 +22,21 @@ module.exports = class MyRoom extends Room {
     onMessage (client, data) {
         let player = this.state.players[client.sessionId];
         var speed = 5;
-        if (data.left) {
-            player.x -= speed;
-        }
-        else if (data.right) {
-            player.x += speed;
-        }
-
-        if (data.up) {
-            player.y -= speed;
-        }
-        else if (data.down) {
-            player.y += speed;
+        switch (data.action) {
+            case 'moveUp':
+                player.y -= speed;
+                break;
+            case 'moveDown':
+                player.y += speed;
+                break;
+            case 'moveLeft':
+                player.x -= speed;
+                break;
+            case 'moveRight':
+                player.x += speed;
+                break;
+            default:
+                break;
         }
     }
 

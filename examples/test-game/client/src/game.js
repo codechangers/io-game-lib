@@ -1,6 +1,18 @@
-const client = require('./client-lib')();
-const { Phaser, Colyseus, endpoint } = client.getImports();
-const colyseus = new Colyseus.Client(endpoint);
+const Phaser = require('phaser');
+const ClientLib = require('./client-lib');
+const g = new ClientLib();
+
+const keyCodes = Phaser.Input.Keyboard.KeyCodes;
+const keys = {
+  w: keyCodes.W,
+  s: keyCodes.S,
+  a: keyCodes.A,
+  d: keyCodes.D,
+  up: keyCodes.UP,
+  down: keyCodes.DOWN,
+  left: keyCodes.LEFT,
+  right: keyCodes.RIGHT,
+};
 
 module.exports = class Game extends Phaser.Scene {
     constructor() {
@@ -8,69 +20,29 @@ module.exports = class Game extends Phaser.Scene {
     }
 
     init() {
-        this.room = null;
-        this.roomJoined = false;
-        this.cursors = null;
-        this.players = {};
+        g.setup(this);
+        g.addCharacters('players');
     }
 
     preload() {
-        this.load.image('logo', 'asset/logo.png');
+        g.loadImage('players', 'logo.png');
     }
 
     create() {
-        this.connect();
-
-        this.cursors = this.input.keyboard.createCursorKeys();
+        g.connect();
+        g.setupKeys(keys);
+        g.getCharacters('players',
+            (player) => player.sprite.setScale(0.5), // On Add
+        );
     }
 
     update() {
-        let move = {
-            left: this.cursors.left.isDown,
-            right: this.cursors.right.isDown,
-            up: this.cursors.up.isDown,
-            down: this.cursors.down.isDown
-        };
-        if (this.roomJoined) {
-            this.room.send(move);
+        if (g.canSend()) {
+            const { up, down, left, right, w, a, s, d } = g.getKeysDown();
+            if (up || w)    g.sendAction('moveUp');
+            if (down || s)  g.sendAction('moveDown');
+            if (left || a)  g.sendAction('moveLeft');
+            if (right || d) g.sendAction('moveRight');
         }
-    }
-
-    connect() {
-        var self = this;
-        this.room = colyseus.join('main', {});
-        this.room.onJoin.add(function() {
-            self.roomJoined = true;
-        });
-        this.room.listen("players/:id", function(change) {
-            if (change.operation == "add") {
-                self.addPlayer(change.value);
-            }
-            else if (change.operation == "remove") {
-                self.removePlayer(change.path.id);
-            }
-        });
-
-        this.room.listen("players/:id/:attribute", function(change) {
-            if (change.operation == "replace") {
-                let path = change.path;
-                if (path.attribute == "x" || path.attribute == "y") {
-                    self.players[path.id].sprite[path.attribute] = change.value;
-                }
-            }
-        });
-    }
-
-    addPlayer(data) {
-        let id = data.id;
-        this.players[id] = {};
-        let sprite = this.add.sprite(data.x, data.y, 'logo');
-        sprite.setScale(0.5);
-        this.players[id].sprite = sprite;
-    }
-
-    removePlayer(id) {
-        this.players[id].sprite.destroy();
-        delete this.players[id];
     }
 } 
