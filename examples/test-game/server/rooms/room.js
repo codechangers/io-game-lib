@@ -1,47 +1,30 @@
 const Room = require('colyseus').Room;
 const ServerLib = require('./server-lib');
-const server = new ServerLib();
+const g = new ServerLib();
 
 module.exports = class MyRoom extends Room {
-
     onInit () {
-        this.setState({
-            players: {}
-        })
+        g.setup(this);
+        g.setupCharacters('players');
     }
 
-    onJoin (client, options) {
-        var self = this;
-        this.state.players[client.sessionId] = {
-            x: 200,
-            y: 200,
-            id: client.sessionId
-        };
+    onJoin (client) {
+        g.createCharacter('players', client, { x: 200, y: 200 });
     }
 
     onMessage (client, data) {
-        let player = this.state.players[client.sessionId];
-        var speed = 5;
-        switch (data.action) {
-            case 'moveUp':
-                player.y -= speed;
-                break;
-            case 'moveDown':
-                player.y += speed;
-                break;
-            case 'moveLeft':
-                player.x -= speed;
-                break;
-            case 'moveRight':
-                player.x += speed;
-                break;
-            default:
-                break;
-        }
+        const player = g.getCharacter('players', client);
+        const speed = 5;
+        const actions = {
+          moveUp: () => (player.y -= speed),
+          moveDown: () => (player.y += speed),
+          moveLeft: () => (player.x -= speed),
+          moveRight: () => (player.x += speed),
+        };
+        g.handleActions(actions, data);
     }
 
     onLeave (client) {
-        delete this.state.players[ client.sessionId ];
+        g.deleteCharacter('players', client);
     }
-
 }
