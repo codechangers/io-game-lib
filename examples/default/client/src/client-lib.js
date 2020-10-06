@@ -1,5 +1,4 @@
 const Colyseus = require('colyseus.js');
-const { FloorTo } = require('phaser/src/math');
 const gameConfig = require('./../../config.json');
 const endpoint =
   window.location.hostname === 'localhost'
