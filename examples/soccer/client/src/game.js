@@ -22,8 +22,8 @@ module.exports = class Game extends Phaser.Scene {
   init() {
     g.setup(this);
     g.addCharacters('players');
-    this.gameWidth = 2100;
-    this.gameHeight = 2100;
+    g.setSize(2100, 2100);
+    g.cameraBounds();
   }
 
   preload() {
@@ -34,14 +34,13 @@ module.exports = class Game extends Phaser.Scene {
   create() {
     g.connect();
     g.setupKeys(keys);
-    g.drawBackground('grass', this.gameWidth, this.gameHeight);
+    g.drawBackground('grass');
     g.getCharacters(
       'players',
       (player, data) => {
         player.sprite.setScale(0.5);
         if (player.id == data.id) {
-          this.cameras.main.startFollow(player.sprite);
-          this.cameras.main.setBounds(0, 0, this.gameWidth, this.gameHeight);
+          g.cameraFollow(player.sprite);
         }
       } // On Add
     );

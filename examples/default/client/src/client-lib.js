@@ -22,6 +22,22 @@ module.exports = class ClientLib {
     game.room = null;
     game.roomJoined = false;
     game.cursors = null;
+    game.width = 0;
+    game.height = 0;
+  }
+
+  // Set the size of the game.
+  setSize(
+    width, // The width of the game.
+    height // The height of the game.
+  ) {
+    const { game } = this;
+    if (width > 0) {
+      game.width = width;
+    }
+    if (height > 0) {
+      game.height = height;
+    }
   }
 
   // Load an Image into the Game.
@@ -113,9 +129,9 @@ module.exports = class ClientLib {
   // Draw the background of the game.
   drawBackground(
     img, // string: The background image.
-    gameW, // number: The width of your game.
-    gameH, // number: The height of your game.
-    scale = 1 // number: Scale of the background image.
+    scale = 1, // number: Scale of the background image.
+    gameW = this.game.width, // number: The width of your game.
+    gameH = this.game.height // number: The height of your game.
   ) {
     const { game } = this;
     const floor = game.add.sprite(0, 0, img);
@@ -133,5 +149,20 @@ module.exports = class ClientLib {
         }
       }
     }
+  }
+
+  // Make the camera follow a sprite in the game.
+  cameraFollow(
+    sprite // Phaser.sprite: The sprite you would like to have the camera follow.
+  ) {
+    this.game.cameras.main.startFollow(sprite);
+  }
+
+  // Bind the camera to an area with a specific size.
+  cameraBounds(
+    width = this.game.width, // The width of the area the camera is bound to.
+    height = this.game.height // The height of the area the camera is bound to.
+  ) {
+    this.game.cameras.main.setBounds(0, 0, width, height);
   }
 };
