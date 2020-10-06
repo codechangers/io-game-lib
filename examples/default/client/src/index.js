@@ -4,7 +4,7 @@ const Game = require("./game.js");
 require('./../css/main.css');
 
 (function() {
-    const aspectRatio = 16 / 9;
+    const aspectRatio = window.innerWidth / window.innerHeight;
     
     //fit game container so that game always appears "fullscreen",
     //but cut off edges when viewport is not correct aspect ratio
