@@ -24,6 +24,14 @@ module.exports = class ClientLib {
     game.cursors = null;
     game.width = 0;
     game.height = 0;
+    //ADDS AN EVENT TO ALLOW FOR CLICKING
+    document.addEventListener('click', function(e) {
+      if (game.click) {
+          var moveX = e.clientX - window.innerWidth/2;
+          var moveY = e.clientY - window.innerHeight/2;
+          game.click(game.cameras.main.scrollX + window.innerWidth/2 + moveX, game.cameras.main.scrollY + window.innerHeight/2 + moveY);
+      }
+    })
   }
 
   // Set the size of the game.
@@ -51,10 +59,17 @@ module.exports = class ClientLib {
   // Connect to the Server.
   connect() {
     const { game } = this;
+    let self = this;
     game.room = colyseus.join('main', {});
     game.room.onJoin.add(() => {
       game.roomJoined = true;
     });
+    game.room.listen('board/:id', function(change) {
+      if (change.operation == 'add') {
+        self.setSize(500, 500);
+        self.createSquare(0, 0, change.value.width, change.value.height, change.value.color);
+      }
+    })
   }
 
   // Create a new set of Characters.
@@ -121,9 +136,14 @@ module.exports = class ClientLib {
 
   // Send an Action Command to the Server.
   sendAction(
-    action // string: The action!
+    action, // string: The action!
+    data, // object: Things you need to send to the backend
   ) {
-    this.game.room.send({ action });
+    if (data) {
+      this.game.room.send({[action]: true, ...data});
+    } else {
+      this.game.room.send({[action]: true});
+    }
   }
 
   // Draw the background of the game.
@@ -157,6 +177,33 @@ module.exports = class ClientLib {
   ) {
     this.game.cameras.main.startFollow(sprite);
   }
+
+  // Create a square
+  createSquare(
+    width, // The width of the square you want to create
+    height, // The height of the square you want to create
+    x, // The starting x position of the top left of your square
+    y, // The starting y position of the top left of your square
+    color, // The color of your square
+    ) {
+    var rect = new Phaser.Geom.Rectangle(width, height, x, y);
+    var graphics = this.game.add.graphics({ fillStyle: { color: `0x${color}` } });
+    graphics.fillRectShape(rect);
+  }
+
+  // Create a sprite
+  createSprite(
+    type, // The name of your sprite
+    x, // The x position of your sprite
+    y, // The y position of your sprite
+    scale = 1 // The scale or size they want their sprite to be
+    ) {
+    let sprite = this.game.add.sprite(x, y, type);
+    sprite.setScale(scale);
+    return sprite;
+  }
+
+
 
   // Bind the camera to an area with a specific size.
   cameraBounds(
