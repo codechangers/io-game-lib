@@ -1,5 +1,5 @@
 const Colyseus = require('colyseus.js');
-const gameConfig = require('./../../config.json');
+const gameConfig = require('./config.json');
 const endpoint =
   window.location.hostname === 'localhost'
     ? `ws://localhost:${gameConfig.serverDevPort}` // development (local)
