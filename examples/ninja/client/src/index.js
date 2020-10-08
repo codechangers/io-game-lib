@@ -32,7 +32,7 @@ require('./../css/main.css');
     $(window).resize(resizeContainer);
     $('.button').on("click", function(){ $(window).trigger('resize') });
 
-    const height = 720;
+    const height = window.innerHeight;
     const width = height * aspectRatio;
     var config = {
         type: Phaser.AUTO,

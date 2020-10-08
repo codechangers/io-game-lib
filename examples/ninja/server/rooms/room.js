@@ -6,6 +6,9 @@ module.exports = class MyRoom extends Room {
     onInit () {
         g.setup(this);
         g.setupCharacters('players');
+        g.setupResources('trees');
+        g.setupBoard(500, 500, '909090');
+        g.createResource('trees', 50, 50);
     }
 
     onJoin (client) {
@@ -20,6 +23,7 @@ module.exports = class MyRoom extends Room {
           moveDown: () => (player.y += speed),
           moveLeft: () => (player.x -= speed),
           moveRight: () => (player.x += speed),
+          click: () => (g.createResource('trees', data.x, data.y))
         };
         g.handleActions(actions, data);
     }

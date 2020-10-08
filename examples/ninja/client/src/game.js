@@ -22,10 +22,12 @@ module.exports = class Game extends Phaser.Scene {
   init() {
     g.setup(this);
     g.addCharacters('players');
+    g.addCharacters('trees');
   }
 
   preload() {
     g.loadImage('players', 'logo.png');
+    g.loadImage('trees', 'tree.png')
   }
 
   create() {
@@ -35,6 +37,14 @@ module.exports = class Game extends Phaser.Scene {
       'players',
       (player) => player.sprite.setScale(0.5) // On Add
     );
+    g.getCharacters(
+      'trees',
+      (tree) => console.log("ADDED")
+    )
+  }
+
+  click(x, y) {
+    g.sendAction('click', {x, y})
   }
 
   update() {
