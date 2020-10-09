@@ -1,5 +1,5 @@
 const Phaser = require('phaser');
-const ClientLib = require('../../../../client-lib');
+const ClientLib = require('../../../../src/client');
 const g = new ClientLib();
 
 const keyCodes = Phaser.Input.Keyboard.KeyCodes;
@@ -27,7 +27,7 @@ module.exports = class Game extends Phaser.Scene {
 
   preload() {
     g.loadImage('players', 'logo.png');
-    g.loadImage('trees', 'tree.png')
+    g.loadImage('trees', 'tree.png');
   }
 
   create() {
@@ -37,14 +37,11 @@ module.exports = class Game extends Phaser.Scene {
       'players',
       (player) => player.sprite.setScale(0.5) // On Add
     );
-    g.getCharacters(
-      'trees',
-      (tree) => console.log("ADDED")
-    )
+    g.getCharacters('trees', (tree) => console.log('ADDED'));
   }
 
   click(x, y) {
-    g.sendAction('click', {x, y})
+    g.sendAction('click', { x, y });
   }
 
   update() {
