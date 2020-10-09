@@ -1,5 +1,5 @@
 const Room = require('colyseus').Room;
-const ServerLib = require('../../../../server-lib');
+const ServerLib = require('../../../../src/server');
 const g = new ServerLib();
 
 module.exports = class MyRoom extends Room {
@@ -9,11 +9,11 @@ module.exports = class MyRoom extends Room {
   }
 
   onJoin(client) {
-    g.createCharacter('players', client, { x: 200, y: 200 });
+    g.createACharacter('players', client, { x: 200, y: 200 });
   }
 
   onMessage(client, data) {
-    const player = g.getCharacter('players', client);
+    const player = g.getACharacter('players', client);
     const speed = 5;
     const actions = {
       moveUp: () => (player.y -= speed),
@@ -25,6 +25,6 @@ module.exports = class MyRoom extends Room {
   }
 
   onLeave(client) {
-    g.deleteCharacter('players', client);
+    g.deleteACharacter('players', client);
   }
 };

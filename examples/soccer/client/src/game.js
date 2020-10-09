@@ -1,5 +1,5 @@
 const Phaser = require('phaser');
-const ClientLib = require('../../../../client-lib');
+const ClientLib = require('../../../../src/client');
 const g = new ClientLib();
 
 const keyCodes = Phaser.Input.Keyboard.KeyCodes;
