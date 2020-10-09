@@ -12,7 +12,7 @@ module.exports = class ServerLib {
     game // game.js/Game: Your Game!
   ) {
     this.game = game;
-    this.game.setState({board: {}});
+    this.game.setState({ board: {} });
   }
 
   // Creates their board for them with boundaries
@@ -23,7 +23,7 @@ module.exports = class ServerLib {
   ) {
     boardWidth = width;
     boardHeight = height;
-    this.game.state.board.board = {width, height, color};
+    this.game.state.board.board = { width, height, color };
   }
 
   // Setup a set of Characters.
@@ -62,7 +62,7 @@ module.exports = class ServerLib {
   }
 
   // Setup a set of Resources.
-  setupResources (
+  setupResources(
     type // string: The type of resources.
   ) {
     this.game.state[type] = {};
@@ -73,12 +73,19 @@ module.exports = class ServerLib {
   createResources(
     type, // string: the type of resources.
     amount // int: the amount of resources you want to create randomly on the board.
-    ) {
+  ) {
     for (var i = 0; i < amount; i++) {
-        let newX = Math.random() * (boardWidth);
-        let newY = Math.random() * (boardHeight);
-        counts[type] += 1;
-        this.game.state[type][counts[type]] = {id: counts[type], x:newX, y:newY, type:'resource', height:103, width:61};
+      let newX = Math.random() * boardWidth;
+      let newY = Math.random() * boardHeight;
+      counts[type] += 1;
+      this.game.state[type][counts[type]] = {
+        id: counts[type],
+        x: newX,
+        y: newY,
+        type: 'resource',
+        height: 103,
+        width: 61,
+      };
     }
   }
 
@@ -87,9 +94,16 @@ module.exports = class ServerLib {
     type, // string: the type of resource
     x, // int: the x position of their resource on their board.
     y // int: the y position of their resource on their board.
-    ) {
+  ) {
     counts[type] += 1;
-    this.game.state[type][counts[type]] = {id:counts[type], x, y, type:'resource', height:103, width:61};
+    this.game.state[type][counts[type]] = {
+      id: counts[type],
+      x,
+      y,
+      type: 'resource',
+      height: 103,
+      width: 61,
+    };
   }
 
   // Delete a Resource instance.
@@ -99,7 +113,6 @@ module.exports = class ServerLib {
   ) {
     delete this.game.state[type][id];
   }
-  
 
   // Handle incoming Action messages.
   handleActions(
