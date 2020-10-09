@@ -22,5 +22,10 @@
   "homepage": "https://github.com/codechangers/io-game-lib#readme",
   "dependencies": {
     "colyseus.js": "^0.9.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.10.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.1"
   }
 }
