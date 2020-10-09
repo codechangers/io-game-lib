@@ -1,0 +1,26 @@
+{
+  "name": "io-game-lib",
+  "version": "1.0.0",
+  "description": "This is the official IO Game Library for building awesome games on the CodeChangers IO Platform.",
+  "main": "client-lib.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codechangers/io-game-lib.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/codechangers/io-game-lib/issues"
+  },
+  "homepage": "https://github.com/codechangers/io-game-lib#readme",
+  "dependencies": {
+    "colyseus.js": "^0.9.1"
+  }
+}
