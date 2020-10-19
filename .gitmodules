@@ -1,0 +1,3 @@
+[submodule "examples/io-soccer"]
+	path = examples/io-soccer
+	url = https://github.com/codechangers/io-soccer.git
