@@ -6,7 +6,7 @@ module.exports = {
   entry: './src/client.js',
   target: 'node',
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'template/client/src'),
     filename: 'client-lib.js',
     library: 'client-lib',
     libraryTarget: 'umd',

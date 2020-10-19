@@ -6,7 +6,7 @@ module.exports = {
   entry: './src/server.js',
   target: 'node',
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'template/server/rooms'),
     filename: 'server-lib.js',
     library: 'server-lib',
     libraryTarget: 'umd',
