@@ -12,6 +12,7 @@ grep 'path' .gitmodules | cut -d'=' -f2 | awk '{$1=$1};1' | while read -r module
 		echo "$module was updated."
 		git add $module
 		git commit -m "Pull $module updates"
+		git push
 	else
 		echo "$module is the same."
 	fi
