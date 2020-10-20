@@ -1,6 +1,7 @@
 /* -- CodeChangers io-game-lib 2020 --
  * This file contains the io game client library class definition. */
 
+const Colyseus = require('colyseus.js');
 const { clientMethods, linkMethods } = require('./helpers');
 
 const gameConfig = require('../config.json');
@@ -16,7 +17,7 @@ module.exports = class ClientLib {
   constructor() {
     this.game = null;
     this.keys = null;
-    this.endpoint = endpoint;
+    this.colyseus = new Colyseus.Client(endpoint);
   }
 
   // Bind the Game and setup initial state.

@@ -1,16 +1,13 @@
 /* -- CodeChangers io-game-lib 2020 --
  * This file contains the source code for client server connection. */
 
-const Colyseus = require('colyseus.js');
-
 /* =========================
  * ==== Client Methods: ====
  * ========================= */
 
 // Connect to the Server.
 function connect() {
-  const { game, endpoint } = this;
-  const colyseus = new Colyseus.Client(endpoint);
+  const { game, colyseus } = this;
   let self = this;
   game.room = colyseus.join('main', {});
   game.room.onJoin.add(() => {
