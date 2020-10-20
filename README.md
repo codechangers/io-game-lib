@@ -36,7 +36,7 @@ Setup a development environment for the IO Game Library source.
 
 > **Note:** replace `{game}` with the name of the example game you are setting up in all of the following:
 
-### Run Commands:
+#### **Run Commands:**
 
 ```
 git clone https://github.com/codechangers/io-game-lib.git
@@ -46,7 +46,7 @@ npm install
 ./bin/setup.sh examples/{game}
 ```
 
-### Edit File: examples/`{game}`/code/client/src/game.js
+#### **Edit File:** examples/`{game}`/code/client/src/game.js
 
 ```
 Line 2:
@@ -54,7 +54,7 @@ Line 2:
   To:     const ClientLib = require('../../../../../src/client');
 ```
 
-### Edit File: examples/`{game}`/code/server/rooms/room.js
+#### **Edit File:** examples/`{game}`/code/server/rooms/room.js
 
 ```
 Line 2:
@@ -62,7 +62,7 @@ Line 2:
   To:     const ServerLib = require('../../../../../src/server');
 ```
 
-### Run Commands:
+#### **Run Commands:**
 
 ```
 cd examples/{game}/code
