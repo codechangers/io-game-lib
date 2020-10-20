@@ -30,6 +30,21 @@ npm run dev
 
 ---
 
+## Adding Example Games
+
+Add a new example game to the examples directory.
+
+> **Note:** the game must be hosted on a remote git repository that you have access to. The repo must also contain a code directory with the same structure as the `template` directory. It is highly recommended that this repo is also hooked up to a repl.it project.
+
+> **Note:** replace `https://repo.url/path/to/game.git` with a url pointing to your git repository.
+
+```
+cd examples
+git submodule add https://repo.url/path/to/game.git
+```
+
+---
+
 ## Library Dev Setup
 
 Setup a development environment for the IO Game Library source.
