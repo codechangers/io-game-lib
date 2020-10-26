@@ -1,47 +1,117 @@
 body {
-    margin: 0;
-    overflow: hidden;
+  margin: 0;
+  overflow: hidden;
 }
 
 /* width and height of game container are resized dynamically in index.js */
-#phaser-example, #input-overlay, #game-overlay {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
+#phaser-example,
+#input-overlay,
+#game-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
 }
 
 #phaser-example canvas {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 #input-overlay {
-    display: none;
-    z-index: 999;
+  display: none;
+  z-index: 999;
+  background-color: rgba(0, 0, 0, 0.4);
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#input-overlay > .login {
+  width: 100%;
+  min-width: 500px;
+  max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 3px;
+  padding: 40px 20px;
+  box-sizing: border-box;
+}
+
+#input-overlay > .login > h1 {
+  font-size: 3.5rem;
+  font-family: sans-serif;
+  font-weight: bold;
+  color: #022433;
+  background: linear-gradient(30deg, #0a618c, #05576d);
+  text-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-top: 0;
+}
+
+#input-overlay > .login > input {
+  margin-bottom: 40px;
+  width: 90%;
+  font-size: 2rem;
+  background-color: rgba(2, 36, 51, 0.5);
+  border: none;
+  outline: none;
+  color: #fff;
+  box-sizing: border-box;
+  padding: 5px 30px;
+  border-radius: 3px;
+}
+#input-overlay > .login > input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+#input-overlay > .login > button {
+  border: none;
+  outline: none;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
+  background-color: #6cbbef;
+  background: linear-gradient(45deg, #6cbbef, #3fd7e3);
+  padding: 6px 30px 4px 30px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+#input-overlay > .login > button:hover {
+  background: linear-gradient(180deg, #6cbbef, #3fd7e3);
+  box-shadow: 0px 3px 6px 1px rgba(0, 0, 0, 0.2);
+  margin-top: -4px;
+  margin-bottom: 4px;
 }
 
 #game-overlay {
-    pointer-events: none;
-    z-index: 998;
+  pointer-events: none;
+  z-index: 998;
 }
 
 #game-overlay > div.leaderboard {
-    position: absolute;
-    width: 200px;
-    height: 250px;
-    top: 20px;
-    right: 20px;
-    color: white;
-    text-align: center;
-    font-family: Arial;
+  position: absolute;
+  width: 200px;
+  height: 250px;
+  top: 20px;
+  right: 20px;
+  color: white;
+  text-align: center;
+  font-family: Arial;
 
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
 }
 
 #game-overlay > div.leaderboard h3 {
-    margin-top: 5px;
-    margin-bottom: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }

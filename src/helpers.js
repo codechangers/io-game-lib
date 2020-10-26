@@ -6,6 +6,7 @@ const connection = require('./connection');
 const draw = require('./draw');
 const game = require('./game');
 const resources = require('./resources');
+const ui = require('./ui');
 
 const clientMethods = {
   ...characters.client,
@@ -13,13 +14,13 @@ const clientMethods = {
   ...draw.client,
   ...game.client,
   ...resources.client,
+  ...ui.client,
 };
 
 const serverMethods = {
   ...characters.server,
   ...connection.server,
   ...draw.server,
-  ...game.server,
   ...resources.server,
 };
 

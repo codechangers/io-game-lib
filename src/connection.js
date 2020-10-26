@@ -6,12 +6,17 @@
  * ========================= */
 
 // Connect to the Server.
-function connect() {
-  const { game, colyseus } = this;
+function connect(
+  data = {} // object: What data should we send to the server when a player connects?
+) {
+  const { game, colyseus, connectFuncs } = this;
   let self = this;
-  game.room = colyseus.join('main', {});
+  game.room = colyseus.join('main', data);
   game.room.onJoin.add(() => {
     game.roomJoined = true;
+    for (let func in connectFuncs) {
+      this[func](...connectFuncs[func]);
+    }
   });
   game.room.listen('board/:id', function (change) {
     if (change.operation == 'add') {

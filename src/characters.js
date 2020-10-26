@@ -19,31 +19,35 @@ function getCharacters(
   onRemove = function () {}, // function: This will get run when a character is removed.
   onUpdate = function () {} // function: This will get run when a character is updated.
 ) {
-  const { game } = this;
-  game.room.listen(`${type}/:id`, function (change) {
-    if (change.operation == 'add') {
-      const { id, x, y } = change.value;
-      game[type][id] = {
-        sprite: game.add.sprite(x, y, type),
-        id,
-      };
-      onAdd(game[type][id], change.value);
-    } else if (change.operation == 'remove') {
-      const { id } = change.path;
-      game[type][id].sprite.destroy();
-      delete game[type][id];
-      onRemove(id);
-    }
-  });
-  game.room.listen(`${type}/:id/:attribute`, function (change) {
-    if (change.operation == 'replace') {
-      const { id, attribute } = change.path;
-      if (attribute == 'x' || attribute == 'y') {
-        game[type][id].sprite[attribute] = change.value;
+  const { game, connectFuncs } = this;
+  if (game.roomJoined) {
+    game.room.listen(`${type}/:id`, function (change) {
+      if (change.operation == 'add') {
+        const { id, x, y } = change.value;
+        game[type][id] = {
+          sprite: game.add.sprite(x, y, type),
+          id,
+        };
+        onAdd(game[type][id], change.value);
+      } else if (change.operation == 'remove') {
+        const { id } = change.path;
+        game[type][id].sprite.destroy();
+        delete game[type][id];
+        onRemove(id);
       }
-      onUpdate(id, attribute, change.value);
-    }
-  });
+    });
+    game.room.listen(`${type}/:id/:attribute`, function (change) {
+      if (change.operation == 'replace') {
+        const { id, attribute } = change.path;
+        if (attribute == 'x' || attribute == 'y') {
+          game[type][id].sprite[attribute] = change.value;
+        }
+        onUpdate(id, attribute, change.value);
+      }
+    });
+  } else {
+    connectFuncs['getCharacters'] = [type, onAdd, onRemove, onUpdate];
+  }
 }
 
 const client = { addCharacters, getCharacters };

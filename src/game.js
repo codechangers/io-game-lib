@@ -31,7 +31,12 @@ function loadImage(
 function setupKeys(
   keys // object: A bunch of Phaser keycodes!
 ) {
-  this.keys = this.game.input.keyboard.addKeys(keys);
+  const { game, connectFuncs } = this;
+  if (game.roomJoined) {
+    this.keys = this.game.input.keyboard.addKeys(keys);
+  } else {
+    connectFuncs['setupKeys'] = [keys];
+  }
 }
 
 // Get Current Key Inputs.

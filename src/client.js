@@ -17,6 +17,7 @@ module.exports = class ClientLib {
   constructor() {
     this.game = null;
     this.keys = null;
+    this.connectFuncs = {};
     this.colyseus = new Colyseus.Client(endpoint);
   }
 
