@@ -49,7 +49,12 @@ function sendAction(
   }
 }
 
-const client = { connect, canSend, sendAction };
+// Get your player's id!
+function myId() {
+  return this.game.room.sessionId;
+}
+
+const client = { connect, canSend, sendAction, myId };
 
 /* =========================
  * ==== Server Methods: ====

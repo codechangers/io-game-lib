@@ -26,7 +26,7 @@ function getCharacters(
         const { id, x, y } = change.value;
         game[type][id] = {
           sprite: game.add.sprite(x, y, type),
-          id,
+          ...change.value,
         };
         onAdd(game[type][id], change.value);
       } else if (change.operation == 'remove') {

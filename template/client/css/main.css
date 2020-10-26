@@ -1,3 +1,6 @@
+/* =====================
+ * === GLOBAL STYLES ===
+ * ===================== */
 body {
   margin: 0;
   overflow: hidden;
@@ -28,6 +31,14 @@ body {
   align-items: center;
 }
 
+#game-overlay {
+  pointer-events: none;
+  z-index: 998;
+}
+
+/* ====================
+ * === LOGIN SCREEN ===
+ * ==================== */
 #input-overlay > .login {
   width: 100%;
   min-width: 500px;
@@ -92,11 +103,9 @@ body {
   margin-bottom: 4px;
 }
 
-#game-overlay {
-  pointer-events: none;
-  z-index: 998;
-}
-
+/* ===================
+ * === LEADERBOARD ===
+ * =================== */
 #game-overlay > div.leaderboard {
   position: absolute;
   width: 200px;
@@ -106,12 +115,64 @@ body {
   color: white;
   text-align: center;
   font-family: Arial;
-
-  background-color: rgba(255, 255, 255, 0.1);
+  overflow-y: scroll;
+  padding: 0px 10px 5px 10px;
+  background-color: rgba(0, 0, 0, 0.4);
   border-radius: 4px;
+  pointer-events: all;
 }
 
 #game-overlay > div.leaderboard h3 {
   margin-top: 5px;
   margin-bottom: 5px;
+}
+
+#game-overlay > div.leaderboard > .player {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+#game-overlay > div.leaderboard > .player > .text {
+  overflow: hidden;
+  display: flex;
+  flex-grow: 1;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+  padding: 0 5px;
+  box-sizing: border-box;
+}
+#game-overlay > div.leaderboard > .player > .text > .name {
+  font-size: 1rem;
+  color: #fff;
+  margin: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+#game-overlay > div.leaderboard > .player > .text > .score {
+  font-size: 1.2rem;
+  color: #fff;
+  font-weight: bold;
+  margin: 0;
+}
+
+#game-overlay > div.leaderboard > .player > .lives {
+  max-width: 50%;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  align-items: center;
+  padding-top: 5px;
+}
+
+#game-overlay > div.leaderboard > .player > .lives > .life {
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+  background-color: #fff;
+  margin: 0 2px;
 }
