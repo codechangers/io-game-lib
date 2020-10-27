@@ -1,6 +1,7 @@
 /* -- CodeChangers io-game-lib 2020 --
  * This file contains the source code for creating characters in an io-game. */
 
+// A basic class for handling rectangular shape collisions.
 class CollisionBox {
   constructor(x, y, width, height) {
     this.width = !Number.isNaN(width) ? width : 0;
@@ -28,6 +29,7 @@ class CollisionBox {
   }
 }
 
+// A basic class for handling circular shape collisions.
 class CollisionCircle {
   constructor(x, y, diameter) {
     this.x = !Number.isNaN(x) && x >= 0 ? x : -100;
