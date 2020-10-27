@@ -129,19 +129,14 @@ function handleCollision(
   ], // array: An array with the typeB and shapeB values.
   callback // function: What to do if there is a collision.
 ) {
-  const { game } = this;
-  const setA = game.state[typeA];
-  const setB = game.state[typeB];
-  const shortA = Object.keys(setA).length <= Object.keys(setB).length;
-  // Loop through longer set
-  Object.entries(shortA ? setB : setA).forEach(function ([idA, dataA]) {
+  const { state } = this.game;
+  Object.entries(state[typeA]).forEach(function ([idA, dataA]) {
     const { x, y, width, height } = dataA;
     const colA =
       shapeA === 'circle'
         ? new CollisionCircle(x, y, width)
         : new CollisionBox(x, y, width, height);
-    // Loop through shorter set
-    Object.entries(shortA ? setA : setB).forEach(function ([idB, dataB]) {
+    Object.entries(state[typeB]).forEach(function ([idB, dataB]) {
       if (idA !== idB) {
         const { x, y, width, height } = dataB;
         const colB =
@@ -149,7 +144,7 @@ function handleCollision(
             ? new CollisionCircle(x, y, width)
             : new CollisionBox(x, y, width, height);
         if (colA.collide(colB)) {
-          callback({ [idA]: dataA, [idB]: dataB });
+          callback(dataA, dataB);
         }
       }
     });
