@@ -93,7 +93,7 @@ function getSize(
 ) {
   const { sizes } = this.game.state;
   let s = { width: 0, height: 0 };
-  if (Object.keys(sizes).includes(type)) s = this.state.sizes[type];
+  if (Object.keys(sizes).includes(type)) s = sizes[type];
   return s;
 }
 
