@@ -33,13 +33,14 @@ function useLoginScreen(
   input = 'Display Name', // string: What the input should say.
   button = 'START' // string: What the button should say.
 ) {
-  document.getElementById('input-overlay').innerHTML = `<div class="login">
+  document.getElementById('input-overlay').innerHTML = `<form class="login">
     <h1>${title}</h1>
     <input id="displayName" type="text" placeholder="${input}" />
-    <button id="start-button">${button}</button>
-  </div>`;
+    <button type="submit">${button}</button>
+  </form>`;
   document.getElementById('input-overlay').style.display = 'flex';
-  document.getElementById('start-button').onclick = function () {
+  document.querySelector('form.login').onsubmit = function (e) {
+    e.preventDefault();
     const name = document.getElementById('displayName').value || 'player';
     document.getElementById('input-overlay').style.display = 'none';
     document.querySelector('#input-overlay > .login').style.display = 'none';
