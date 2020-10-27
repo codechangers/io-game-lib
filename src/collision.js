@@ -29,14 +29,56 @@ class CollisionBox {
   }
 }
 
+class CollisionCircle {
+  constructor(x, y, diameter) {
+    this.x = !Number.isNaN(x) && x >= 0 ? x : -100;
+    this.y = !Number.isNaN(y) && y >= 0 ? y : -100;
+    this.radius = !Number.isNaN(diameter) ? diameter / 2 : 0;
+  }
+
+  distanceTo(other) {
+    let distance = -1;
+    if (other instanceof CollisionCircle) {
+      const dx = this.x - other.x;
+      const dy = this.y - other.y;
+      distance = Math.sqrt(dx * dx + dy * dy);
+    } else {
+      console.log(
+        ' * CollisionCircle.distanceTo: You can only check with another collision circle!'
+      );
+    }
+    return distance;
+  }
+
+  collide(other) {
+    let collided = false;
+    if (other instanceof CollisionCircle) {
+      if (this.distanceTo(other) < this.radius + other.radius) {
+        collided = true;
+      }
+    } else {
+      console.log(
+        ' * CollisionCircle.collide: You can only collide with another collision circle!'
+      );
+    }
+    return collided;
+  }
+}
+
 /* =========================
  * ==== Server Methods: ====
  * ========================= */
 
 // Check for collisions between two types of objects in your game.
 function handleCollision(
-  typeA, // string: The first type of object.
-  typeB, // string: The second type of object.
+  [
+    typeA, // string: The first type of object.
+    shapeA, // string: 'circle' or 'box' | The shape of the first object.
+  ], // array: An array with the typeA and shapeA values.
+  [
+    typeB, // string: The second type of object.
+    shapeB, // string: 'circle' or 'box' | The shape of the second object.
+  ], // array: An array with the typeB and shapeB values.
   callback // function: What to do if there is a collision.
 ) {
   const { game } = this;
@@ -46,13 +88,19 @@ function handleCollision(
   // Loop through longer set
   Object.entries(shortA ? setB : setA).forEach(function ([idA, dataA]) {
     const { x, y, width, height } = dataA;
-    const boxA = new CollisionBox(x, y, width, height);
+    const colA =
+      shapeA === 'circle'
+        ? new CollisionCircle(x, y, width)
+        : new CollisionBox(x, y, width, height);
     // Loop through shorter set
     Object.entries(shortA ? setA : setB).forEach(function ([idB, dataB]) {
       if (idA !== idB) {
         const { x, y, width, height } = dataB;
-        const boxB = new CollisionBox(x, y, width, height);
-        if (boxA.collide(boxB)) {
+        const colB =
+          shapeB === 'circle'
+            ? new CollisionCircle(x, y, width)
+            : new CollisionBox(x, y, width, height);
+        if (colA.collide(colB)) {
           callback({ [idA]: dataA, [idB]: dataB });
         }
       }
