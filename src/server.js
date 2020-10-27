@@ -19,5 +19,6 @@ module.exports = class ServerLib {
     this.game = game;
     this.game.setState({ board: {} });
     linkMethods(this, serverMethods);
+    this.runGameLoop();
   }
 };

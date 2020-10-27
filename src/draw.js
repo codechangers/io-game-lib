@@ -63,9 +63,10 @@ function getSpriteSize(
   scale = 1 // number: The scale of the sprite, ie. 0.5 for half size.
 ) {
   let sprite = this.game.add.sprite(-100, -100, image);
-  sprite.setScale(scale);
-  const { width, height } = sprite;
+  let { width, height } = sprite;
   sprite.destroy();
+  width *= scale;
+  height *= scale;
   return { width, height };
 }
 

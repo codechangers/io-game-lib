@@ -72,4 +72,28 @@ const client = {
   cameraBounds,
 };
 
-module.exports = { client };
+/* =========================
+ * ==== Server Methods: ====
+ * ========================= */
+
+// Run an iteration loop on the server that calls your onUpdate method.
+function runGameLoop() {
+  const self = this;
+  let prev = Date.now();
+  function iter() {
+    const now = Date.now();
+    const dt = now - prev;
+    if (dt > 0) {
+      self.game.onUpdate(dt);
+      prev = now;
+    }
+    setImmediate(iter);
+  }
+  if (this.game.onUpdate) {
+    setImmediate(iter);
+  }
+}
+
+const server = { runGameLoop };
+
+module.exports = { client, server };
