@@ -154,6 +154,48 @@ function handleCollision(
   });
 }
 
-const server = { handleCollision };
+// Check for collisions between two types of circular objects in your game.
+function handleCirclesCollision(
+  typeA, // string: The first type of object.
+  typeB, // string: The second type of object.
+  callback // function: What to do if there is a collision.
+) {
+  return this.handleCollision([typeA, 'circle'], [typeB, 'circle'], callback);
+}
+
+// Check for collisions between two types of box objects in your game.
+function handleBoxesCollision(
+  typeA, // string: The first type of object.
+  typeB, // string: The second type of object.
+  callback // function: What to do if there is a collision.
+) {
+  return this.handleCollision([typeA, 'box'], [typeB, 'box'], callback);
+}
+
+// Check for collisions between a type of circular objects and a type of box objects in your game.
+function handleCircleOnBoxCollision(
+  typeA, // string: The first type of object.
+  typeB, // string: The second type of object.
+  callback // function: What to do if there is a collision.
+) {
+  return this.handleCollision([typeA, 'circle'], [typeB, 'box'], callback);
+}
+
+// Check for collisions between a type of box objects and a type of circular objects in your game.
+function handleBoxOnCircleCollision(
+  typeA, // string: The first type of object.
+  typeB, // string: The second type of object.
+  callback // function: What to do if there is a collision.
+) {
+  return this.handleCollision([typeA, 'box'], [typeB, 'circle'], callback);
+}
+
+const server = {
+  handleCollision,
+  handleBoxesCollision,
+  handleBoxOnCircleCollision,
+  handleCircleOnBoxCollision,
+  handleCirclesCollision,
+};
 
 module.exports = { server };
