@@ -31,11 +31,11 @@ function loadImage(
 function setupKeys(
   keys // object: A bunch of Phaser keycodes!
 ) {
-  const { game, connectFuncs } = this;
+  const { game, addConnectEvent } = this;
   if (game.roomJoined) {
     this.keys = this.game.input.keyboard.addKeys(keys);
   } else {
-    connectFuncs['setupKeys'] = [keys];
+    addConnectEvent('setupKeys', [keys]);
   }
 }
 
@@ -76,6 +76,22 @@ const client = {
  * ==== Server Methods: ====
  * ========================= */
 
+// Setup the default/implicit game library actions.
+function setDefaultActions() {
+  const { state } = this.game;
+  this.defaultActions = {
+    setCharacterSize: (data) => {
+      const { type, width, height } = data;
+      state.sizes[type] = { width, height };
+      // Set sizes of previously definied characters
+      Object.values(state[type]).forEach((character) => {
+        character.width = width;
+        character.height = height;
+      });
+    },
+  };
+}
+
 // Run an iteration loop on the server that calls your onUpdate method.
 function runGameLoop() {
   const self = this;
@@ -94,6 +110,6 @@ function runGameLoop() {
   }
 }
 
-const server = { runGameLoop };
+const server = { setDefaultActions, runGameLoop };
 
 module.exports = { client, server };

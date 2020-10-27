@@ -87,6 +87,16 @@ function setupBoard(
   this.game.state.board.board = { width, height, color };
 }
 
-const server = { setupBoard };
+// Get the size of an object.
+function getSize(
+  type // string: The type of object you want the size of.
+) {
+  const { sizes } = this.game.state;
+  let s = { width: 0, height: 0 };
+  if (Object.keys(sizes).includes(type)) s = this.state.sizes[type];
+  return s;
+}
+
+const server = { setupBoard, getSize };
 
 module.exports = { client, server };

@@ -3,26 +3,25 @@
 
 class CollisionBox {
   constructor(x, y, width, height) {
-    this.x = !Number.isNaN(x) && x >= 0 ? x : -100;
-    this.y = !Number.isNaN(y) && y >= 0 ? y : -100;
     this.width = !Number.isNaN(width) ? width : 0;
     this.height = !Number.isNaN(height) ? height : 0;
+    this.x = !Number.isNaN(x) && x >= 0 ? x - this.width / 2 : -100;
+    this.y = !Number.isNaN(y) && y >= 0 ? y - this.height / 2 : -100;
   }
 
   collide(other) {
     let collided = false;
     if (other instanceof CollisionBox) {
-      if (
+      collided =
         this.x < other.x + other.width &&
         this.x + this.width > other.x &&
         this.y < other.y + other.height &&
-        this.y + this.height > other.y
-      ) {
-        collided = true;
-      }
+        this.y + this.height > other.y;
+    } else if (other instanceof CollisionCircle) {
+      collided = other.collide(this);
     } else {
       console.log(
-        ' * CollisionBox.collide: You can only collide with another collision box!'
+        ' * CollisionBox.collide: You can only collide with another collision object!'
       );
     }
     return collided;
@@ -42,9 +41,38 @@ class CollisionCircle {
       const dx = this.x - other.x;
       const dy = this.y - other.y;
       distance = Math.sqrt(dx * dx + dy * dy);
+    } else if (other instanceof CollisionBox) {
+      const leftDist =
+        Math.abs(
+          other.height * this.x +
+            other.x * other.y -
+            other.x * (other.y + other.height)
+        ) / Math.sqrt(other.height ** 2);
+      const rightDist =
+        Math.abs(
+          other.height * this.x +
+            (other.x + other.width) * other.y -
+            (other.x + other.width) * (other.y + other.height)
+        ) / Math.sqrt(other.height ** 2);
+      const topDist =
+        Math.abs(
+          -other.width * this.y +
+            (other.x + other.width) * other.y -
+            other.x * other.y
+        ) / Math.sqrt(other.width ** 2);
+      const bottomDist =
+        Math.abs(
+          -other.width * this.y +
+            (other.x + other.width) * (other.y + other.height) -
+            other.x * (other.y + other.height)
+        ) / Math.sqrt(other.width ** 2);
+      const dx = this.x - (other.x + other.width / 2);
+      const dy = this.y - (other.y + other.height / 2);
+      const centerDist = Math.sqrt(dx * dx + dy * dy);
+      distance = { leftDist, rightDist, topDist, bottomDist, centerDist };
     } else {
       console.log(
-        ' * CollisionCircle.distanceTo: You can only check with another collision circle!'
+        ' * CollisionCircle.distanceTo: You can only check with another collision object!'
       );
     }
     return distance;
@@ -53,12 +81,30 @@ class CollisionCircle {
   collide(other) {
     let collided = false;
     if (other instanceof CollisionCircle) {
-      if (this.distanceTo(other) < this.radius + other.radius) {
-        collided = true;
-      }
+      collided = this.distanceTo(other) < this.radius + other.radius;
+    } else if (other instanceof CollisionBox) {
+      const {
+        leftDist,
+        rightDist,
+        topDist,
+        bottomDist,
+        centerDist,
+      } = this.distanceTo(other);
+      const xCol =
+        leftDist < this.radius ||
+        rightDist < this.radius ||
+        (this.x > other.x && this.x < other.x + other.width);
+      const yCol =
+        topDist < this.radius ||
+        bottomDist < this.radius ||
+        (this.y > other.y && this.y < other.y + other.height);
+      const otherRad = Math.sqrt(
+        (other.width / 2) ** 2 + (other.height / 2) ** 2
+      );
+      collided = xCol && yCol && centerDist < this.radius + otherRad;
     } else {
       console.log(
-        ' * CollisionCircle.collide: You can only collide with another collision circle!'
+        ' * CollisionCircle.collide: You can only collide with another collision object!'
       );
     }
     return collided;

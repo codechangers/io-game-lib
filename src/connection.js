@@ -9,13 +9,16 @@
 function connect(
   data = {} // object: What data should we send to the server when a player connects?
 ) {
-  const { game, colyseus, connectFuncs } = this;
+  const { game, colyseus, connectEvents } = this;
   let self = this;
   game.room = colyseus.join('main', data);
+  // Run functions that need a connection
   game.room.onJoin.add(() => {
     game.roomJoined = true;
-    for (let func in connectFuncs) {
-      this[func](...connectFuncs[func]);
+    for (let func in connectEvents) {
+      for (let run in connectEvents[func]) {
+        this[func](...connectEvents[func][run]);
+      }
     }
   });
   game.room.listen('board/:id', function (change) {
@@ -30,6 +33,18 @@ function connect(
       );
     }
   });
+}
+
+// Setup a function call that will happen once the server is connected.
+function addConnectEvent(
+  funcName, // string: Name of the library function to run.
+  params // array: The parameters that should be passed to the function.
+) {
+  const { connectEvents } = this;
+  if (!connectEvents[funcName]) {
+    connectEvents[funcName] = [];
+  }
+  connectEvents[funcName].push(params);
 }
 
 // Tell you if messages are ready!
@@ -54,7 +69,7 @@ function myId() {
   return this.game.room.sessionId;
 }
 
-const client = { connect, canSend, sendAction, myId };
+const client = { connect, addConnectEvent, canSend, sendAction, myId };
 
 /* =========================
  * ==== Server Methods: ====
@@ -65,9 +80,10 @@ function handleActions(
   actions, // object: Your action functions.
   data // object: The data from the message.
 ) {
-  for (let a in actions) {
+  const allActions = { ...this.defaultActions, ...actions };
+  for (let a in allActions) {
     if (data[a]) {
-      actions[a]();
+      allActions[a](data);
     }
   }
 }
