@@ -17,6 +17,7 @@ module.exports = class ClientLib {
   constructor() {
     this.game = null;
     this.keys = null;
+    this.connectEvents = {};
     this.colyseus = new Colyseus.Client(endpoint);
   }
 
@@ -30,6 +31,7 @@ module.exports = class ClientLib {
     game.cursors = null;
     game.width = 0;
     game.height = 0;
+    game.scales = {};
     // ADDS AN EVENT TO ALLOW FOR CLICKING
     document.addEventListener('click', function (e) {
       if (game.click) {

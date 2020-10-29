@@ -7,9 +7,12 @@
 
 // Create a new set of Characters.
 function addCharacters(
-  type // string: The type of characters.
+  type, // string: The type of characters.
+  scale = 1 // number: The scale of the sprite, ie. 0.5 for half size.
 ) {
   this.game[type] = {};
+  this.game.scales[type] = scale;
+  this.sendCharacterSize(type, scale);
 }
 
 // Listen to Characters on the server.
@@ -20,33 +23,54 @@ function getCharacters(
   onUpdate = function () {} // function: This will get run when a character is updated.
 ) {
   const { game } = this;
-  game.room.listen(`${type}/:id`, function (change) {
-    if (change.operation == 'add') {
-      const { id, x, y } = change.value;
-      game[type][id] = {
-        sprite: game.add.sprite(x, y, type),
-        id,
-      };
-      onAdd(game[type][id], change.value);
-    } else if (change.operation == 'remove') {
-      const { id } = change.path;
-      game[type][id].sprite.destroy();
-      delete game[type][id];
-      onRemove(id);
-    }
-  });
-  game.room.listen(`${type}/:id/:attribute`, function (change) {
-    if (change.operation == 'replace') {
-      const { id, attribute } = change.path;
-      if (attribute == 'x' || attribute == 'y') {
-        game[type][id].sprite[attribute] = change.value;
+  if (game.roomJoined) {
+    game.room.listen(`${type}/:id`, function (change) {
+      if (change.operation == 'add') {
+        const { id, x, y } = change.value;
+        const sprite = game.add.sprite(x, y, type);
+        sprite.setScale(game.scales[type] || 1);
+        game[type][id] = {
+          sprite,
+          ...change.value,
+        };
+        onAdd(game[type][id], change.value);
+      } else if (change.operation == 'remove') {
+        const { id } = change.path;
+        game[type][id].sprite.destroy();
+        delete game[type][id];
+        onRemove(id);
       }
-      onUpdate(id, attribute, change.value);
-    }
-  });
+    });
+    game.room.listen(`${type}/:id/:attribute`, function (change) {
+      if (change.operation == 'replace') {
+        const { id, attribute } = change.path;
+        if (attribute == 'x' || attribute == 'y') {
+          game[type][id].sprite[attribute] = change.value;
+        }
+        onUpdate(id, attribute, change.value);
+      }
+    });
+  } else {
+    this.addConnectEvent('getCharacters', [type, onAdd, onRemove, onUpdate]);
+  }
 }
 
-const client = { addCharacters, getCharacters };
+// Send the size of a character to the server.
+function sendCharacterSize(
+  type, // string: The type of characters.
+  scale = 1 // number: The scale of the sprite, ie. 0.5 for half size.
+) {
+  if (this.canSend()) {
+    this.sendAction('setCharacterSize', {
+      type,
+      ...this.getSpriteSize(type, scale),
+    });
+  } else {
+    this.addConnectEvent('sendCharacterSize', [type, scale]);
+  }
+}
+
+const client = { addCharacters, getCharacters, sendCharacterSize };
 
 /* =========================
  * ==== Server Methods: ====
@@ -62,29 +86,37 @@ function setupCharacters(
 // Create a Character instance.
 function createACharacter(
   type, // string: The type of characters.
-  client, // object: The colyseus client connection.
+  id, // string: A unique character id.
   data // object: The characters data.
 ) {
-  this.game.state[type][client.sessionId] = {
+  this.game.state[type][id] = {
+    ...this.getSize(type),
     ...data,
-    id: client.sessionId,
+    id,
   };
 }
 
 // Get a Character instance.
 function getACharacter(
   type, // string: The type of characters.
-  client // object: The colyseus client connection.
+  id // string: A unique character id.
 ) {
-  return this.game.state[type][client.sessionId];
+  return this.game.state[type][id];
 }
 
 // Delete a Character instance.
 function deleteACharacter(
   type, // string: The type of characters.
-  client // object: The colyseus client connection.
+  id // string: A unique character id.
 ) {
-  delete this.game.state[type][client.sessionId];
+  delete this.game.state[type][id];
+}
+
+// Get an incremental Id for a character.
+function nextCharacterId(
+  type // string: The type of characters.
+) {
+  return `${type}${Object.keys(this.game.state[type]).length + 1}`;
 }
 
 const server = {
@@ -92,6 +124,7 @@ const server = {
   createACharacter,
   getACharacter,
   deleteACharacter,
+  nextCharacterId,
 };
 
 module.exports = { client, server };

@@ -32,11 +32,11 @@ function drawBackground(
 
 // Create a square
 function createSquare(
-  width, // The width of the square you want to create
-  height, // The height of the square you want to create
-  x, // The starting x position of the top left of your square
-  y, // The starting y position of the top left of your square
-  color // The color of your square
+  width, // number: The width of the square you want to create.
+  height, // number: The height of the square you want to create.
+  x, // number: The starting x position of the top left of your square.
+  y, // number: The starting y position of the top left of your square.
+  color // string: The color of your square.
 ) {
   var rect = new Phaser.Geom.Rectangle(width, height, x, y);
   var graphics = this.game.add.graphics({
@@ -47,17 +47,30 @@ function createSquare(
 
 // Create a sprite
 function createSprite(
-  type, // The name of your sprite
-  x, // The x position of your sprite
-  y, // The y position of your sprite
-  scale = 1 // The scale or size they want their sprite to be
+  image, // string: The name of the image to make a sprite with.
+  x, // number: The x position of your sprite
+  y, // number: The y position of your sprite
+  scale = 1 // number: The scale of the sprite, ie. 0.5 for half size.
 ) {
-  let sprite = this.game.add.sprite(x, y, type);
+  let sprite = this.game.add.sprite(x, y, image);
   sprite.setScale(scale);
   return sprite;
 }
 
-const client = { drawBackground, createSquare, createSprite };
+// Get the size of an image at a certain scale.
+function getSpriteSize(
+  image, // string: The name of the image to make a sprite with.
+  scale = 1 // number: The scale of the sprite, ie. 0.5 for half size.
+) {
+  let sprite = this.game.add.sprite(-100, -100, image);
+  let { width, height } = sprite;
+  sprite.destroy();
+  width *= scale;
+  height *= scale;
+  return { width, height };
+}
+
+const client = { drawBackground, createSquare, createSprite, getSpriteSize };
 
 /* =========================
  * ==== Server Methods: ====
@@ -74,6 +87,16 @@ function setupBoard(
   this.game.state.board.board = { width, height, color };
 }
 
-const server = { setupBoard };
+// Get the size of an object.
+function getSize(
+  type // string: The type of object you want the size of.
+) {
+  const { sizes } = this.game.state;
+  let s = { width: 0, height: 0 };
+  if (Object.keys(sizes).includes(type)) s = sizes[type];
+  return s;
+}
+
+const server = { setupBoard, getSize };
 
 module.exports = { client, server };

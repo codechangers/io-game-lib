@@ -10,6 +10,7 @@ module.exports = class ServerLib {
     this.counts = {};
     this.boardWidth = 500;
     this.boardHeight = 500;
+    this.defaultActions = {};
   }
 
   // Bind the Game and setup initial state.
@@ -17,7 +18,9 @@ module.exports = class ServerLib {
     game // game.js/Game: Your Game!
   ) {
     this.game = game;
-    this.game.setState({ board: {} });
+    this.game.setState({ board: {}, sizes: {} });
     linkMethods(this, serverMethods);
+    this.setDefaultActions();
+    this.runGameLoop();
   }
 };
