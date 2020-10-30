@@ -119,17 +119,13 @@ class CollisionCircle {
 
 // Check for collisions between two types of objects in your game.
 function handleCollision(
-  [
-    typeA, // string/object: The first type of object OR a single object instance.
-    shapeA, // string: 'circle' or 'box' | The shape of the first object.
-  ], // array: An array with the typeA and shapeA values.
-  [
-    typeB, // string/object: The second type of object OR a single object instance.
-    shapeB, // string: 'circle' or 'box' | The shape of the second object.
-  ], // array: An array with the typeB and shapeB values.
+  typeA, // string/object: The first type of object OR a single object instance.
+  typeB, // string/object: The second type of object OR a single object instance.
   callback // function: What to do if there is a collision.
 ) {
-  const { state } = this.game;
+  const { state, shapes } = this.game;
+  const shapeA = typeof typeA === 'string' ? shapes[typeA] : shapes[typeA.type];
+  const shapeB = typeof typeB === 'string' ? shapes[typeB] : shapes[typeB.type];
   Object.entries(
     typeof typeA === 'string' ? state[typeA] : { [typeA.id]: typeA }
   ).forEach(function ([idA, dataA]) {
@@ -155,49 +151,13 @@ function handleCollision(
   });
 }
 
-// Check for collisions between two types of circular objects in your game.
-function handleCirclesCollision(
-  typeA, // string: The first type of object.
-  typeB, // string: The second type of object.
-  callback // function: What to do if there is a collision.
-) {
-  return this.handleCollision([typeA, 'circle'], [typeB, 'circle'], callback);
-}
-
-// Check for collisions between two types of box objects in your game.
-function handleBoxesCollision(
-  typeA, // string: The first type of object.
-  typeB, // string: The second type of object.
-  callback // function: What to do if there is a collision.
-) {
-  return this.handleCollision([typeA, 'box'], [typeB, 'box'], callback);
-}
-
-// Check for collisions between a type of circular objects and a type of box objects in your game.
-function handleCircleOnBoxCollision(
-  typeA, // string: The first type of object.
-  typeB, // string: The second type of object.
-  callback // function: What to do if there is a collision.
-) {
-  return this.handleCollision([typeA, 'circle'], [typeB, 'box'], callback);
-}
-
-// Check for collisions between a type of box objects and a type of circular objects in your game.
-function handleBoxOnCircleCollision(
-  typeA, // string: The first type of object.
-  typeB, // string: The second type of object.
-  callback // function: What to do if there is a collision.
-) {
-  return this.handleCollision([typeA, 'box'], [typeB, 'circle'], callback);
-}
-
 // Move an in game object within the bounds of the game.
 function move(
   object, // object: The game object you want to move.
   axis, // string: x or y axis of movement.
   distance // number: How far to move along the given axis.
 ) {
-  const { gameWidth, gameHeight, state } = this.game;
+  const { gameWidth, gameHeight, barriers, shapes } = this.game;
   let validMove = true;
   let fallbackPos = -1;
   // Check Game Boundries
@@ -216,26 +176,40 @@ function move(
     }
   }
   // Check Barriers
-  if (Object.keys(state.barriers).includes(object.type)) {
-    for (let bType in state.barriers[object.type]) {
-      const shape = state.barriers[object.type][bType];
+  if (Object.keys(barriers).includes(object.type)) {
+    barriers[object.type].forEach((bType) => {
       this.handleCollision(
-        [{ ...object, [axis]: object[axis] + distance }, 'circle'],
-        [bType, shape],
+        { ...object, [axis]: object[axis] + distance },
+        bType,
         (object, barrier) => {
           validMove = false;
-          const a =
-            axis === 'x'
-              ? [barrier.x - barrier.width / 2, barrier.x + barrier.width / 2]
-              : [
-                  barrier.y - barrier.height / 2,
-                  barrier.y + barrier.height / 2,
-                ];
-          const l = axis === 'x' ? object.width : object.height;
-          fallbackPos = distance < 0 ? a[1] + l / 2 : a[0] - l / 2;
+          // TODO: Circle on Box and Box on Circle
+          if (shapes[bType] === 'circle') {
+            // Circle on Circle
+            const factor = object[axis] > barrier[axis] ? 1 : -1;
+            const otherAxis = axis === 'x' ? 'y' : 'x';
+            fallbackPos =
+              Math.sqrt(
+                Math.pow(object.width / 2 + barrier.width / 2 + 0.000001, 2) -
+                  Math.pow(object[otherAxis] - barrier[otherAxis], 2)
+              ) *
+                factor +
+              barrier[axis]; // Inverse of distance formula where d = r1 + r2
+          } else {
+            // Box on Box
+            const a =
+              axis === 'x'
+                ? [barrier.x - barrier.width / 2, barrier.x + barrier.width / 2]
+                : [
+                    barrier.y - barrier.height / 2,
+                    barrier.y + barrier.height / 2,
+                  ];
+            const l = axis === 'x' ? object.width : object.height;
+            fallbackPos = distance < 0 ? a[1] + l / 2 : a[0] - l / 2;
+          }
         }
       );
-    }
+    });
   }
   // Handle Collisions
   if (validMove) {
@@ -248,23 +222,18 @@ function move(
 // Make a type of object unable to pass through another type of object.
 function useBarrier(
   type, // string: The type of object which should not pass through barriers.
-  barrierType, // string: The type of object which should become a barrier.
-  barrierShape // string: circle or box | The shape of the barrier.
+  barrierType // string: The type of object which should become a barrier.
 ) {
-  const { barriers } = this.game.state;
+  const { barriers } = this.game;
   if (Object.keys(barriers).includes(type)) {
-    barriers[type][barrierType] = barrierShape;
+    barriers[type].push(barrierType);
   } else {
-    barriers[type] = { [barrierType]: barrierShape };
+    barriers[type] = [barrierType];
   }
 }
 
 const server = {
   handleCollision,
-  handleBoxesCollision,
-  handleBoxOnCircleCollision,
-  handleCircleOnBoxCollision,
-  handleCirclesCollision,
   move,
   useBarrier,
 };

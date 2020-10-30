@@ -91,11 +91,11 @@ function setBounds(
 
 // Setup the default/implicit game library actions.
 function setDefaultActions() {
-  const { state } = this.game;
+  const { state, sizes } = this.game;
   this.defaultActions = {
     setCharacterSize: (data) => {
       const { type, width, height } = data;
-      state.sizes[type] = { width, height };
+      sizes[type] = { width, height };
       // Set sizes of previously definied characters
       Object.values(state[type]).forEach((character) => {
         character.width = width;
