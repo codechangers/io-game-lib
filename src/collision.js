@@ -197,12 +197,12 @@ function move(
   axis, // string: x or y axis of movement.
   distance // number: How far to move along the given axis.
 ) {
-  const { game } = this;
+  const { gameWidth, gameHeight, state } = this.game;
   let validMove = true;
   let fallbackPos = -1;
   // Check Game Boundries
-  if (game.gameWidth && game.gameHeight) {
-    const gDim = axis === 'x' ? game.gameWidth : game.gameHeight;
+  if (gameWidth && gameHeight) {
+    const gDim = axis === 'x' ? gameWidth : gameHeight;
     const oDim = axis === 'x' ? object.width : object.height;
     const offSet = axis === 'x' ? object.width / 2 : object.height / 2;
     if (object[axis] - offSet + distance < 0) {
@@ -216,9 +216,9 @@ function move(
     }
   }
   // Check Barriers
-  if (object.barriers) {
-    for (let bType in object.barriers) {
-      const shape = object.barriers[bType];
+  if (Object.keys(state.barriers).includes(object.type)) {
+    for (let bType in state.barriers[object.type]) {
+      const shape = state.barriers[object.type][bType];
       this.handleCollision(
         [{ ...object, [axis]: object[axis] + distance }, 'circle'],
         [bType, shape],
@@ -226,10 +226,13 @@ function move(
           validMove = false;
           const a =
             axis === 'x'
-              ? [barrier.x, barrier.x + barrier.width]
-              : [barrier.y, barrier.y + barrier.height];
+              ? [barrier.x - barrier.width / 2, barrier.x + barrier.width / 2]
+              : [
+                  barrier.y - barrier.height / 2,
+                  barrier.y + barrier.height / 2,
+                ];
           const l = axis === 'x' ? object.width : object.height;
-          fallbackPos = distance < 0 ? a[0] - l : a[1];
+          fallbackPos = distance < 0 ? a[1] + l / 2 : a[0] - l / 2;
         }
       );
     }
@@ -242,6 +245,20 @@ function move(
   }
 }
 
+// Make a type of object unable to pass through another type of object.
+function useBarrier(
+  type, // string: The type of object which should not pass through barriers.
+  barrierType, // string: The type of object which should become a barrier.
+  barrierShape // string: circle or box | The shape of the barrier.
+) {
+  const { barriers } = this.game.state;
+  if (Object.keys(barriers).includes(type)) {
+    barriers[type][barrierType] = barrierShape;
+  } else {
+    barriers[type] = { [barrierType]: barrierShape };
+  }
+}
+
 const server = {
   handleCollision,
   handleBoxesCollision,
@@ -249,6 +266,7 @@ const server = {
   handleCircleOnBoxCollision,
   handleCirclesCollision,
   move,
+  useBarrier,
 };
 
 module.exports = { server };

@@ -18,7 +18,7 @@ module.exports = class ServerLib {
     game // game.js/Game: Your Game!
   ) {
     this.game = game;
-    this.game.setState({ board: {}, sizes: {} });
+    this.game.setState({ board: {}, sizes: {}, barriers: {} });
     linkMethods(this, serverMethods);
     this.setDefaultActions();
     this.runGameLoop();
