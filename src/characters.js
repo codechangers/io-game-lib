@@ -93,6 +93,7 @@ function createACharacter(
     ...this.getSize(type),
     ...data,
     id,
+    type,
   };
 }
 
