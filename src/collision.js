@@ -120,23 +120,27 @@ class CollisionCircle {
 // Check for collisions between two types of objects in your game.
 function handleCollision(
   [
-    typeA, // string: The first type of object.
+    typeA, // string/object: The first type of object OR a single object instance.
     shapeA, // string: 'circle' or 'box' | The shape of the first object.
   ], // array: An array with the typeA and shapeA values.
   [
-    typeB, // string: The second type of object.
+    typeB, // string/object: The second type of object OR a single object instance.
     shapeB, // string: 'circle' or 'box' | The shape of the second object.
   ], // array: An array with the typeB and shapeB values.
   callback // function: What to do if there is a collision.
 ) {
   const { state } = this.game;
-  Object.entries(state[typeA]).forEach(function ([idA, dataA]) {
+  Object.entries(
+    typeof typeA === 'string' ? state[typeA] : { [typeA.id]: typeA }
+  ).forEach(function ([idA, dataA]) {
     const { x, y, width, height } = dataA;
     const colA =
       shapeA === 'circle'
         ? new CollisionCircle(x, y, width)
         : new CollisionBox(x, y, width, height);
-    Object.entries(state[typeB]).forEach(function ([idB, dataB]) {
+    Object.entries(
+      typeof typeB === 'string' ? state[typeB] : { [typeB.id]: typeB }
+    ).forEach(function ([idB, dataB]) {
       if (idA !== idB) {
         const { x, y, width, height } = dataB;
         const colB =
@@ -187,12 +191,64 @@ function handleBoxOnCircleCollision(
   return this.handleCollision([typeA, 'box'], [typeB, 'circle'], callback);
 }
 
+// Move an in game object within the bounds of the game.
+function move(
+  object, // object: The game object you want to move.
+  axis, // string: x or y axis of movement.
+  distance // number: How far to move along the given axis.
+) {
+  const { game } = this;
+  let validMove = true;
+  let fallbackPos = -1;
+  // Check Game Boundries
+  if (game.gameWidth && game.gameHeight) {
+    const gDim = axis === 'x' ? game.gameWidth : game.gameHeight;
+    const oDim = axis === 'x' ? object.width : object.height;
+    const offSet = axis === 'x' ? object.width / 2 : object.height / 2;
+    if (object[axis] - offSet + distance < 0) {
+      // Left/Top of Boundries
+      validMove = false;
+      fallbackPos = offSet;
+    } else if (object[axis] - offSet + distance + oDim > gDim) {
+      // Right/Bottom of Boundries
+      validMove = false;
+      fallbackPos = gDim - oDim + offSet;
+    }
+  }
+  // Check Barriers
+  if (object.barriers) {
+    for (let bType in object.barriers) {
+      const shape = object.barriers[bType];
+      this.handleCollision(
+        [{ ...object, [axis]: object[axis] + distance }, 'circle'],
+        [bType, shape],
+        (object, barrier) => {
+          validMove = false;
+          const a =
+            axis === 'x'
+              ? [barrier.x, barrier.x + barrier.width]
+              : [barrier.y, barrier.y + barrier.height];
+          const l = axis === 'x' ? object.width : object.height;
+          fallbackPos = distance < 0 ? a[0] - l : a[1];
+        }
+      );
+    }
+  }
+  // Handle Collisions
+  if (validMove) {
+    object[axis] += distance;
+  } else {
+    object[axis] = fallbackPos;
+  }
+}
+
 const server = {
   handleCollision,
   handleBoxesCollision,
   handleBoxOnCircleCollision,
   handleCircleOnBoxCollision,
   handleCirclesCollision,
+  move,
 };
 
 module.exports = { server };

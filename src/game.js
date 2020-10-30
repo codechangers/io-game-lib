@@ -76,6 +76,19 @@ const client = {
  * ==== Server Methods: ====
  * ========================= */
 
+// Setup the edge boundries for your game.
+function setBounds(
+  width, // number: How wide the game is.
+  height // number: How tall the game is.
+) {
+  if (width > 0) {
+    this.game.gameWidth = width;
+  }
+  if (height > 0) {
+    this.game.gameHeight = height;
+  }
+}
+
 // Setup the default/implicit game library actions.
 function setDefaultActions() {
   const { state } = this.game;
@@ -110,6 +123,6 @@ function runGameLoop() {
   }
 }
 
-const server = { setDefaultActions, runGameLoop };
+const server = { setBounds, setDefaultActions, runGameLoop };
 
 module.exports = { client, server };
