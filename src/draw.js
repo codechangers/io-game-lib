@@ -91,7 +91,7 @@ function setupBoard(
 function getSize(
   type // string: The type of object you want the size of.
 ) {
-  const { sizes } = this.game.state;
+  const { sizes } = this.game;
   let s = { width: 0, height: 0 };
   if (Object.keys(sizes).includes(type)) s = sizes[type];
   return s;
