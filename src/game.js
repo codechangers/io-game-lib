@@ -89,6 +89,60 @@ function setBounds(
   }
 }
 
+// Check if a move runs into the game bounds.
+function checkBounds(
+  object, // object: The game object you want to move.
+  axis, // string: x or y axis of movement.
+  distance // number: How far to move along the given axis.
+) {
+  const { gameWidth, gameHeight } = this.game;
+  let validMove = true;
+  let fallbackPos = -1;
+  if (gameWidth && gameHeight) {
+    const gDim = axis === 'x' ? gameWidth : gameHeight;
+    const oDim = axis === 'x' ? object.width : object.height;
+    const offSet = axis === 'x' ? object.width / 2 : object.height / 2;
+    if (object[axis] - offSet + distance < 0) {
+      // Left/Top of Boundries
+      validMove = false;
+      fallbackPos = offSet;
+    } else if (object[axis] - offSet + distance + oDim > gDim) {
+      // Right/Bottom of Boundries
+      validMove = false;
+      fallbackPos = gDim - oDim + offSet;
+    }
+  }
+  return { validMove, fallbackPos };
+}
+
+// Move an in game object within the bounds and barriers of the game.
+function move(
+  object, // object: The game object you want to move.
+  axis, // string: x or y axis of movement.
+  distance // number: How far to move along the given axis.
+) {
+  let validMove = true;
+  let fallbackPos = -1;
+  // Check Game Boundries
+  const boundsMove = this.checkBounds(object, axis, distance);
+  if (!boundsMove.validMove) {
+    validMove = false;
+    fallbackPos = boundsMove.fallbackPos;
+  }
+  // Check for Barriers
+  const barrierMove = this.checkBarriers(object, axis, distance);
+  if (!barrierMove.validMove) {
+    validMove = false;
+    fallbackPos = barrierMove.fallbackPos;
+  }
+  // Move Object to valid position.
+  if (validMove) {
+    object[axis] += distance;
+  } else {
+    object[axis] = fallbackPos;
+  }
+}
+
 // Setup the default/implicit game library actions.
 function setDefaultActions() {
   const { state, sizes } = this.game;
@@ -123,6 +177,12 @@ function runGameLoop() {
   }
 }
 
-const server = { setBounds, setDefaultActions, runGameLoop };
+const server = {
+  setBounds,
+  checkBounds,
+  move,
+  setDefaultActions,
+  runGameLoop,
+};
 
 module.exports = { client, server };
