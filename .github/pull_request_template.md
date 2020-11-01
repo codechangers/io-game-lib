@@ -12,4 +12,4 @@
 > - _Refactor:_ Briefly describe what you refactored, why you needed to, and how it is better.
 >   - [relevantLink](https://docs.github.com/en/free-pro-team@latest/github/managing-files-in-a-repository/getting-permanent-links-to-files#creating-a-permanent-link-to-a-code-snippet) (List any relevant code permalinks in this format).
 >
-> Keep in mind, the purpose of this template is to create a consistent way for contributors to effectively comunicate with maintainers. Feel free to add or subtract from this template in your PR to communicate as effectively as possible.
+> Keep in mind, the purpose of this template is to create a consistent way for contributors to effectively communicate with maintainers. Feel free to add or subtract from this template in your PR to communicate as effectively as possible.
