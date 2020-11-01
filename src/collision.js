@@ -11,6 +11,7 @@ class CollisionBox {
   }
 
   collide(other) {
+    let distance = -1;
     let collided = false;
     if (other instanceof CollisionBox) {
       collided =
@@ -19,13 +20,15 @@ class CollisionBox {
         this.y < other.y + other.height &&
         this.y + this.height > other.y;
     } else if (other instanceof CollisionCircle) {
-      collided = other.collide(this);
+      const check = other.collide(this);
+      collided = check.collided;
+      distance = check.distance;
     } else {
       console.log(
         ' * CollisionBox.collide: You can only collide with another collision object!'
       );
     }
-    return collided;
+    return { collided, distance };
   }
 }
 
@@ -81,17 +84,14 @@ class CollisionCircle {
   }
 
   collide(other) {
+    let distance = -1;
     let collided = false;
     if (other instanceof CollisionCircle) {
-      collided = this.distanceTo(other) < this.radius + other.radius;
+      distance = this.distanceTo(other);
+      collided = distance < this.radius + other.radius;
     } else if (other instanceof CollisionBox) {
-      const {
-        leftDist,
-        rightDist,
-        topDist,
-        bottomDist,
-        centerDist,
-      } = this.distanceTo(other);
+      distance = this.distanceTo(other);
+      const { leftDist, rightDist, topDist, bottomDist, centerDist } = distance;
       const xCol =
         leftDist < this.radius ||
         rightDist < this.radius ||
@@ -109,7 +109,7 @@ class CollisionCircle {
         ' * CollisionCircle.collide: You can only collide with another collision object!'
       );
     }
-    return collided;
+    return { collided, distance };
   }
 }
 
@@ -143,8 +143,9 @@ function handleCollision(
           shapeB === 'circle'
             ? new CollisionCircle(x, y, width)
             : new CollisionBox(x, y, width, height);
-        if (colA.collide(colB)) {
-          callback(dataA, dataB);
+        const check = colA.collide(colB);
+        if (check.collided) {
+          callback(dataA, dataB, check.distance);
         }
       }
     });
