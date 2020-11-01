@@ -108,6 +108,7 @@ function checkBarriers(
           } else if (shapes[bType] === 'circle') {
             // Box on Circle
             const cornerPos = _cornerRebound(barrier, object, axis, colDist);
+            // TODO: Handle Blip
             fallbackPos =
               cornerPos !== -1
                 ? object[axis] + barrier[axis] - cornerPos
