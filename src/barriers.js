@@ -30,8 +30,8 @@ function _circleRebound(object, barrier, axis) {
 }
 
 // PLEASE IGNORE ME IN THE DOCS
-function _cornerRebound(object, barrier, axis, colDist) {
-  const r = object.width / 2;
+function _cornerRebound(circle, box, axis, colDist) {
+  const r = circle.width / 2;
   let cols = [];
   for (let key in colDist) {
     if (colDist[key] < r) cols.push(key);
@@ -43,21 +43,21 @@ function _cornerRebound(object, barrier, axis, colDist) {
     bottom: true,
   };
   function check(xDir, yDir) {
-    const x = barrier.x + (barrier.width / 2) * (reverse[xDir] ? 1 : -1);
-    const y = barrier.y + (barrier.height / 2) * (reverse[yDir] ? 1 : -1);
-    const Xs = reverse[xDir] ? [x, object.x] : [object.x, x];
-    const Ys = reverse[yDir] ? [y, object.y] : [object.y, y];
+    const x = box.x + (box.width / 2) * (reverse[xDir] ? 1 : -1);
+    const y = box.y + (box.height / 2) * (reverse[yDir] ? 1 : -1);
+    const Xs = reverse[xDir] ? [x, circle.x] : [circle.x, x];
+    const Ys = reverse[yDir] ? [y, circle.y] : [circle.y, y];
     if (
       cols.includes(`${xDir}Dist`) &&
       cols.includes(`${yDir}Dist`) &&
       Xs[0] < Xs[1] &&
       Ys[0] < Ys[1]
     ) {
-      newPos = _circleRebound(object, { x, y, width: 0 }, axis);
+      newPos = _circleRebound(circle, { x, y, width: 0 }, axis);
       const POSs = reverse[axis === 'x' ? xDir : yDir]
-        ? [object[axis], newPos]
-        : [newPos, object[axis]];
-      return POSs[0] < POSs[1] ? newPos : object[axis];
+        ? [circle[axis], newPos]
+        : [newPos, circle[axis]];
+      return POSs[0] < POSs[1] ? newPos : circle[axis];
     }
   }
   return (
@@ -102,9 +102,16 @@ function checkBarriers(
         bType,
         (object, barrier, colDist) => {
           validMove = false;
-          if (shapes[bType] === 'circle') {
+          if (shapes[bType] === 'circle' && shapes[object.type] === 'circle') {
             // Circle on Circle
             fallbackPos = _circleRebound(object, barrier, axis);
+          } else if (shapes[bType] === 'circle') {
+            // Box on Circle
+            const cornerPos = _cornerRebound(barrier, object, axis, colDist);
+            fallbackPos =
+              cornerPos !== -1
+                ? object[axis] + barrier[axis] - cornerPos
+                : _boxRebound(object, barrier, axis, distance);
           } else if (shapes[object.type] === 'circle') {
             // Circle on Box
             const cornerPos = _cornerRebound(object, barrier, axis, colDist);
