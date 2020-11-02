@@ -92,6 +92,38 @@ function handleLeaderboard(
   ]);
 }
 
-const client = { useLoginScreen, handleLeaderboard };
+function useStore() {
+  document.querySelector('#game-overlay > .store').innerHTML = _render([
+    '<h1 style="color:white">This is the Store!</h1>',
+  ]);
+}
+
+function toggleStore() {
+  const storeDiv = document.querySelector('#game-overlay > .store');
+  if (
+    !storeDiv.classList.contains('locked') &&
+    storeDiv.classList.contains('hide')
+  ) {
+    storeDiv.classList.remove('hide');
+    storeDiv.classList.add('locked');
+  } else if (!storeDiv.classList.contains('locked')) {
+    storeDiv.classList.add('hide');
+    storeDiv.classList.add('locked');
+  }
+}
+function unlockStore() {
+  const storeDiv = document.querySelector('#game-overlay > .store');
+  if (storeDiv.classList.contains('locked')) {
+    storeDiv.classList.remove('locked');
+  }
+}
+
+const client = {
+  useLoginScreen,
+  handleLeaderboard,
+  useStore,
+  toggleStore,
+  unlockStore,
+};
 
 module.exports = { client };
