@@ -46,6 +46,8 @@ function getCharacters(
         const { id, attribute } = change.path;
         if (attribute == 'x' || attribute == 'y') {
           game[type][id].sprite[attribute] = change.value;
+        } else {
+          game[type][id][attribute] = change.value;
         }
         onUpdate(id, attribute, change.value);
       }
