@@ -78,9 +78,11 @@ const client = { addCharacters, getCharacters, sendCharacterSize };
 
 // Setup a set of Characters.
 function setupCharacters(
-  type // string: The type of characters.
+  type, // string: The type of characters.
+  shape = 'box' // string: box or circle | The shape of the character image.
 ) {
   this.game.state[type] = {};
+  this.game.shapes[type] = shape;
 }
 
 // Create a Character instance.
@@ -93,6 +95,7 @@ function createACharacter(
     ...this.getSize(type),
     ...data,
     id,
+    type,
   };
 }
 
