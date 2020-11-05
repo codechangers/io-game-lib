@@ -104,10 +104,38 @@ function handleLeaderboard(
   ]);
 }
 
-function useStore() {
+class StoreItem {
+  constructor(image, name, valueAttr, value, costAttr, cost) {
+    this.image = image;
+    this.name = name;
+    this.valueAttr = valueAttr;
+    this.value = value;
+    this.costAttr = costAttr;
+    this.cost = cost;
+  }
+}
+
+// Show a store interface for selling items.
+function useStore(
+  title = 'Store', // string: What the header should say.
+  items // Array[StoreItem]: What items are for sale?
+) {
   document.querySelector('#input-overlay > .store').innerHTML = _render([
-    '<h1>This is the Store!</h1>',
+    `<h1>${title}</h1>`,
+    ...items.map(
+      (item) => `<div class="store-item">
+    <img src="${item.image}" />
+    <h2>${item.name}</h2>
+    <p>Cost: ${item.cost} x ${item.costAttr}</p>
+    <button id="buy-${item.name}">Buy</button>
+    </div>`
+    ),
   ]);
+  items.forEach((item) => {
+    document.getElementById(`buy-${item.name}`).onclick = function () {
+      console.log('Click...');
+    };
+  });
 }
 
 function toggleStore() {
@@ -133,6 +161,7 @@ function unlockStore() {
 }
 
 const client = {
+  StoreItem,
   useLoginScreen,
   handleLeaderboard,
   useStore,
