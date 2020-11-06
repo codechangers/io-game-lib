@@ -149,6 +149,7 @@ function useStore(
   });
 }
 
+// Turn the store interface on and off.
 function toggleStore() {
   const storeDiv = document.querySelector('#input-overlay > .store');
   if (
@@ -164,6 +165,8 @@ function toggleStore() {
     storeDiv.classList.add('locked');
   }
 }
+
+// Unlock the state of the store interface so you can toggle again.
 function unlockStore() {
   const storeDiv = document.querySelector('#input-overlay > .store');
   if (storeDiv.classList.contains('locked')) {
