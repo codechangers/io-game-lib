@@ -76,7 +76,7 @@ const client = {
  * ==== Server Methods: ====
  * ========================= */
 
-// Setup the edge boundries for your game.
+// Setup the edge boundaries for your game.
 function setBounds(
   width, // number: How wide the game is.
   height // number: How tall the game is.

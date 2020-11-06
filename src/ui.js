@@ -32,6 +32,27 @@ function _renderLives({ lives }) {
   return _render(spans);
 }
 
+/* ============================
+ * ==== Class Definitions: ====
+ * ============================ */
+
+// A data type for items that are for sale in the store.
+class StoreItem {
+  constructor(
+    image, // string: The relative path to an image.
+    name, // string: The name of the item.
+    costAttr, // string: What customers pay with.
+    cost, // string: How much customers pay.
+    action // string: The server action for buying the item.
+  ) {
+    this.image = `asset/${image}`;
+    this.name = name;
+    this.costAttr = costAttr;
+    this.cost = cost;
+    this.action = action;
+  }
+}
+
 /* =========================
  * ==== Client Methods: ====
  * ========================= */
@@ -104,16 +125,6 @@ function handleLeaderboard(
   ]);
 }
 
-class StoreItem {
-  constructor(image, name, costAttr, cost, action) {
-    this.image = image;
-    this.name = name;
-    this.costAttr = costAttr;
-    this.cost = cost;
-    this.action = action;
-  }
-}
-
 // Show a store interface for selling items.
 function useStore(
   title = 'Store', // string: What the header should say.
@@ -126,13 +137,13 @@ function useStore(
     <img src="${item.image}" />
     <h2>${item.name}</h2>
     <p>Cost: ${item.cost} x ${item.costAttr}</p>
-    <button id="buy-${item.name}">Buy</button>
+    <button id="${item.action}">Buy</button>
     </div>`
     ),
   ]);
   const self = this;
   items.forEach((item) => {
-    document.getElementById(`buy-${item.name}`).onclick = function () {
+    document.getElementById(item.action).onclick = function () {
       self.sendAction(item.action);
     };
   });
