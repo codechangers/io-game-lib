@@ -105,13 +105,12 @@ function handleLeaderboard(
 }
 
 class StoreItem {
-  constructor(image, name, valueAttr, value, costAttr, cost) {
+  constructor(image, name, costAttr, cost, action) {
     this.image = image;
     this.name = name;
-    this.valueAttr = valueAttr;
-    this.value = value;
     this.costAttr = costAttr;
     this.cost = cost;
+    this.action = action;
   }
 }
 
@@ -131,9 +130,10 @@ function useStore(
     </div>`
     ),
   ]);
+  const self = this;
   items.forEach((item) => {
     document.getElementById(`buy-${item.name}`).onclick = function () {
-      console.log('Click...');
+      self.sendAction(item.action);
     };
   });
 }
