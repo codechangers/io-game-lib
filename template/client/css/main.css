@@ -6,6 +6,10 @@ body {
   overflow: hidden;
 }
 
+.hide {
+  display: none !important;
+}
+
 /* width and height of game container are resized dynamically in index.js */
 #phaser-example,
 #input-overlay,
@@ -23,23 +27,15 @@ body {
 }
 
 #input-overlay {
-  display: none;
+  display: flex;
   z-index: 999;
   background-color: rgba(0, 0, 0, 0.4);
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
-
-#game-overlay {
-  pointer-events: none;
-  z-index: 998;
-}
-
-/* ====================
- * === LOGIN SCREEN ===
- * ==================== */
-#input-overlay > .login {
+#input-overlay > div,
+#input-overlay > form {
   width: 100%;
   min-width: 500px;
   max-width: 1000px;
@@ -53,6 +49,73 @@ body {
   box-sizing: border-box;
 }
 
+#game-overlay {
+  pointer-events: none;
+  z-index: 998;
+}
+
+/* ====================
+ * === STORE SCREEN ===
+ * ==================== */
+#input-overlay > .store {
+  max-height: 99vh;
+  overflow-y: scroll;
+}
+#input-overlay > .store > h1 {
+  font-size: 3.5rem;
+  font-family: sans-serif;
+  font-weight: bold;
+  color: #2e2e2e;
+  margin: 5px 0;
+  margin-bottom: 12px;
+}
+#input-overlay > .store > .store-item {
+  width: 100%;
+  max-width: 800px;
+  box-sizing: border-box;
+  padding: 5px 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 2px solid rgba(0, 0, 0, 0.2);
+}
+#input-overlay > .store > .store-item > h2 {
+  font-size: 2rem;
+  font-family: sans-serif;
+  font-weight: bold;
+}
+#input-overlay > .store > .store-item > p {
+  font-size: 1.6rem;
+  font-family: sans-serif;
+  font-weight: 600;
+  color: #0e0e0e;
+}
+#input-overlay > .store > .store-item > button {
+  font-size: 1.4rem;
+  padding: 5px 28px;
+  cursor: pointer;
+  background-color: #497ea1;
+  border: none;
+  color: #fff;
+  border-radius: 3px;
+  text-shadow: 1px 2px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 2px 1px 0px rgba(0, 0, 0, 0.2);
+  transition: 150ms ease;
+  outline: none;
+}
+#input-overlay > .store > .store-item > button:hover {
+  box-shadow: 0px 2px 5px 1px rgba(0, 0, 0, 0.2);
+  background-color: #528cb3;
+}
+#input-overlay > .store > .store-item > img {
+  max-width: 80px;
+  max-height: 80px;
+}
+
+/* ====================
+ * === LOGIN SCREEN ===
+ * ==================== */
 #input-overlay > .login > h1 {
   font-size: 3.5rem;
   font-family: sans-serif;
