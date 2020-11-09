@@ -88,10 +88,17 @@ function createALocation(type, id, dims, color, rules) {
 }
 
 // Apply the rules of all locations to the game.
-function handleLocations(type) {
-  Object.entries(this.game.state[type]).forEach(([id, data]) => {
-    console.log(`> Handling ${id}...`);
-    console.log(data.rules);
+function handleLocations(locationType, characterType) {
+  const self = this;
+  Object.values(this.game.state[locationType]).forEach((data) => {
+    const { width, height, x, y } = data;
+    self.handleCollision(
+      characterType,
+      { ...data, x: x + width / 2, y: y + height / 2 },
+      function (character, location) {
+        location.rules(character);
+      }
+    );
   });
 }
 
