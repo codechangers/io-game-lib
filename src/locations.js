@@ -6,7 +6,10 @@
  * ========================= */
 
 // Initialize the locations client feature.
-function addLocations(type, scale = 1) {
+function addLocations(
+  type, // string: The type of locations.
+  scale = 1 // number: The scale of the sprite, ie. 0.5 for half size.
+) {
   this.game[type] = {};
   this.game.scales[type] = scale;
   this.sendSpriteSize(type, scale);
@@ -90,12 +93,20 @@ const client = { addLocations, getLocations };
  * ========================= */
 
 // Initialize the locations server feature.
-function setupLocations(type) {
+function setupLocations(
+  type // string: The type of locations.
+) {
   this.game.state[type] = {};
 }
 
 // Create a location with a defined size which follows a custom set of rules.
-function createALocation(type, id, dims, color, rules) {
+function createALocation(
+  type, // string: The type of locations.
+  id, // string: A unique location id.
+  dims, // object: Dimension values x, y, width, and height.
+  color, // string: The color of the location.
+  rules // function: What happens when someone is in this location.
+) {
   this.game.state[type][id] = {
     ...dims,
     color,
@@ -104,7 +115,10 @@ function createALocation(type, id, dims, color, rules) {
 }
 
 // Apply the rules of all locations to the game.
-function handleLocations(locationType, characterType) {
+function handleLocations(
+  locationType, // string: The type of location.
+  characterType // string: The type of character.
+) {
   const self = this;
   Object.values(this.game.state[locationType]).forEach((data) => {
     const { width, height, x, y } = data;
