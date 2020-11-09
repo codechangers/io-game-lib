@@ -38,10 +38,18 @@ function createSquare(
   y, // number: The starting y position of the top left of your square.
   color // string: The color of your square.
 ) {
-  var rect = new Phaser.Geom.Rectangle(width, height, x, y);
-  var graphics = this.game.add.graphics({
+  const rect = new Phaser.Geom.Rectangle(width, height, x, y);
+  const graphics = this.game.add.graphics({
     fillStyle: { color: `0x${color}` },
   });
+  graphics.fillRectShape(rect);
+  return graphics;
+}
+// Update a previously drawn squre.
+function updateSquare(width, height, x, y, color, graphics) {
+  const rect = new Phaser.Geom.Rectangle(width, height, x, y);
+  graphics.clear();
+  graphics.fillStyle = { color: `0x${color}` };
   graphics.fillRectShape(rect);
 }
 
