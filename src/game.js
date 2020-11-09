@@ -63,6 +63,23 @@ function cameraBounds(
   this.game.cameras.main.setBounds(0, 0, width, height);
 }
 
+// Send the size of a sprite to the server.
+function sendSpriteSize(
+  type, // string: The name of the image used by the sprite.
+  scale = 1 // number: The scale of the sprite, ie. 0.5 for half size.
+) {
+  if (this.canSend()) {
+    if (this.game.textures.exists(type)) {
+      this.sendAction('setSpriteSize', {
+        type,
+        ...this.getSpriteSize(type, scale),
+      });
+    }
+  } else {
+    this.addConnectEvent('sendSpriteSize', [type, scale]);
+  }
+}
+
 const client = {
   setSize,
   loadImage,
@@ -70,6 +87,7 @@ const client = {
   getKeysDown,
   cameraFollow,
   cameraBounds,
+  sendSpriteSize,
 };
 
 /* =========================
@@ -161,13 +179,13 @@ function purchase(
 function setDefaultActions() {
   const { state, sizes } = this.game;
   this.defaultActions = {
-    setCharacterSize: (data) => {
+    setSpriteSize: (data) => {
       const { type, width, height } = data;
       sizes[type] = { width, height };
-      // Set sizes of previously definied characters
-      Object.values(state[type]).forEach((character) => {
-        character.width = width;
-        character.height = height;
+      // Set sizes of previously definied sprites
+      Object.values(state[type]).forEach((sprite) => {
+        sprite.width = width;
+        sprite.height = height;
       });
     },
   };
