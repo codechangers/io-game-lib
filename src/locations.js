@@ -6,8 +6,10 @@
  * ========================= */
 
 // Initialize the locations client feature.
-function addLocations(type) {
+function addLocations(type, scale = 1) {
   this.game[type] = {};
+  this.game.scales[type] = scale;
+  this.sendSpriteSize(type, scale);
 }
 
 // Subscribe to locations created on the server.
@@ -23,15 +25,26 @@ function getLocations(
     game.room.listen(`${type}/:id`, function (change) {
       if (change.operation == 'add') {
         const { id, x, y, width, height, color } = change.value;
-        const graphics = self.createSquare(width, height, x, y, color);
-        game[type][id] = {
-          graphics,
-          ...change.value,
-        };
+        if (game.textures.exists(type)) {
+          const sprite = game.add.sprite(x, y, type);
+          sprite.setScale(game.scales[type] || 1);
+          game[type][id] = {
+            sprite,
+            ...change.value,
+          };
+        } else {
+          const graphics = self.createSquare(width, height, x, y, color);
+          game[type][id] = {
+            graphics,
+            ...change.value,
+          };
+        }
         onAdd(game[type][id], change.value);
       } else if (change.operation == 'remove') {
         const { id } = change.path;
-        game[type][id].graphics.destroy();
+        const { graphics, sprite } = game[type][id];
+        if (graphics) graphics.destroy();
+        if (sprite) sprite.destroy();
         delete game[type][id];
         onRemove(id);
       }
@@ -41,13 +54,14 @@ function getLocations(
         const { id, attribute } = change.path;
         const location = game[type][id];
         if (
-          attribute == 'x' ||
-          attribute == 'y' ||
-          attribute == 'width' ||
-          attribute == 'height' ||
-          attribute == 'color'
+          location.graphics &&
+          (attribute == 'x' ||
+            attribute == 'y' ||
+            attribute == 'width' ||
+            attribute == 'height' ||
+            attribute == 'color')
         ) {
-          loction[attribute] = change.value;
+          location[attribute] = change.value;
           self.updateSquare(
             location.width,
             location.height,
@@ -56,6 +70,8 @@ function getLocations(
             location.color,
             location.graphics
           );
+        } else if (location.sprite && (attribute == 'x' || attribute == 'y')) {
+          location.sprite[attribute] = change.value;
         } else {
           location[attribute] = change.value;
         }
@@ -92,13 +108,21 @@ function handleLocations(locationType, characterType) {
   const self = this;
   Object.values(this.game.state[locationType]).forEach((data) => {
     const { width, height, x, y } = data;
-    self.handleCollision(
-      characterType,
-      { ...data, x: x + width / 2, y: y + height / 2 },
-      function (character, location) {
+    if (this.game.sizes[locationType]) {
+      // Handle Sprites
+      self.handleCollision(characterType, data, function (character, location) {
         location.rules(character);
-      }
-    );
+      });
+    } else {
+      // Handle Squares
+      self.handleCollision(
+        characterType,
+        { ...data, x: x + width / 2, y: y + height / 2 },
+        function (character, location) {
+          location.rules(character);
+        }
+      );
+    }
   });
 }
 

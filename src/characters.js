@@ -12,7 +12,7 @@ function addCharacters(
 ) {
   this.game[type] = {};
   this.game.scales[type] = scale;
-  this.sendCharacterSize(type, scale);
+  this.sendSpriteSize(type, scale);
 }
 
 // Listen to Characters on the server.
@@ -57,22 +57,7 @@ function getCharacters(
   }
 }
 
-// Send the size of a character to the server.
-function sendCharacterSize(
-  type, // string: The type of characters.
-  scale = 1 // number: The scale of the sprite, ie. 0.5 for half size.
-) {
-  if (this.canSend()) {
-    this.sendAction('setCharacterSize', {
-      type,
-      ...this.getSpriteSize(type, scale),
-    });
-  } else {
-    this.addConnectEvent('sendCharacterSize', [type, scale]);
-  }
-}
-
-const client = { addCharacters, getCharacters, sendCharacterSize };
+const client = { addCharacters, getCharacters };
 
 /* =========================
  * ==== Server Methods: ====
