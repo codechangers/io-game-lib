@@ -20,6 +20,7 @@ Setup a local development environment for one of the example games.
 ```
 git clone https://github.com/codechangers/io-game-lib.git
 cd io-game-lib
+git submodule update --init --recursive
 
 ./bin/setup.sh examples/{game}
 
@@ -56,6 +57,7 @@ Setup a development environment for the IO Game Library source.
 ```
 git clone https://github.com/codechangers/io-game-lib.git
 cd io-game-lib
+git submodule update --init --recursive
 npm install
 
 ./bin/setup.sh examples/{game}
