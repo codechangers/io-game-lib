@@ -9,6 +9,7 @@ const resources = require('./resources');
 const ui = require('./ui');
 const collision = require('./collision');
 const barriers = require('./barriers');
+const locations = require('./locations');
 
 const clientMethods = {
   ...characters.client,
@@ -17,6 +18,7 @@ const clientMethods = {
   ...game.client,
   ...resources.client,
   ...ui.client,
+  ...locations.client,
 };
 
 const serverMethods = {
@@ -27,6 +29,7 @@ const serverMethods = {
   ...resources.server,
   ...collision.server,
   ...barriers.server,
+  ...locations.server,
 };
 
 function linkMethods(lib, methods) {
