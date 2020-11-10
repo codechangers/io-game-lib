@@ -66,7 +66,7 @@ git checkout -- code
 
 # Deploying:
 
-The _IO Platform_ pulls the latest changes from the `template` directory upon setup, to deploy the latest library updates run the following commands:
+The _IO Platform_ pulls the latest changes from the `template` directory, to deploy the latest library updates run the following commands:
 
 ```
 npm run build
@@ -75,4 +75,4 @@ git commit
 git push
 ```
 
-Submit a Pull Request to merge your current branch into `master`. Once the Pull Request is merged, run the setup script on the _IO Platform_ server and it will pull the latest library updates.
+> **Note:** to avoid merge conflicts, please only build the library from the [develop](https://github.com/codechangers/io-game-lib/tree/develop) branch. After the library has been built rebase `master` on `develop` to make the changes public.
