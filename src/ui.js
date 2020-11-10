@@ -6,6 +6,16 @@
  * ========================== */
 
 // PLEASE IGNORE ME IN THE DOCS
+function _showInputOverlay(yes) {
+  const io = document.getElementById('input-overlay');
+  if (yes && io.classList.contains('hide')) {
+    io.classList.remove('hide');
+  } else if (!yes && !io.classList.contains('hide')) {
+    io.classList.add('hide');
+  }
+}
+
+// PLEASE IGNORE ME IN THE DOCS
 function _exampleOnStart(name) {
   console.log(name + ' is joining...');
 }
@@ -22,6 +32,27 @@ function _renderLives({ lives }) {
   return _render(spans);
 }
 
+/* ============================
+ * ==== Class Definitions: ====
+ * ============================ */
+
+// A data type for items that are for sale in the store.
+class StoreItem {
+  constructor(
+    image, // string: The relative path to an image.
+    name, // string: The name of the item.
+    costAttr, // string: What customers pay with.
+    cost, // string: How much customers pay.
+    action // string: The server action for buying the item.
+  ) {
+    this.image = `asset/${image}`;
+    this.name = name;
+    this.costAttr = costAttr;
+    this.cost = cost;
+    this.action = action;
+  }
+}
+
 /* =========================
  * ==== Client Methods: ====
  * ========================= */
@@ -33,17 +64,19 @@ function useLoginScreen(
   input = 'Display Name', // string: What the input should say.
   button = 'START' // string: What the button should say.
 ) {
-  document.getElementById('input-overlay').innerHTML = `<form class="login">
-    <h1>${title}</h1>
-    <input id="displayName" type="text" placeholder="${input}" />
-    <button type="submit">${button}</button>
-  </form>`;
-  document.getElementById('input-overlay').style.display = 'flex';
-  document.querySelector('form.login').onsubmit = function (e) {
+  const loginForm = document.querySelector('#input-overlay > form.login');
+  loginForm.innerHTML = _render([
+    `<h1>${title}</h1>`,
+    `<input id="displayName" type="text" placeholder="${input}" />`,
+    `<button type="submit">${button}</button>`,
+  ]);
+  _showInputOverlay(true);
+  loginForm.classList.remove('hide');
+  loginForm.onsubmit = function (e) {
     e.preventDefault();
     const name = document.getElementById('displayName').value || 'player';
-    document.getElementById('input-overlay').style.display = 'none';
-    document.querySelector('#input-overlay > .login').style.display = 'none';
+    loginForm.classList.add('hide');
+    _showInputOverlay(false);
     onStart(name);
   };
 }
@@ -92,6 +125,62 @@ function handleLeaderboard(
   ]);
 }
 
-const client = { useLoginScreen, handleLeaderboard };
+// Show a store interface for selling items.
+function useStore(
+  title = 'Store', // string: What the header should say.
+  items // Array[StoreItem]: What items are for sale?
+) {
+  document.querySelector('#input-overlay > .store').innerHTML = _render([
+    `<h1>${title}</h1>`,
+    ...items.map(
+      (item) => `<div class="store-item">
+    <img src="${item.image}" />
+    <h2>${item.name}</h2>
+    <p>Cost: ${item.cost} x ${item.costAttr}</p>
+    <button id="${item.action}">Buy</button>
+    </div>`
+    ),
+  ]);
+  const self = this;
+  items.forEach((item) => {
+    document.getElementById(item.action).onclick = function () {
+      self.sendAction(item.action);
+    };
+  });
+}
+
+// Turn the store interface on and off.
+function toggleStore() {
+  const storeDiv = document.querySelector('#input-overlay > .store');
+  if (
+    !storeDiv.classList.contains('locked') &&
+    storeDiv.classList.contains('hide')
+  ) {
+    _showInputOverlay(true);
+    storeDiv.classList.remove('hide');
+    storeDiv.classList.add('locked');
+  } else if (!storeDiv.classList.contains('locked')) {
+    _showInputOverlay(false);
+    storeDiv.classList.add('hide');
+    storeDiv.classList.add('locked');
+  }
+}
+
+// Unlock the state of the store interface so you can toggle again.
+function unlockStore() {
+  const storeDiv = document.querySelector('#input-overlay > .store');
+  if (storeDiv.classList.contains('locked')) {
+    storeDiv.classList.remove('locked');
+  }
+}
+
+const client = {
+  StoreItem,
+  useLoginScreen,
+  handleLeaderboard,
+  useStore,
+  toggleStore,
+  unlockStore,
+};
 
 module.exports = { client };

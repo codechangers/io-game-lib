@@ -12,7 +12,7 @@ function addCharacters(
 ) {
   this.game[type] = {};
   this.game.scales[type] = scale;
-  this.sendCharacterSize(type, scale);
+  this.sendSpriteSize(type, scale);
 }
 
 // Listen to Characters on the server.
@@ -34,7 +34,7 @@ function getCharacters(
         game[type][id] = {
           sprite,
           ...change.value,
-          attached: {}
+          attached: {},
         };
         onAdd(game[type][id], change.value);
       } else if (change.operation == 'remove') {
@@ -52,8 +52,18 @@ function getCharacters(
         let x = game[type][change.value.id].sprite.x;
         let y = game[type][change.value.id].sprite.y;
         if (change.value.type == 'text') {
-          let text = game.add.text(x + change.value.x, y + change.value.y, ` ${change.value.text} `, { color: 'white', backgroundColor: 'rgba(0,0,0,0.7)' }).setScale(change.value.scale)
-          game[type][change.value.id].attached[change.value.name] = {...change.value, sprite:text};
+          let text = game.add
+            .text(
+              x + change.value.x,
+              y + change.value.y,
+              ` ${change.value.text} `,
+              { color: 'white', backgroundColor: 'rgba(0,0,0,0.7)' }
+            )
+            .setScale(change.value.scale);
+          game[type][change.value.id].attached[change.value.name] = {
+            ...change.value,
+            sprite: text,
+          };
         }
         if (change.value.type == 'item') {
           let item = game.front_layer.create(change.value.x, change.value.y, change.value.image).setScale(change.value.scale);
@@ -61,25 +71,51 @@ function getCharacters(
           game[type][change.value.id].attached[change.value.name] = {...change.value, sprite:item};
         }
         if (change.value.type == 'bar') {
-          var rect = new Phaser.Geom.Rectangle(0, 0, change.value.width, change.value.height);
-          var graphics = game.add.graphics({ fillStyle: { color: `0x999999` } });
+          var rect = new Phaser.Geom.Rectangle(
+            0,
+            0,
+            change.value.width,
+            change.value.height
+          );
+          var graphics = game.add.graphics({
+            fillStyle: { color: `0x999999` },
+          });
           rect = graphics.fillRectShape(rect);
-          game[type][change.value.id].attached[`${change.value.name}Background`] = {...change.value, sprite:rect};
-          var newRect = new Phaser.Geom.Rectangle(0, 0, change.value.width, change.value.height);
-          var graphics = game.add.graphics({ fillStyle: { color: `0x999900` } });
+          game[type][change.value.id].attached[
+            `${change.value.name}Background`
+          ] = { ...change.value, sprite: rect };
+          var newRect = new Phaser.Geom.Rectangle(
+            0,
+            0,
+            change.value.width,
+            change.value.height
+          );
+          var graphics = game.add.graphics({
+            fillStyle: { color: `0x999900` },
+          });
           newRect = graphics.fillRectShape(newRect);
           rect.x = x + change.value.x;
           newRect.x = x + change.value.x;
           rect.y = y + change.value.y;
           newRect.y = y + change.value.y;
-          newRect.setScale(100/change.value, 1);
-          game[type][change.value.id].attached[change.value.name] = {...change.value, sprite:newRect};
+          newRect.setScale(100 / change.value, 1);
+          game[type][change.value.id].attached[change.value.name] = {
+            ...change.value,
+            sprite: newRect,
+          };
         }
       }
       if (change.operation == 'remove') {
-        game[type][change.path.id].attached[change.path.attribute].sprite.destroy();
-        if (game[type][change.path.id].attached[change.path.attribute].type == 'bar') {
-          game[type][change.path.id].attached[`${change.path.attribute}Background`].sprite.destroy();
+        game[type][change.path.id].attached[
+          change.path.attribute
+        ].sprite.destroy();
+        if (
+          game[type][change.path.id].attached[change.path.attribute].type ==
+          'bar'
+        ) {
+          game[type][change.path.id].attached[
+            `${change.path.attribute}Background`
+          ].sprite.destroy();
         }
         delete game[type][change.path.id].attached[change.path.attribute];
       }
@@ -87,46 +123,41 @@ function getCharacters(
         const { id, attribute } = change.path;
         if (attribute == 'x' || attribute == 'y') {
           for (let item in game[type][id].attached) {
-            if (game[type][id].attached[item].type !== 'item') game[type][id].attached[item].sprite[attribute] = change.value + game[type][id].attached[item][attribute];
+            if (game[type][id].attached[item].type !== 'item')
+              game[type][id].attached[item].sprite[attribute] =
+                change.value + game[type][id].attached[item][attribute];
           }
           game[type][id].sprite[attribute] = change.value;
         } else if (attribute == 'angle') {
           game[type][id].sprite[attribute] = change.value;
+        } else if (attribute == 'angle') {
+          game[type][id].sprite[attribute] = change.value;
+        } else {
+          game[type][id][attribute] = change.value;
         }
         onUpdate(id, attribute, change.value);
+      }
+    });
+    game.room.listen(`${type}/:id/:attribute/:id`, function (change) {
+      console.log(change);
+      if (change.path.id === 'filled') {
+        console.log(
+          game[type][change.rawPath[1]].attached[change.rawPath[2]].sprite
+        );
+        game[type][change.rawPath[1]].attached[
+          change.rawPath[2]
+        ].sprite.setScale(change.value / 100, 1);
+      }
+      if (change.path.id === 'text') {
+        game[type][change.rawPath[1]].attached[change.rawPath[2]].sprite.setText(change.value);
       }
     });
   } else {
     this.addConnectEvent('getCharacters', [type, onAdd, onRemove, onUpdate]);
   }
-  game.room.listen(`${type}/:id/:attribute/:id`, function (change) {
-    console.log(change);
-    if (change.path.id === 'filled' && game[type][change.rawPath[1]]) {
-      console.log(game[type][change.rawPath[1]].attached[change.rawPath[2]].sprite)
-      game[type][change.rawPath[1]].attached[change.rawPath[2]].sprite.setScale(change.value/100, 1);
-    }
-    if (change.path.id === 'text' && game[type][change.rawPath[1]]) {
-      game[type][change.rawPath[1]].attached[change.rawPath[2]].sprite.setText(change.value);
-    }
-  });
 }
 
-// Send the size of a character to the server.
-function sendCharacterSize(
-  type, // string: The type of characters.
-  scale = 1 // number: The scale of the sprite, ie. 0.5 for half size.
-) {
-  if (this.canSend()) {
-    this.sendAction('setCharacterSize', {
-      type,
-      ...this.getSpriteSize(type, scale),
-    });
-  } else {
-    this.addConnectEvent('sendCharacterSize', [type, scale]);
-  }
-}
-
-const client = { addCharacters, getCharacters, sendCharacterSize };
+const client = { addCharacters, getCharacters };
 
 /* =========================
  * ==== Server Methods: ====
@@ -134,9 +165,11 @@ const client = { addCharacters, getCharacters, sendCharacterSize };
 
 // Setup a set of Characters.
 function setupCharacters(
-  type // string: The type of characters.
+  type, // string: The type of characters.
+  shape = 'box' // string: box or circle | The shape of the character image.
 ) {
   this.game.state[type] = {};
+  this.game.shapes[type] = shape;
 }
 
 // Create a Character instance.
@@ -149,6 +182,7 @@ function createACharacter(
     ...this.getSize(type),
     ...data,
     id,
+    type,
   };
 }
 
@@ -191,7 +225,7 @@ function attachTo(
   }
   */
 ) {
-  this.game.state[type][id][data.name] = {...data, id};
+  this.game.state[type][id][data.name] = { ...data, id };
 }
 
 function unAttach(

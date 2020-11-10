@@ -36,12 +36,22 @@ function createSquare(
   height, // number: The height of the square you want to create.
   x, // number: The starting x position of the top left of your square.
   y, // number: The starting y position of the top left of your square.
-  color // string: The color of your square.
+  color, // string: The color of your square.
+  depth = 0 // number: The ranking used to decide what is drawn over and below the sqare.
 ) {
-  var rect = new Phaser.Geom.Rectangle(width, height, x, y);
-  var graphics = this.game.add.graphics({
+  const rect = new Phaser.Geom.Rectangle(width, height, x, y);
+  const graphics = this.game.add.graphics({
     fillStyle: { color: `0x${color}` },
+    depth,
   });
+  graphics.fillRectShape(rect);
+  return graphics;
+}
+// Update a previously drawn squre.
+function updateSquare(width, height, x, y, color, graphics) {
+  const rect = new Phaser.Geom.Rectangle(width, height, x, y);
+  graphics.clear();
+  graphics.fillStyle = { color: `0x${color}` };
   graphics.fillRectShape(rect);
 }
 
@@ -70,7 +80,13 @@ function getSpriteSize(
   return { width, height };
 }
 
-const client = { drawBackground, createSquare, createSprite, getSpriteSize };
+const client = {
+  drawBackground,
+  createSquare,
+  updateSquare,
+  createSprite,
+  getSpriteSize,
+};
 
 /* =========================
  * ==== Server Methods: ====
@@ -91,7 +107,7 @@ function setupBoard(
 function getSize(
   type // string: The type of object you want the size of.
 ) {
-  const { sizes } = this.game.state;
+  const { sizes } = this.game;
   let s = { width: 0, height: 0 };
   if (Object.keys(sizes).includes(type)) s = sizes[type];
   return s;
