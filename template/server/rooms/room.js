@@ -9,11 +9,11 @@ module.exports = class MyRoom extends Room {
   }
 
   onJoin(client) {
-    g.createACharacter('players', client, { x: 200, y: 200 });
+    g.createACharacter('players', client.sessionId, { x: 200, y: 200 });
   }
 
   onMessage(client, data) {
-    const player = g.getACharacter('players', client);
+    const player = g.getACharacter('players', client.sessionId);
     const speed = 5;
     const actions = {
       moveUp: () => (player.y -= speed),
@@ -25,6 +25,6 @@ module.exports = class MyRoom extends Room {
   }
 
   onLeave(client) {
-    g.deleteACharacter('players', client);
+    g.deleteACharacter('players', client.sessionId);
   }
 };
