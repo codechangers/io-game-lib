@@ -48,6 +48,10 @@ function getCharacters(
       }
     });
     game.room.listen(`${type}/:id/:attribute`, function (change) {
+      if (change.rawPath[2] == 'selectedItem' && game.room.sessionId == change.path.id) {
+        document.getElementsByClassName("selected")[0].classList.remove("selected");
+        document.getElementsByClassName('item')[change.value].classList.add('selected');
+      }
       if (change.operation == 'add' && change.value.type) {
         let x = game[type][change.value.id].sprite.x;
         let y = game[type][change.value.id].sprite.y;
@@ -139,11 +143,22 @@ function getCharacters(
       }
     });
     game.room.listen(`${type}/:id/:attribute/:id`, function (change) {
-      console.log(change);
+      if (change.operation === 'add' && change.rawPath[2] === 'items') {
+        console.log(change);
+        document.getElementsByClassName('item')[change.value.index].style.background = `url(../asset/${change.value.image}`;
+        document.getElementsByClassName('item')[change.value.index].style.backgroundSize = "contain";
+        document.getElementsByClassName('item')[change.value.index].style.backgroundPosition = "center";
+        document.getElementsByClassName('item')[change.value.index].style.backgroundRepeat = "no-repeat";
+        document.getElementsByClassName('item')[change.value.index].setAttribute('name', change.value.name);
+      }else if (change.operation === 'remove' && change.rawPath[2] === 'items') {
+        let itemBar = document.getElementById('item-bar');
+        itemBar.removeChild(document.getElementsByName(change.path.id)[0]);
+        let item = document.createElement('div');
+        item.className = "item";
+        itemBar.appendChild(item);
+        document.getElementsByClassName('item')[0].classList.add('selected');
+      }
       if (change.path.id === 'filled') {
-        console.log(
-          game[type][change.rawPath[1]].attached[change.rawPath[2]].sprite
-        );
         game[type][change.rawPath[1]].attached[
           change.rawPath[2]
         ].sprite.setScale(change.value / 100, 1);
@@ -155,6 +170,9 @@ function getCharacters(
   } else {
     this.addConnectEvent('getCharacters', [type, onAdd, onRemove, onUpdate]);
   }
+  game.room.listen(`${type}/:id/:attribute/:id/:attribute`, function (change) {
+    if (change.rawPath[2] === 'items') console.log(change);
+  });
 }
 
 const client = { addCharacters, getCharacters };
@@ -183,6 +201,8 @@ function createACharacter(
     ...data,
     id,
     type,
+    items: {},
+    selectedItem: 0
   };
 }
 

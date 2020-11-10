@@ -3,6 +3,7 @@
 
 const characters = require('./characters');
 const connection = require('./connection');
+const items = require('./items')
 const draw = require('./draw');
 const game = require('./game');
 const resources = require('./resources');
@@ -19,6 +20,7 @@ const clientMethods = {
   ...resources.client,
   ...ui.client,
   ...locations.client,
+  ...items.client,
 };
 
 const serverMethods = {
@@ -30,6 +32,7 @@ const serverMethods = {
   ...collision.server,
   ...barriers.server,
   ...locations.server,
+  ...items.server
 };
 
 function linkMethods(lib, methods) {
