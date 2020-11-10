@@ -76,7 +76,7 @@ const client = {
  * ==== Server Methods: ====
  * ========================= */
 
-// Setup the edge boundries for your game.
+// Setup the edge boundaries for your game.
 function setBounds(
   width, // number: How wide the game is.
   height // number: How tall the game is.
@@ -143,6 +143,20 @@ function move(
   }
 }
 
+// Purchase an item with a currency for a customer.
+function purchase(
+  customer, // object: The character/resource that is making the purchase.
+  currency = 'score', // string: The customer attirbute that is used as currency.
+  cost, // number: How much currency the purchase costs.
+  item, // string: The customer attribute that holds the purchased item.
+  amount = 1 // number: How many items are given per purchase.
+) {
+  if (customer[currency] >= cost) {
+    customer[currency] -= cost;
+    customer[item] += amount;
+  }
+}
+
 // Setup the default/implicit game library actions.
 function setDefaultActions() {
   const { state, sizes } = this.game;
@@ -181,6 +195,7 @@ const server = {
   setBounds,
   checkBounds,
   move,
+  purchase,
   setDefaultActions,
   runGameLoop,
 };
