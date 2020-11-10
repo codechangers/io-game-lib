@@ -34,7 +34,7 @@ module.exports = class ClientLib {
     game.scales = {};
     // ADDS AN EVENT TO ALLOW FOR CLICKING
     document.addEventListener('click', function (e) {
-      if (game.click) {
+      if (e.target.id !== 'input-overlay' && game.click) {
         const moveX = e.clientX - window.innerWidth / 2;
         const moveY = e.clientY - window.innerHeight / 2;
         game.click(
