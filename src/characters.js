@@ -40,6 +40,9 @@ function getCharacters(
       } else if (change.operation == 'remove') {
         const { id } = change.path;
         game[type][id].sprite.destroy();
+        for (item in game[type][id].attached) {
+          game[type][id].attached[item].sprite.destroy();
+        }
         delete game[type][id];
         onRemove(id);
       }
@@ -50,10 +53,10 @@ function getCharacters(
         let y = game[type][change.value.id].sprite.y;
         if (change.value.type == 'text') {
           let text = game.add.text(x + change.value.x, y + change.value.y, ` ${change.value.text} `, { color: 'white', backgroundColor: 'rgba(0,0,0,0.7)' }).setScale(change.value.scale)
-          game[type][change.value.id].attached[change.value.name] = {...change.value, sprite:text};;
+          game[type][change.value.id].attached[change.value.name] = {...change.value, sprite:text};
         }
         if (change.value.type == 'item') {
-          let item = game.front_layer.create(x + change.value.x, y + change.value.y, change.value.image).setScale(change.value.scale);
+          let item = game.front_layer.create(change.value.x, change.value.y, change.value.image).setScale(change.value.scale);
           game[type][change.value.id].sprite.add(item);
           game[type][change.value.id].attached[change.value.name] = {...change.value, sprite:item};
         }
@@ -98,9 +101,12 @@ function getCharacters(
   }
   game.room.listen(`${type}/:id/:attribute/:id`, function (change) {
     console.log(change);
-    if (change.path.id === 'filled') {
+    if (change.path.id === 'filled' && game[type][change.rawPath[1]]) {
       console.log(game[type][change.rawPath[1]].attached[change.rawPath[2]].sprite)
       game[type][change.rawPath[1]].attached[change.rawPath[2]].sprite.setScale(change.value/100, 1);
+    }
+    if (change.path.id === 'text' && game[type][change.rawPath[1]]) {
+      game[type][change.rawPath[1]].attached[change.rawPath[2]].sprite.setText(change.value);
     }
   });
 }
@@ -189,11 +195,61 @@ function attachTo(
 }
 
 function unAttach(
-  type, // string: the type of character/resource
-  id, // string: A unique character id that you want to attach it to
+  player, // string: A unique character id that you want to attach it to
   name // string: name of the item you want to unattach
 ) {
-  delete this.game.state[type][id][name];
+  delete player[name];
+}
+
+function follow(
+  type1, 
+  type2,
+  range
+) {
+  if (Object.keys(this.game.state[type2]).length >= 1) { 
+    Object.keys(this.game.state[type2]).forEach(otherId => {
+      if (Object.keys(this.game.state[type1]).length >= 1) {
+        let x = this.game.state[type2][otherId].x;
+        let y = this.game.state[type2][otherId].y;
+        let closestPlayer = null;
+        let closestDistance = 0;
+        Object.keys(this.game.state[type1]).forEach(playerId => {
+          if (closestPlayer == null) {
+            closestPlayer = playerId;
+            closestDistance = Math.sqrt((x - this.game.state[type1][playerId].x) ** 2 + (y - this.game.state[type1][playerId].y) ** 2);
+          } else {
+            let distanceX = x - this.game.state[type1][playerId].x;
+            let distanceY = y - this.game.state[type1][playerId].y;
+            let distance = Math.sqrt(distanceX ** 2 + distanceY ** 2);
+            if (distance <= closestDistance) {
+              closestPlayer = playerId;
+              closestDistance = distance;
+            }
+          }
+        });
+        if (closestDistance < range || closestDistance == 0) {
+          return;
+        } else {
+          let distanceX = x - this.game.state[type1][closestPlayer].x;
+          let distanceY = y - this.game.state[type1][closestPlayer].y;
+          let dx;
+          let dy;
+          let degrees = 0;
+          if (distanceX >= 0) {
+          dx = Math.cos(Math.atan(distanceY / distanceX));
+          dy = Math.sin(Math.atan(distanceY / distanceX));
+          degrees = Math.atan(distanceY / distanceX) * (180 / Math.PI) - 90;
+          } else {
+          dx = -Math.cos(Math.atan(distanceY / distanceX));
+          dy = -Math.sin(Math.atan(distanceY / distanceX));
+          degrees = -Math.atan(distanceY / -distanceX) * (180 / Math.PI) + 90;
+          }
+          this.game.state[type2][otherId].x -= dx;
+          this.game.state[type2][otherId].y -= dy;
+        }
+      }
+    })
+  }
 }
 
 const server = {
@@ -203,7 +259,8 @@ const server = {
   deleteACharacter,
   nextCharacterId,
   attachTo,
-  unAttach
+  unAttach,
+  follow
 };
 
 module.exports = { client, server };
