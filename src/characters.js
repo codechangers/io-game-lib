@@ -34,7 +34,7 @@ function getCharacters(
         game[type][id] = {
           sprite,
           ...change.value,
-          attached: {}
+          attached: {},
         };
         onAdd(game[type][id], change.value);
       } else if (change.operation == 'remove') {
@@ -49,34 +49,75 @@ function getCharacters(
         let x = game[type][change.value.id].sprite.x;
         let y = game[type][change.value.id].sprite.y;
         if (change.value.type == 'text') {
-          let text = game.add.text(x + change.value.x, y + change.value.y, ` ${change.value.text} `, { color: 'white', backgroundColor: 'rgba(0,0,0,0.7)' }).setScale(change.value.scale)
-          game[type][change.value.id].attached[change.value.name] = {...change.value, sprite:text};;
+          let text = game.add
+            .text(
+              x + change.value.x,
+              y + change.value.y,
+              ` ${change.value.text} `,
+              { color: 'white', backgroundColor: 'rgba(0,0,0,0.7)' }
+            )
+            .setScale(change.value.scale);
+          game[type][change.value.id].attached[change.value.name] = {
+            ...change.value,
+            sprite: text,
+          };
         }
         if (change.value.type == 'item') {
-          let item = game.front_layer.create(x + change.value.x, y + change.value.y, change.value.image).setScale(change.value.scale);
+          let item = game.front_layer
+            .create(x + change.value.x, y + change.value.y, change.value.image)
+            .setScale(change.value.scale);
           game[type][change.value.id].sprite.add(item);
-          game[type][change.value.id].attached[change.value.name] = {...change.value, sprite:item};
+          game[type][change.value.id].attached[change.value.name] = {
+            ...change.value,
+            sprite: item,
+          };
         }
         if (change.value.type == 'bar') {
-          var rect = new Phaser.Geom.Rectangle(0, 0, change.value.width, change.value.height);
-          var graphics = game.add.graphics({ fillStyle: { color: `0x999999` } });
+          var rect = new Phaser.Geom.Rectangle(
+            0,
+            0,
+            change.value.width,
+            change.value.height
+          );
+          var graphics = game.add.graphics({
+            fillStyle: { color: `0x999999` },
+          });
           rect = graphics.fillRectShape(rect);
-          game[type][change.value.id].attached[`${change.value.name}Background`] = {...change.value, sprite:rect};
-          var newRect = new Phaser.Geom.Rectangle(0, 0, change.value.width, change.value.height);
-          var graphics = game.add.graphics({ fillStyle: { color: `0x999900` } });
+          game[type][change.value.id].attached[
+            `${change.value.name}Background`
+          ] = { ...change.value, sprite: rect };
+          var newRect = new Phaser.Geom.Rectangle(
+            0,
+            0,
+            change.value.width,
+            change.value.height
+          );
+          var graphics = game.add.graphics({
+            fillStyle: { color: `0x999900` },
+          });
           newRect = graphics.fillRectShape(newRect);
           rect.x = x + change.value.x;
           newRect.x = x + change.value.x;
           rect.y = y + change.value.y;
           newRect.y = y + change.value.y;
-          newRect.setScale(100/change.value, 1);
-          game[type][change.value.id].attached[change.value.name] = {...change.value, sprite:newRect};
+          newRect.setScale(100 / change.value, 1);
+          game[type][change.value.id].attached[change.value.name] = {
+            ...change.value,
+            sprite: newRect,
+          };
         }
       }
       if (change.operation == 'remove') {
-        game[type][change.path.id].attached[change.path.attribute].sprite.destroy();
-        if (game[type][change.path.id].attached[change.path.attribute].type == 'bar') {
-          game[type][change.path.id].attached[`${change.path.attribute}Background`].sprite.destroy();
+        game[type][change.path.id].attached[
+          change.path.attribute
+        ].sprite.destroy();
+        if (
+          game[type][change.path.id].attached[change.path.attribute].type ==
+          'bar'
+        ) {
+          game[type][change.path.id].attached[
+            `${change.path.attribute}Background`
+          ].sprite.destroy();
         }
         delete game[type][change.path.id].attached[change.path.attribute];
       }
@@ -84,8 +125,12 @@ function getCharacters(
         const { id, attribute } = change.path;
         if (attribute == 'x' || attribute == 'y') {
           for (let item in game[type][id].attached) {
-            if (game[type][id].attached[item].type !== 'item') game[type][id].attached[item].sprite[attribute] = change.value + game[type][id].attached[item][attribute];
+            if (game[type][id].attached[item].type !== 'item')
+              game[type][id].attached[item].sprite[attribute] =
+                change.value + game[type][id].attached[item][attribute];
           }
+          game[type][id].sprite[attribute] = change.value;
+        } else if (attribute == 'angle') {
           game[type][id].sprite[attribute] = change.value;
         } else if (attribute == 'angle') {
           game[type][id].sprite[attribute] = change.value;
@@ -95,16 +140,20 @@ function getCharacters(
         onUpdate(id, attribute, change.value);
       }
     });
+    game.room.listen(`${type}/:id/:attribute/:id`, function (change) {
+      console.log(change);
+      if (change.path.id === 'filled') {
+        console.log(
+          game[type][change.rawPath[1]].attached[change.rawPath[2]].sprite
+        );
+        game[type][change.rawPath[1]].attached[
+          change.rawPath[2]
+        ].sprite.setScale(change.value / 100, 1);
+      }
+    });
   } else {
     this.addConnectEvent('getCharacters', [type, onAdd, onRemove, onUpdate]);
   }
-  game.room.listen(`${type}/:id/:attribute/:id`, function (change) {
-    console.log(change);
-    if (change.path.id === 'filled') {
-      console.log(game[type][change.rawPath[1]].attached[change.rawPath[2]].sprite)
-      game[type][change.rawPath[1]].attached[change.rawPath[2]].sprite.setScale(change.value/100, 1);
-    }
-  });
 }
 
 const client = { addCharacters, getCharacters };
@@ -175,7 +224,7 @@ function attachTo(
   }
   */
 ) {
-  this.game.state[type][id][data.name] = {...data, id};
+  this.game.state[type][id][data.name] = { ...data, id };
 }
 
 function unAttach(
@@ -193,7 +242,7 @@ const server = {
   deleteACharacter,
   nextCharacterId,
   attachTo,
-  unAttach
+  unAttach,
 };
 
 module.exports = { client, server };
