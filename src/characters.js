@@ -66,9 +66,14 @@ function getCharacters(
           };
         }
         if (change.value.type == 'item') {
-          let item = game.front_layer.create(change.value.x, change.value.y, change.value.image).setScale(change.value.scale);
+          let item = game.front_layer
+            .create(change.value.x, change.value.y, change.value.image)
+            .setScale(change.value.scale);
           game[type][change.value.id].sprite.add(item);
-          game[type][change.value.id].attached[change.value.name] = {...change.value, sprite:item};
+          game[type][change.value.id].attached[change.value.name] = {
+            ...change.value,
+            sprite: item,
+          };
         }
         if (change.value.type == 'bar') {
           var rect = new Phaser.Geom.Rectangle(
@@ -149,7 +154,9 @@ function getCharacters(
         ].sprite.setScale(change.value / 100, 1);
       }
       if (change.path.id === 'text') {
-        game[type][change.rawPath[1]].attached[change.rawPath[2]].sprite.setText(change.value);
+        game[type][change.rawPath[1]].attached[
+          change.rawPath[2]
+        ].sprite.setText(change.value);
       }
     });
   } else {
@@ -235,22 +242,21 @@ function unAttach(
   delete player[name];
 }
 
-function follow(
-  type1, 
-  type2,
-  range
-) {
-  if (Object.keys(this.game.state[type2]).length >= 1) { 
-    Object.keys(this.game.state[type2]).forEach(otherId => {
+function follow(type1, type2, range = 0, speed = 1) {
+  if (Object.keys(this.game.state[type2]).length >= 1) {
+    Object.keys(this.game.state[type2]).forEach((otherId) => {
       if (Object.keys(this.game.state[type1]).length >= 1) {
         let x = this.game.state[type2][otherId].x;
         let y = this.game.state[type2][otherId].y;
         let closestPlayer = null;
         let closestDistance = 0;
-        Object.keys(this.game.state[type1]).forEach(playerId => {
+        Object.keys(this.game.state[type1]).forEach((playerId) => {
           if (closestPlayer == null) {
             closestPlayer = playerId;
-            closestDistance = Math.sqrt((x - this.game.state[type1][playerId].x) ** 2 + (y - this.game.state[type1][playerId].y) ** 2);
+            closestDistance = Math.sqrt(
+              (x - this.game.state[type1][playerId].x) ** 2 +
+                (y - this.game.state[type1][playerId].y) ** 2
+            );
           } else {
             let distanceX = x - this.game.state[type1][playerId].x;
             let distanceY = y - this.game.state[type1][playerId].y;
@@ -270,19 +276,19 @@ function follow(
           let dy;
           let degrees = 0;
           if (distanceX >= 0) {
-          dx = Math.cos(Math.atan(distanceY / distanceX));
-          dy = Math.sin(Math.atan(distanceY / distanceX));
-          degrees = Math.atan(distanceY / distanceX) * (180 / Math.PI) - 90;
+            dx = Math.cos(Math.atan(distanceY / distanceX));
+            dy = Math.sin(Math.atan(distanceY / distanceX));
+            degrees = Math.atan(distanceY / distanceX) * (180 / Math.PI) - 90;
           } else {
-          dx = -Math.cos(Math.atan(distanceY / distanceX));
-          dy = -Math.sin(Math.atan(distanceY / distanceX));
-          degrees = -Math.atan(distanceY / -distanceX) * (180 / Math.PI) + 90;
+            dx = -Math.cos(Math.atan(distanceY / distanceX));
+            dy = -Math.sin(Math.atan(distanceY / distanceX));
+            degrees = -Math.atan(distanceY / -distanceX) * (180 / Math.PI) + 90;
           }
-          this.game.state[type2][otherId].x -= dx;
-          this.game.state[type2][otherId].y -= dy;
+          this.game.state[type2][otherId].x -= dx * speed;
+          this.game.state[type2][otherId].y -= dy * speed;
         }
       }
-    })
+    });
   }
 }
 
@@ -294,7 +300,7 @@ const server = {
   nextCharacterId,
   attachTo,
   unAttach,
-  follow
+  follow,
 };
 
 module.exports = { client, server };
