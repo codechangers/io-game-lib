@@ -70,9 +70,14 @@ function getCharacters(
           };
         }
         if (change.value.type == 'item') {
-          let item = game.front_layer.create(change.value.x, change.value.y, change.value.image).setScale(change.value.scale);
+          let item = game.front_layer
+            .create(change.value.x, change.value.y, change.value.image)
+            .setScale(change.value.scale);
           game[type][change.value.id].sprite.add(item);
-          game[type][change.value.id].attached[change.value.name] = {...change.value, sprite:item};
+          game[type][change.value.id].attached[change.value.name] = {
+            ...change.value,
+            sprite: item,
+          };
         }
         if (change.value.type == 'bar') {
           var rect = new Phaser.Geom.Rectangle(
@@ -164,7 +169,9 @@ function getCharacters(
         ].sprite.setScale(change.value / 100, 1);
       }
       if (change.path.id === 'text') {
-        game[type][change.rawPath[1]].attached[change.rawPath[2]].sprite.setText(change.value);
+        game[type][change.rawPath[1]].attached[
+          change.rawPath[2]
+        ].sprite.setText(change.value);
       }
     });
   } else {
@@ -231,8 +238,8 @@ function nextCharacterId(
 
 // Attach something to the character or other things.
 function attachTo(
-  type, // string: The type of character/resource
-  id, // string: A unique character id that you want to attach it to
+  type, // string: The type of characters/resources.
+  id, // string: A unique character/resource id.
   data /* object: {
     name | string: name of the thing you want to attach
     x | int: x position relative to character
@@ -248,29 +255,36 @@ function attachTo(
   this.game.state[type][id][data.name] = { ...data, id };
 }
 
+// Remove an attachement from a charater or other things.
 function unAttach(
-  player, // string: A unique character id that you want to attach it to
+  type, // string: The type of characters/resources.
+  id, // string: A unique character/resource id.
   name // string: name of the item you want to unattach
 ) {
-  delete player[name];
+  delete this.game.state[type][id][name];
 }
 
+// Add some simple following AI to a set of characters.
 function follow(
-  type1, 
-  type2,
-  range
+  type1, // string: The type of characters that will be followed.
+  type2, // string: The type of characters that will follow them.
+  range = 0, // number: How far away should the followers be before they stop following.
+  speed = 1 // number: The rate of speed the followers move at, ie. 0.5 for half speed, 2 for double speed.
 ) {
-  if (Object.keys(this.game.state[type2]).length >= 1) { 
-    Object.keys(this.game.state[type2]).forEach(otherId => {
+  if (Object.keys(this.game.state[type2]).length >= 1) {
+    Object.keys(this.game.state[type2]).forEach((otherId) => {
       if (Object.keys(this.game.state[type1]).length >= 1) {
         let x = this.game.state[type2][otherId].x;
         let y = this.game.state[type2][otherId].y;
         let closestPlayer = null;
         let closestDistance = 0;
-        Object.keys(this.game.state[type1]).forEach(playerId => {
+        Object.keys(this.game.state[type1]).forEach((playerId) => {
           if (closestPlayer == null) {
             closestPlayer = playerId;
-            closestDistance = Math.sqrt((x - this.game.state[type1][playerId].x) ** 2 + (y - this.game.state[type1][playerId].y) ** 2);
+            closestDistance = Math.sqrt(
+              (x - this.game.state[type1][playerId].x) ** 2 +
+                (y - this.game.state[type1][playerId].y) ** 2
+            );
           } else {
             let distanceX = x - this.game.state[type1][playerId].x;
             let distanceY = y - this.game.state[type1][playerId].y;
@@ -290,19 +304,19 @@ function follow(
           let dy;
           let degrees = 0;
           if (distanceX >= 0) {
-          dx = Math.cos(Math.atan(distanceY / distanceX));
-          dy = Math.sin(Math.atan(distanceY / distanceX));
-          degrees = Math.atan(distanceY / distanceX) * (180 / Math.PI) - 90;
+            dx = Math.cos(Math.atan(distanceY / distanceX));
+            dy = Math.sin(Math.atan(distanceY / distanceX));
+            degrees = Math.atan(distanceY / distanceX) * (180 / Math.PI) - 90;
           } else {
-          dx = -Math.cos(Math.atan(distanceY / distanceX));
-          dy = -Math.sin(Math.atan(distanceY / distanceX));
-          degrees = -Math.atan(distanceY / -distanceX) * (180 / Math.PI) + 90;
+            dx = -Math.cos(Math.atan(distanceY / distanceX));
+            dy = -Math.sin(Math.atan(distanceY / distanceX));
+            degrees = -Math.atan(distanceY / -distanceX) * (180 / Math.PI) + 90;
           }
-          this.game.state[type2][otherId].x -= dx;
-          this.game.state[type2][otherId].y -= dy;
+          this.game.state[type2][otherId].x -= dx * speed;
+          this.game.state[type2][otherId].y -= dy * speed;
         }
       }
-    })
+    });
   }
 }
 
@@ -314,7 +328,7 @@ const server = {
   nextCharacterId,
   attachTo,
   unAttach,
-  follow
+  follow,
 };
 
 module.exports = { client, server };
