@@ -35,7 +35,10 @@ module.exports = class ClientLib {
     game.front_layer = game.add.group();
     // ADDS AN EVENT TO ALLOW FOR CLICKING
     document.addEventListener('click', function (e) {
-      if (game.click) {
+      if (
+        !e.path.includes(document.getElementById('input-overlay')) &&
+        game.click
+      ) {
         const moveX = e.clientX - window.innerWidth / 2;
         const moveY = e.clientY - window.innerHeight / 2;
         game.click(

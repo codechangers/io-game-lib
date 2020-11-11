@@ -64,8 +64,8 @@ function createResources(
   amount // int: The amount of resources you want to create randomly on the board.
 ) {
   for (var i = 0; i < amount; i++) {
-    let newX = Math.random() * boardWidth;
-    let newY = Math.random() * boardHeight;
+    let newX = Math.random() * this.boardWidth;
+    let newY = Math.random() * this.boardHeight;
     this.createAResource(type, newX, newY);
   }
 }
