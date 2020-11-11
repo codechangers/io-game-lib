@@ -32,6 +32,7 @@ module.exports = class ClientLib {
     game.width = 0;
     game.height = 0;
     game.scales = {};
+    game.front_layer = game.add.group();
     // ADDS AN EVENT TO ALLOW FOR CLICKING
     document.addEventListener('click', function (e) {
       if (
