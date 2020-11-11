@@ -218,8 +218,8 @@ function nextCharacterId(
 
 // Attach something to the character or other things.
 function attachTo(
-  type, // string: The type of character/resource
-  id, // string: A unique character id that you want to attach it to
+  type, // string: The type of characters/resources.
+  id, // string: A unique character/resource id.
   data /* object: {
     name | string: name of the thing you want to attach
     x | int: x position relative to character
@@ -235,14 +235,22 @@ function attachTo(
   this.game.state[type][id][data.name] = { ...data, id };
 }
 
+// Remove an attachement from a charater or other things.
 function unAttach(
-  player, // string: A unique character id that you want to attach it to
+  type, // string: The type of characters/resources.
+  id, // string: A unique character/resource id.
   name // string: name of the item you want to unattach
 ) {
-  delete player[name];
+  delete this.game.state[type][id][name];
 }
 
-function follow(type1, type2, range = 0, speed = 1) {
+// Add some simple following AI to a set of characters.
+function follow(
+  type1, // string: The type of characters that will be followed.
+  type2, // string: The type of characters that will follow them.
+  range = 0, // number: How far away should the followers be before they stop following.
+  speed = 1 // number: The rate of speed the followers move at, ie. 0.5 for half speed, 2 for double speed.
+) {
   if (Object.keys(this.game.state[type2]).length >= 1) {
     Object.keys(this.game.state[type2]).forEach((otherId) => {
       if (Object.keys(this.game.state[type1]).length >= 1) {
