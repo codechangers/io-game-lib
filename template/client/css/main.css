@@ -240,9 +240,9 @@ body {
   margin: 0 2px;
 }
 
-/* ===================
+/* ===============
  * === ITEMBAR ===
- * =================== */
+ * =============== */
 
 #item-bar {
   /* opacity: 50%; */
@@ -251,7 +251,7 @@ body {
   color: white;
   text-align: center;
   font-family: Arial;
-  background-color: darkgrey;;
+  background-color: darkgrey;
   border-radius: 4px;
   z-index: 999;
   display: none;
