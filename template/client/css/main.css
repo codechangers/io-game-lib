@@ -52,6 +52,8 @@ body {
 #game-overlay {
   pointer-events: none;
   z-index: 998;
+  display: flex;
+  justify-content: center;
 }
 
 /* ====================
