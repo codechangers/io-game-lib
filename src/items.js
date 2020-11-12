@@ -1,5 +1,5 @@
 /* -- CodeChangers io-game-lib 2020 --
- * This file contains the source code for creating characters in an io-game. */
+ * This file contains the source code for creating items in an io-game. */
 
 /* =========================
  * ==== Client Methods: ====

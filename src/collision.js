@@ -1,5 +1,5 @@
 /* -- CodeChangers io-game-lib 2020 --
- * This file contains the source code for creating characters in an io-game. */
+ * This file contains the source code for detecting collisions in an io-game. */
 
 // A basic class for handling rectangular shape collisions.
 class CollisionBox {
