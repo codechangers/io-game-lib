@@ -278,7 +278,7 @@ function attachTo(
   this.game.state[type][id][data.name] = { ...data, id };
 }
 
-// Remove an attachement from a charater or other things.
+// Remove an attachment from a character or other things.
 function unAttach(
   type, // string: The type of characters/resources.
   id, // string: A unique character/resource id.
