@@ -44,7 +44,9 @@ function createNewItem(
   image, // string: The relative path to the image of this item.
   cb // function: The code that runs when an item is used.
 ) {
-  this.items[type] = { name: type, useItem: cb, image };
+  this.game.state[type] = {};
+  this.game.shapes[type] = 'circle';
+  this.items[type] = { name: type, useItem: cb, image};
 }
 
 // Give a character access to an item in the game.
@@ -67,7 +69,30 @@ function useItem(
   const item = Object.values(character.items).find(
     (item) => item.index === character.selectedItem
   );
-  if (item) item.useItem(character, data);
+  const self = this;
+  let swingItem = (degrees, duration) => {
+    if (degrees === undefined) degrees = 30;
+    if (duration === undefined) duration = 50;
+    self.playAnimation(character, 'rotation', (degrees * Math.PI) / 180, duration);
+    setTimeout(function() {
+      self.playAnimation(character, 'rotation', -(degrees * Math.PI) / 180, duration);
+    }, duration + 1)
+  }
+
+  let throwItem = () => {
+
+  }
+
+  if (item) item.useItem(character, data, swingItem);
+}
+
+function getItemPosition(
+  character, // string: name of the character
+) {
+  let item = Object.values(character.items).find(
+    (item) => item.index === character.selectedItem
+  );
+  return {x:character.x + Math.cos(character.rotation) * item.x, y:character.y + Math.sin(character.rotation) * item.y};
 }
 
 // Switch to an item on a characters hotbar.
@@ -80,6 +105,20 @@ function switchItem(
   if (character.selectedItem >= Object.keys(character.items).length) {
     character.selectedItem = 0;
   }
+}
+
+function getSelectedItem(
+  character, // object: The character thaat you get the item from
+) {
+  return Object.values(character.items).find(
+    (item) => item.index === character.selectedItem
+  );
+}
+
+function getItem(
+  type, // string: Name of the item that you are accessing
+) {
+  return this.items[type];
 }
 
 // Remove a character's access to an item.
@@ -111,6 +150,9 @@ const server = {
   useItem,
   switchItem,
   removeItemFromCharacter,
+  getSelectedItem,
+  getItem,
+  getItemPosition
 };
 
 module.exports = { client, server };

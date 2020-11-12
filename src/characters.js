@@ -60,7 +60,7 @@ function getCharacters(
             [change.value].classList.add('selected');
         }
       }
-      if (change.operation == 'add' && change.value.type) {
+      if (change.operation == 'add' && change.value && change.value.type) {
         let x = game[type][change.value.id].sprite.x;
         let y = game[type][change.value.id].sprite.y;
         if (change.value.type == 'text') {
@@ -79,7 +79,7 @@ function getCharacters(
         }
         if (change.value.type == 'item') {
           let item = game.front_layer
-            .create(change.value.x, change.value.y, change.value.image)
+            .create(change.value.x, change.value.y, change.value.name)
             .setScale(change.value.scale);
           game[type][change.value.id].sprite.add(item);
           game[type][change.value.id].attached[change.value.name] = {
@@ -157,7 +157,6 @@ function getCharacters(
     });
     game.room.listen(`${type}/:id/:attribute/:id`, function (change) {
       if (change.operation === 'add' && change.rawPath[2] === 'items') {
-        console.log(change);
         document.getElementsByClassName('item')[
           change.value.index
         ].style.background = `url(../asset/${change.value.image}`;
@@ -233,6 +232,7 @@ function createACharacter(
     type,
     items: {},
     selectedItem: 0,
+    rotation:0
   };
 }
 
@@ -275,7 +275,14 @@ function attachTo(
   }
   */
 ) {
-  this.game.state[type][id][data.name] = { ...data, id };
+  if (data.item) {
+    this.game.state[type][id][data.item.name] = {...data.item, x:data.x, y:data.y, type:'item', id};
+    this.game.state[type][id].items[data.item.name].x = data.x;
+    this.game.state[type][id].items[data.item.name].y = data.y;
+    this.game.state[type][id].items[data.item.name].ownerId = id;
+  } else {
+    this.game.state[type][id][data.name] = { ...data, id };
+  }
 }
 
 // Remove an attachment from a character or other things.
