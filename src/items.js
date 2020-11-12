@@ -63,8 +63,8 @@ function addItemToCharacter(
 function useItem(
   character // object: The character that will have access to the item.
 ) {
-  character.items
-    .find((item) => item.name === character.selectedItem)
+  Object.values(character.items)
+    .find((item) => item.index === character.selectedItem)
     .useItem(character);
 }
 
