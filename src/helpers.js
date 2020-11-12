@@ -3,7 +3,7 @@
 
 const characters = require('./characters');
 const connection = require('./connection');
-const items = require('./items')
+const items = require('./items');
 const draw = require('./draw');
 const game = require('./game');
 const resources = require('./resources');
@@ -11,6 +11,7 @@ const ui = require('./ui');
 const collision = require('./collision');
 const barriers = require('./barriers');
 const locations = require('./locations');
+const animations = require('./animations');
 
 const clientMethods = {
   ...characters.client,
@@ -32,7 +33,8 @@ const serverMethods = {
   ...collision.server,
   ...barriers.server,
   ...locations.server,
-  ...items.server
+  ...items.server,
+  ...animations.server,
 };
 
 function linkMethods(lib, methods) {
