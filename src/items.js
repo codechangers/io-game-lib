@@ -61,12 +61,13 @@ function addItemToCharacter(
 
 // Use an item's in game ability.
 function useItem(
-  character // object: The character that will have access to the item.
+  character, // object: The character that will have access to the item.
+  data // object: any data that they want to pass to their useItem function
 ) {
   const item = Object.values(character.items).find(
     (item) => item.index === character.selectedItem
   );
-  if (item) item.useItem(character);
+  if (item) item.useItem(character, data);
 }
 
 // Switch to an item on a characters hotbar.
@@ -74,10 +75,9 @@ function switchItem(
   character, // object: The character that will have access to the item.
   position
 ) {
-  if (position) character.selectedItem = position;
+  if (position !== undefined) character.selectedItem = position;
   else character.selectedItem += 1;
   if (character.selectedItem >= Object.keys(character.items).length) {
-    console.log('There is no item here!');
     character.selectedItem = 0;
   }
 }
