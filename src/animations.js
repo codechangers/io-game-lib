@@ -34,13 +34,9 @@ function handleAnimations(
       const currentTime = Date.now();
       const dt = currentTime - startTime;
       const completed = dt / duration;
-      console.log('START', obj.animation.currentValue);
       obj[attribute] += dValue * completed - obj.animation.currentValue;
       obj.animation.currentValue = dValue * completed;
-      if (currentTime >= startTime + duration) {
-        console.log('blanked!');
-        obj.animation = null;
-      }
+      if (currentTime >= startTime + duration) obj.animation = null;
     }
   });
 }
