@@ -12,12 +12,15 @@ function playAnimation(
   value, // number: The value the attribute should be changed by.
   duration // number: (milliseconds) how long the animation should run.
 ) {
-  if (!obj.animation) {
-    obj.animation = {
-      startTime: Date.now(),
-      attribute,
-      dValue: value,
-      duration,
+  if (!obj.animations[attribute]) {
+    obj.animations = {
+      ...obj.animations,
+      [attribute]: {
+        startTime: Date.now(),
+        attribute,
+        dValue: value,
+        duration,
+      },
     };
   }
 }
@@ -28,15 +31,20 @@ function handleAnimations(
 ) {
   const { game } = this;
   Object.values(game.state[type]).forEach((obj) => {
-    if (obj.animation !== null && obj.animation !== undefined) {
-      if (!obj.animation.currentValue) obj.animation.currentValue = 0;
-      const { startTime, duration, dValue, attribute } = obj.animation;
-      const currentTime = Date.now();
-      const dt = currentTime - startTime;
-      const completed = dt / duration;
-      obj[attribute] += dValue * completed - obj.animation.currentValue;
-      obj.animation.currentValue = dValue * completed;
-      if (currentTime >= startTime + duration) obj.animation = null;
+    for (let attr in obj.animations) {
+      const animation = obj.animations[attr];
+      if (animation) {
+        if (!animation.currentValue) animation.currentValue = 0;
+        const { startTime, duration, dValue, attribute } = animation;
+        const currentTime = Date.now();
+        const dt = currentTime - startTime;
+        const completed = dt / duration;
+        obj[attribute] += dValue * completed - animation.currentValue;
+        console.log(obj[attribute], startTime, duration, dValue, attribute);
+        animation.currentValue = dValue * completed;
+        if (currentTime >= startTime + duration)
+          delete obj.animations[attribute];
+      }
     }
   });
 }
