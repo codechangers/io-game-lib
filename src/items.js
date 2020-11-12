@@ -63,9 +63,10 @@ function addItemToCharacter(
 function useItem(
   character // object: The character that will have access to the item.
 ) {
-  Object.values(character.items)
-    .find((item) => item.index === character.selectedItem)
-    .useItem(character);
+  const item = Object.values(character.items).find(
+    (item) => item.index === character.selectedItem
+  );
+  if (item) item.useItem(character);
 }
 
 // Switch to an item on a characters hotbar.
