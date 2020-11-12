@@ -76,7 +76,7 @@ function switchItem(
 ) {
   if (position) character.selectedItem = position;
   else character.selectedItem += 1;
-  if (character.selectedItem >= character.items.length) {
+  if (character.selectedItem >= Object.keys(character.items).length) {
     console.log('There is no item here!');
     character.selectedItem = 0;
   }
