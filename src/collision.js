@@ -153,7 +153,12 @@ function handleCollision(
 }
 
 // Check for a collision between a character held item and another character/resrouce.
-function handleItemCollision(characterType, itemName, objectType, callback) {
+function handleItemCollision(
+  characterType, // string: The type of the character who is holding the item.
+  itemName, // string: The name of the item being held.
+  objectType, // string: The type of character/resource to check collisions against.
+  callback // function: What to do if there is a collision.
+) {
   const self = this;
   const { game } = this;
   Object.values(game.state[characterType]).forEach((character) => {
