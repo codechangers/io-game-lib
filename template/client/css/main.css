@@ -269,3 +269,12 @@ body {
 .selected {
   border: 2px solid black;
 }
+
+.used {
+  display: none;
+  height: 18px;
+  width: 18px;
+  background-color: lightgrey;
+  border-radius: 50%;
+  color: black;
+}

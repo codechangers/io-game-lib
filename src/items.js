@@ -74,40 +74,42 @@ function useItem(
   const item = Object.values(character.items).find(
     (item) => item.index === character.selectedItem
   );
-  const self = this;
-  item.uses -= 1;
-  let swingItem = (degrees, duration) => {
-    if (degrees === undefined) degrees = 30;
-    if (duration === undefined) duration = 50;
-    self.playAnimation(character, 'rotation', (degrees * Math.PI) / 180, duration);
-    setTimeout(function() {
-      self.playAnimation(character, 'rotation', -(degrees * Math.PI) / 180, duration);
-    }, duration + 1)
-  }
-
-  let throwItem = (x, y, range, speed) => {
-    if (speed === undefined) speed = 5;
-    if (range === undefined) range = 1000;
-    let position = self.getItemPosition(character);
-    let id = self.nextCharacterId(item.name);
-    self.createACharacter(item.name, id, {x:position.x, y:position.y})
-    let newCharacter = self.getACharacter(item.name, id);
-    let dx = Math.cos(Math.atan((y-newCharacter.y)/(x-newCharacter.x))) * range;
-    let dy = Math.sin(Math.atan((y-newCharacter.y)/(x-newCharacter.x))) * range;
-    if ((x-newCharacter.x) < 0) {
-      dx = -dx;
-      dy = -dy;
+  if (item.uses > 0 || item.uses === undefined) {
+    const self = this;
+    if (item.uses !== undefined) item.uses -= 1;
+    let swingItem = (degrees, duration) => {
+      if (degrees === undefined) degrees = 30;
+      if (duration === undefined) duration = 50;
+      self.playAnimation(character, 'rotation', (degrees * Math.PI) / 180, duration);
+      setTimeout(function() {
+        self.playAnimation(character, 'rotation', -(degrees * Math.PI) / 180, duration);
+      }, duration + 1)
     }
-    let duration = speed * range;
-    self.playAnimation(newCharacter, 'x', dx, duration);
-    self.playAnimation(newCharacter, 'y', dy, duration);
-    self.playAnimation(newCharacter, 'rotation', Math.PI/3, duration);
-    setTimeout(function() {
-      self.deleteACharacter(item.name, id);
-    }, duration + 1);
-  }
 
-  if (item) item.useItem(character, data, swingItem, throwItem);
+    let throwItem = (x, y, range, speed) => {
+      if (speed === undefined) speed = 5;
+      if (range === undefined) range = 1000;
+      let position = self.getItemPosition(character);
+      let id = self.nextCharacterId(item.name);
+      self.createACharacter(item.name, id, {x:position.x, y:position.y})
+      let newCharacter = self.getACharacter(item.name, id);
+      let dx = Math.cos(Math.atan((y-newCharacter.y)/(x-newCharacter.x))) * range;
+      let dy = Math.sin(Math.atan((y-newCharacter.y)/(x-newCharacter.x))) * range;
+      if ((x-newCharacter.x) < 0) {
+        dx = -dx;
+        dy = -dy;
+      }
+      let duration = speed * range;
+      self.playAnimation(newCharacter, 'x', dx, duration);
+      self.playAnimation(newCharacter, 'y', dy, duration);
+      self.playAnimation(newCharacter, 'rotation', Math.PI/3, duration);
+      setTimeout(function() {
+        self.deleteACharacter(item.name, id);
+      }, duration + 1);
+    }
+
+    if (item) item.useItem(character, data, swingItem, throwItem);
+  }
 }
 
 function getItemPosition(

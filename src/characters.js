@@ -156,6 +156,7 @@ function getCharacters(
       }
     });
     game.room.listen(`${type}/:id/:attribute/:id`, function (change) {
+      if (change.rawPath[2] === 'items') console.log(change);
       if (change.operation === 'add' && change.rawPath[2] === 'items') {
         document.getElementsByClassName('item')[
           change.value.index
@@ -200,7 +201,9 @@ function getCharacters(
     game.room.listen(`${type}/:id/:attribute/:id/:attribute`, function (
       change
     ) {
-      if (change.rawPath[2] === 'items') console.log(change);
+      if (change.rawPath[2] === 'items' && change.path.attribute === 'uses') {
+        document.getElementsByName(change.path.id)[0].firstChild.innerHTML = change.value;
+      }
     });
   } else {
     this.addConnectEvent('getCharacters', [type, onAdd, onRemove, onUpdate]);
