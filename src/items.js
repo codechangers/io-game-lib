@@ -18,7 +18,7 @@ function useItemBar(
     else item.className = 'item';
     itemBar.appendChild(item);
     let uses = document.createElement('div');
-    uses.className = 'used'
+    uses.className = 'used';
     item.appendChild(uses);
   }
 }
@@ -49,7 +49,7 @@ function createNewItem(
 ) {
   this.game.state[type] = {};
   this.game.shapes[type] = 'circle';
-  this.items[type] = { name: type, useItem: cb, image};
+  this.items[type] = { name: type, useItem: cb, image };
 }
 
 // Give a character access to an item in the game.
@@ -62,7 +62,7 @@ function addItemToCharacter(
     character.items[type] = {
       ...this.items[type],
       index: Object.keys(character.items).length,
-      uses
+      uses,
     };
 }
 
@@ -107,18 +107,21 @@ function useItem(
         self.deleteACharacter(item.name, id);
       }, duration + 1);
     }
-
+    
     if (item) item.useItem(character, data, swingItem, throwItem);
   }
 }
 
 function getItemPosition(
-  character, // string: name of the character
+  character // string: name of the character
 ) {
   let item = Object.values(character.items).find(
     (item) => item.index === character.selectedItem
   );
-  return {x:character.x + Math.cos(character.rotation) * item.x, y:character.y + Math.sin(character.rotation) * item.y};
+  return {
+    x: character.x + Math.cos(character.rotation) * item.x,
+    y: character.y + Math.sin(character.rotation) * item.y,
+  };
 }
 
 // Switch to an item on a characters hotbar.
@@ -134,7 +137,7 @@ function switchItem(
 }
 
 function getSelectedItem(
-  character, // object: The character thaat you get the item from
+  character // object: The character thaat you get the item from
 ) {
   return Object.values(character.items).find(
     (item) => item.index === character.selectedItem
@@ -142,7 +145,7 @@ function getSelectedItem(
 }
 
 function getItem(
-  type, // string: Name of the item that you are accessing
+  type // string: Name of the item that you are accessing
 ) {
   return this.items[type];
 }
@@ -178,7 +181,7 @@ const server = {
   removeItemFromCharacter,
   getSelectedItem,
   getItem,
-  getItemPosition
+  getItemPosition,
 };
 
 module.exports = { client, server };

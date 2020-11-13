@@ -23,6 +23,7 @@ function getCharacters(
   onUpdate = function () {} // function: This will get run when a character is updated.
 ) {
   const { game } = this;
+  const self = this;
   if (game.roomJoined) {
     game.room.listen(`${type}/:id`, function (change) {
       if (change.operation == 'add') {
@@ -81,6 +82,8 @@ function getCharacters(
           let item = game.front_layer
             .create(change.value.x, change.value.y, change.value.name)
             .setScale(change.value.scale);
+          console.log(change.value);
+          self.sendSpriteSize(change.value.name, change.value.scale);
           game[type][change.value.id].sprite.add(item);
           game[type][change.value.id].attached[change.value.name] = {
             ...change.value,
@@ -173,9 +176,17 @@ function getCharacters(
         document
           .getElementsByClassName('item')
           [change.value.index].setAttribute('name', change.value.name);
-          if (change.value.uses) document.getElementsByClassName('used')[change.value.index].innerHTML = change.value.uses;
-          else document.getElementsByClassName('used')[change.value.index].innerHTML = "∞";
-          document.getElementsByClassName('used')[change.value.index].style.display = 'block';
+        if (change.value.uses)
+          document.getElementsByClassName('used')[
+            change.value.index
+          ].innerHTML = change.value.uses;
+        else
+          document.getElementsByClassName('used')[
+            change.value.index
+          ].innerHTML = '∞';
+        document.getElementsByClassName('used')[
+          change.value.index
+        ].style.display = 'block';
       } else if (
         change.operation === 'remove' &&
         change.rawPath[2] === 'items'
@@ -238,8 +249,8 @@ function createACharacter(
     type,
     items: {},
     selectedItem: 0,
-    rotation:0,
-    animations: {}
+    rotation: 0,
+    animations: {},
   };
 }
 
@@ -271,22 +282,31 @@ function attachTo(
   type, // string: The type of characters/resources.
   id, // string: A unique character/resource id.
   data /* object: {
-    name | string: name of the thing you want to attach
-    x | int: x position relative to character
-    y | int: y position relative to character
+    item: object: An item instance. Only for items.
+    x: number: horizontal position relative to character.
+    y: number: vertical position relative to character.
     scale | int : number between 0 and 1 to represent size
-    type | string : either 'item', 'bar', or 'text'
-    image | string : name of image if it is an ITEM 
+    type: string: bar or text
     text | string : text if it is a TEXT
     filled | int : amount of bar filled if it is a BAR
   }
   */
 ) {
   if (data.item) {
-    this.game.state[type][id][data.item.name] = {...data.item, x:data.x, y:data.y, type:'item', id};
-    this.game.state[type][id].items[data.item.name].x = data.x;
-    this.game.state[type][id].items[data.item.name].y = data.y;
-    this.game.state[type][id].items[data.item.name].ownerId = id;
+    const dataItem = data.item;
+    delete data.item;
+    this.game.state[type][id][dataItem.name] = {
+      ...data,
+      ...dataItem,
+      x: data.x,
+      y: data.y,
+      type: 'item',
+      id,
+    };
+    this.game.state[type][id].items[dataItem.name].x = data.x;
+    this.game.state[type][id].items[dataItem.name].y = data.y;
+    this.game.state[type][id].items[dataItem.name].ownerId = id;
+    this.game.state[type][id].items[dataItem.name].scale = data.scale;
   } else {
     this.game.state[type][id][data.name] = { ...data, id };
   }

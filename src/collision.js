@@ -152,6 +152,23 @@ function handleCollision(
   });
 }
 
-const server = { handleCollision };
+// Check for a collision between a character held item and another character/resrouce.
+function handleItemCollision(characterType, itemName, objectType, callback) {
+  const self = this;
+  const { game } = this;
+  Object.values(game.state[characterType]).forEach((character) => {
+    const item = self.getSelectedItem(character);
+    if (item.name === itemName) {
+      const itemSize = game.sizes[item.name];
+      if (itemSize && item.swinging) {
+        const { width, height } = itemSize;
+        const { x, y } = self.getItemPosition(character);
+        self.handleCollision({ width, height, x, y }, objectType, callback);
+      }
+    }
+  });
+}
+
+const server = { handleCollision, handleItemCollision };
 
 module.exports = { server };
