@@ -212,7 +212,7 @@ function getCharacters(
     game.room.listen(`${type}/:id/:attribute/:id/:attribute`, function (
       change
     ) {
-      if (change.rawPath[2] === 'items' && change.path.attribute === 'uses') {
+      if (change.rawPath[2] === 'items' && change.path.attribute === 'uses' && game.room.sessionId == change.rawPath[1]) {
         document.getElementsByName(change.path.id)[0].firstChild.innerHTML = change.value;
       }
     });
