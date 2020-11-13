@@ -18,7 +18,7 @@ function useItemBar(
     else item.className = 'item';
     itemBar.appendChild(item);
     let uses = document.createElement('div');
-    uses.className = 'used'
+    uses.className = 'used';
     item.appendChild(uses);
   }
 }
@@ -49,7 +49,7 @@ function createNewItem(
 ) {
   this.game.state[type] = {};
   this.game.shapes[type] = 'circle';
-  this.items[type] = { name: type, useItem: cb, image};
+  this.items[type] = { name: type, useItem: cb, image };
 }
 
 // Give a character access to an item in the game.
@@ -62,7 +62,7 @@ function addItemToCharacter(
     character.items[type] = {
       ...this.items[type],
       index: Object.keys(character.items).length,
-      uses
+      uses,
     };
 }
 
@@ -79,44 +79,61 @@ function useItem(
   let swingItem = (degrees, duration) => {
     if (degrees === undefined) degrees = 30;
     if (duration === undefined) duration = 50;
-    self.playAnimation(character, 'rotation', (degrees * Math.PI) / 180, duration);
-    setTimeout(function() {
-      self.playAnimation(character, 'rotation', -(degrees * Math.PI) / 180, duration);
-    }, duration + 1)
-  }
+    item.swinging = true;
+    self.playAnimation(
+      character,
+      'rotation',
+      (degrees * Math.PI) / 180,
+      duration
+    );
+    setTimeout(function () {
+      self.playAnimation(
+        character,
+        'rotation',
+        -(degrees * Math.PI) / 180,
+        duration
+      );
+    }, duration + 1);
+    setTimeout(() => (item.swinging = false), duration * 2 + 2);
+  };
 
   let throwItem = (x, y, range, speed) => {
     if (speed === undefined) speed = 5;
     if (range === undefined) range = 1000;
     let position = self.getItemPosition(character);
     let id = self.nextCharacterId(item.name);
-    self.createACharacter(item.name, id, {x:position.x, y:position.y})
+    self.createACharacter(item.name, id, { x: position.x, y: position.y });
     let newCharacter = self.getACharacter(item.name, id);
-    let dx = Math.cos(Math.atan((y-newCharacter.y)/(x-newCharacter.x))) * range;
-    let dy = Math.sin(Math.atan((y-newCharacter.y)/(x-newCharacter.x))) * range;
-    if ((x-newCharacter.x) < 0) {
+    let dx =
+      Math.cos(Math.atan((y - newCharacter.y) / (x - newCharacter.x))) * range;
+    let dy =
+      Math.sin(Math.atan((y - newCharacter.y) / (x - newCharacter.x))) * range;
+    if (x - newCharacter.x < 0) {
       dx = -dx;
       dy = -dy;
     }
     let duration = speed * range;
     self.playAnimation(newCharacter, 'x', dx, duration);
     self.playAnimation(newCharacter, 'y', dy, duration);
-    self.playAnimation(newCharacter, 'rotation', Math.PI/3, duration);
-    setTimeout(function() {
+    self.playAnimation(newCharacter, 'rotation', Math.PI / 3, duration);
+    setTimeout(function () {
       self.deleteACharacter(item.name, id);
     }, duration + 1);
-  }
+  };
 
   if (item) item.useItem(character, data, swingItem, throwItem);
 }
 
 function getItemPosition(
-  character, // string: name of the character
+  character // string: name of the character
 ) {
   let item = Object.values(character.items).find(
     (item) => item.index === character.selectedItem
   );
-  return {x:character.x + Math.cos(character.rotation) * item.x, y:character.y + Math.sin(character.rotation) * item.y};
+  return {
+    x: character.x + Math.cos(character.rotation) * item.x,
+    y: character.y + Math.sin(character.rotation) * item.y,
+  };
 }
 
 // Switch to an item on a characters hotbar.
@@ -132,7 +149,7 @@ function switchItem(
 }
 
 function getSelectedItem(
-  character, // object: The character thaat you get the item from
+  character // object: The character thaat you get the item from
 ) {
   return Object.values(character.items).find(
     (item) => item.index === character.selectedItem
@@ -140,7 +157,7 @@ function getSelectedItem(
 }
 
 function getItem(
-  type, // string: Name of the item that you are accessing
+  type // string: Name of the item that you are accessing
 ) {
   return this.items[type];
 }
@@ -176,7 +193,7 @@ const server = {
   removeItemFromCharacter,
   getSelectedItem,
   getItem,
-  getItemPosition
+  getItemPosition,
 };
 
 module.exports = { client, server };
