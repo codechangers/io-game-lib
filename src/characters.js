@@ -30,6 +30,8 @@ function getCharacters(
         const { id, x, y } = change.value;
         let sprite = game.add.container(x, y);
         let character = game.front_layer.create(0, 0, type);
+        console.log(change.value);
+        character.rotation = change.value.rotation;
         sprite.add([character]);
         sprite.setScale(game.scales[type] || 1);
         game[type][id] = {
@@ -148,11 +150,9 @@ function getCharacters(
                 change.value + game[type][id].attached[item][attribute];
           }
           game[type][id].sprite[attribute] = change.value;
-        } else if (attribute == 'angle') {
-          game[type][id].sprite[attribute] = change.value;
-        } else if (attribute == 'angle') {
-          game[type][id].sprite[attribute] = change.value;
-        } else {
+        }  else if (attribute == 'rotation') {
+              game[type][id][attribute] = change.value;
+        }else {
           game[type][id][attribute] = change.value;
         }
         onUpdate(id, attribute, change.value);
@@ -243,13 +243,13 @@ function createACharacter(
   data // object: The characters data.
 ) {
   this.game.state[type][id] = {
+    rotation: 0,
     ...this.getSize(type),
     ...data,
     id,
     type,
     items: {},
     selectedItem: 0,
-    rotation: 0,
     animations: {},
   };
 }
@@ -301,6 +301,7 @@ function attachTo(
       x: data.x,
       y: data.y,
       type: 'item',
+      scale: data.scale,
       id,
     };
     this.game.state[type][id].items[dataItem.name].x = data.x;

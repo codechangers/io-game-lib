@@ -124,8 +124,20 @@ function useItem(
       }, duration + 1);
     };
 
-    if (item) item.useItem(character, data, swingItem, throwItem);
+    let placeItem = (x, y) => {
+      let id = self.nextCharacterId(item.name);
+      if (x !== undefined && y !== undefined) {
+        self.createACharacter(item.name, id, { x, y });
+      } else {
+        let position = self.getItemPosition(character);
+        console.log(character.rotation);
+        self.createACharacter(item.name, id, { x: position.x, y: position.y, rotation:character.rotation });
+      }
+    }
+
+    if (item) item.useItem(character, data, swingItem, throwItem, placeItem);
   }
+
 }
 
 function getItemPosition(
