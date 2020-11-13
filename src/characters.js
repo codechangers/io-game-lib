@@ -23,6 +23,7 @@ function getCharacters(
   onUpdate = function () {} // function: This will get run when a character is updated.
 ) {
   const { game } = this;
+  const self = this;
   if (game.roomJoined) {
     game.room.listen(`${type}/:id`, function (change) {
       if (change.operation == 'add') {
@@ -48,7 +49,19 @@ function getCharacters(
       }
     });
     game.room.listen(`${type}/:id/:attribute`, function (change) {
-      if (change.operation == 'add' && change.value.type) {
+      if (
+        change.rawPath[2] == 'selectedItem' &&
+        game.room.sessionId == change.path.id
+      ) {
+        const selecteds = document.getElementsByClassName('selected');
+        if (selecteds.length > 0) {
+          selecteds[0].classList.remove('selected');
+          document
+            .getElementsByClassName('item')
+            [change.value].classList.add('selected');
+        }
+      }
+      if (change.operation == 'add' && change.value && change.value.type) {
         let x = game[type][change.value.id].sprite.x;
         let y = game[type][change.value.id].sprite.y;
         if (change.value.type == 'text') {
@@ -67,8 +80,10 @@ function getCharacters(
         }
         if (change.value.type == 'item') {
           let item = game.front_layer
-            .create(change.value.x, change.value.y, change.value.image)
+            .create(change.value.x, change.value.y, change.value.name)
             .setScale(change.value.scale);
+          console.log(change.value);
+          self.sendSpriteSize(change.value.name, change.value.scale);
           game[type][change.value.id].sprite.add(item);
           game[type][change.value.id].attached[change.value.name] = {
             ...change.value,
@@ -144,11 +159,46 @@ function getCharacters(
       }
     });
     game.room.listen(`${type}/:id/:attribute/:id`, function (change) {
-      console.log(change);
+      if (change.rawPath[2] === 'items') console.log(change);
+      if (change.operation === 'add' && change.rawPath[2] === 'items') {
+        document.getElementsByClassName('item')[
+          change.value.index
+        ].style.background = `url(../asset/${change.value.image}`;
+        document.getElementsByClassName('item')[
+          change.value.index
+        ].style.backgroundSize = 'contain';
+        document.getElementsByClassName('item')[
+          change.value.index
+        ].style.backgroundPosition = 'center';
+        document.getElementsByClassName('item')[
+          change.value.index
+        ].style.backgroundRepeat = 'no-repeat';
+        document
+          .getElementsByClassName('item')
+          [change.value.index].setAttribute('name', change.value.name);
+        if (change.value.uses)
+          document.getElementsByClassName('used')[
+            change.value.index
+          ].innerHTML = change.value.uses;
+        else
+          document.getElementsByClassName('used')[
+            change.value.index
+          ].innerHTML = '∞';
+        document.getElementsByClassName('used')[
+          change.value.index
+        ].style.display = 'block';
+      } else if (
+        change.operation === 'remove' &&
+        change.rawPath[2] === 'items'
+      ) {
+        let itemBar = document.getElementById('item-bar');
+        itemBar.removeChild(document.getElementsByName(change.path.id)[0]);
+        let item = document.createElement('div');
+        item.className = 'item';
+        itemBar.appendChild(item);
+        document.getElementsByClassName('item')[0].classList.add('selected');
+      }
       if (change.path.id === 'filled') {
-        console.log(
-          game[type][change.rawPath[1]].attached[change.rawPath[2]].sprite
-        );
         game[type][change.rawPath[1]].attached[
           change.rawPath[2]
         ].sprite.setScale(change.value / 100, 1);
@@ -157,6 +207,13 @@ function getCharacters(
         game[type][change.rawPath[1]].attached[
           change.rawPath[2]
         ].sprite.setText(change.value);
+      }
+    });
+    game.room.listen(`${type}/:id/:attribute/:id/:attribute`, function (
+      change
+    ) {
+      if (change.rawPath[2] === 'items' && change.path.attribute === 'uses' && game.room.sessionId == change.rawPath[1]) {
+        document.getElementsByName(change.path.id)[0].firstChild.innerHTML = change.value;
       }
     });
   } else {
@@ -190,6 +247,10 @@ function createACharacter(
     ...data,
     id,
     type,
+    items: {},
+    selectedItem: 0,
+    rotation: 0,
+    animations: {},
   };
 }
 
@@ -221,21 +282,37 @@ function attachTo(
   type, // string: The type of characters/resources.
   id, // string: A unique character/resource id.
   data /* object: {
-    name | string: name of the thing you want to attach
-    x | int: x position relative to character
-    y | int: y position relative to character
+    item: object: An item instance. Only for items.
+    x: number: horizontal position relative to character.
+    y: number: vertical position relative to character.
     scale | int : number between 0 and 1 to represent size
-    type | string : either 'item', 'bar', or 'text'
-    image | string : name of image if it is an ITEM 
+    type: string: bar or text
     text | string : text if it is a TEXT
     filled | int : amount of bar filled if it is a BAR
   }
   */
 ) {
-  this.game.state[type][id][data.name] = { ...data, id };
+  if (data.item) {
+    const dataItem = data.item;
+    delete data.item;
+    this.game.state[type][id][dataItem.name] = {
+      ...data,
+      ...dataItem,
+      x: data.x,
+      y: data.y,
+      type: 'item',
+      id,
+    };
+    this.game.state[type][id].items[dataItem.name].x = data.x;
+    this.game.state[type][id].items[dataItem.name].y = data.y;
+    this.game.state[type][id].items[dataItem.name].ownerId = id;
+    this.game.state[type][id].items[dataItem.name].scale = data.scale;
+  } else {
+    this.game.state[type][id][data.name] = { ...data, id };
+  }
 }
 
-// Remove an attachement from a charater or other things.
+// Remove an attachment from a character or other things.
 function unAttach(
   type, // string: The type of characters/resources.
   id, // string: A unique character/resource id.

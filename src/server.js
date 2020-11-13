@@ -11,6 +11,7 @@ module.exports = class ServerLib {
     this.boardWidth = 500;
     this.boardHeight = 500;
     this.defaultActions = {};
+    this.items = {};
   }
 
   // Bind the Game and setup initial state.
