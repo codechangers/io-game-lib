@@ -40,10 +40,10 @@ function handleAnimations(
         const dt = currentTime - startTime;
         const completed = dt / duration;
         obj[attribute] += dValue * completed - animation.currentValue;
-        console.log(obj[attribute], startTime, duration, dValue, attribute);
         animation.currentValue = dValue * completed;
-        if (currentTime >= startTime + duration)
+        if (currentTime >= startTime + duration){
           delete obj.animations[attribute];
+        }
       }
     }
   });

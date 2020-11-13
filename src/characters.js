@@ -172,6 +172,9 @@ function getCharacters(
         document
           .getElementsByClassName('item')
           [change.value.index].setAttribute('name', change.value.name);
+          if (change.value.uses) document.getElementsByClassName('used')[change.value.index].innerHTML = change.value.uses;
+          else document.getElementsByClassName('used')[change.value.index].innerHTML = "∞";
+          document.getElementsByClassName('used')[change.value.index].style.display = 'block';
       } else if (
         change.operation === 'remove' &&
         change.rawPath[2] === 'items'
@@ -232,7 +235,8 @@ function createACharacter(
     type,
     items: {},
     selectedItem: 0,
-    rotation:0
+    rotation:0,
+    animations: {}
   };
 }
 
