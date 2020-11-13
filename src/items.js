@@ -143,7 +143,7 @@ function getItemPosition(
 // Switch to an item on a characters hotbar.
 function switchItem(
   character, // object: The character that will have access to the item.
-  position
+  position // number: The index of the item on the hotbar.
 ) {
   if (position !== undefined) character.selectedItem = position;
   else character.selectedItem += 1;
