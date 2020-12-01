@@ -22,14 +22,14 @@ function getResources(
   const { game } = this;
   if (game.roomJoined) {
     game.room.listen(`${type}/:id`, function (change) {
-      if (change.operation == 'add') {
+      if (change.operation === 'add') {
         const { id, x, y } = change.value;
         game[type][id] = {
           sprite: game.add.sprite(x, y, type),
           id,
         };
         onAdd(game[type][id], change.value);
-      } else if (change.operation == 'remove') {
+      } else if (change.operation === 'remove') {
         const { id } = change.path;
         game[type][id].sprite.destroy();
         delete game[type][id];
@@ -37,7 +37,7 @@ function getResources(
       }
     });
     game.room.listen(`${type}/:id/:attribute`, function (change) {
-      if (change.operation == 'replace') {
+      if (change.operation === 'replace') {
         const { id, attribute } = change.path;
         game[type][id].sprite[attribute] = change.value;
         onUpdate(id, attribute, change.value);
@@ -67,7 +67,7 @@ function createResources(
   type, // string: The type of resources.
   amount // int: The amount of resources you want to create randomly on the board.
 ) {
-  for (var i = 0; i < amount; i++) {
+  for (let i = 0; i < amount; i++) {
     let newX = Math.random() * this.boardWidth;
     let newY = Math.random() * this.boardHeight;
     this.createAResource(type, newX, newY);

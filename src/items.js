@@ -12,9 +12,9 @@ function useItemBar(
   let itemBar = document.getElementById('item-bar');
   itemBar.style.display = 'flex';
   itemBar.style.opacity = '50%';
-  for (var i = 0; i < itemAmount; i++) {
+  for (let i = 0; i < itemAmount; i++) {
     let item = document.createElement('div');
-    if (i == 0) item.className = 'item selected';
+    if (i === 0) item.className = 'item selected';
     else item.className = 'item';
     itemBar.appendChild(item);
     let uses = document.createElement('div');
@@ -58,12 +58,13 @@ function addItemToCharacter(
   type, // string: The type of item to add.
   uses // int: amount of times you can use this.
 ) {
-  if (this.items[type])
+  if (this.items[type]) {
     character.items[type] = {
       ...this.items[type],
       index: Object.keys(character.items).length,
       uses,
     };
+  }
 }
 
 // Use an item's in game ability.
@@ -72,87 +73,88 @@ function useItem(
   data // object: any data that they want to pass to their useItem function
 ) {
   const item = Object.values(character.items).find(
-    (item) => item.index === character.selectedItem
+    (itm) => itm.index === character.selectedItem
   );
   if (item.uses > 0 || item.uses === undefined) {
     const self = this;
     if (item.uses !== undefined) item.uses -= 1;
     let actions = {
-    swingItem: (degrees, duration) => {
-      if (degrees === undefined) degrees = 30;
-      if (duration === undefined) duration = 50;
-      item.swinging = true;
-      self.playAnimation(
-        character,
-        'rotation',
-        (degrees * Math.PI) / 180,
-        duration
-      );
-      setTimeout(function () {
+      swingItem: (degrees, duration) => {
+        if (degrees === undefined) degrees = 30;
+        if (duration === undefined) duration = 50;
+        item.swinging = true;
         self.playAnimation(
           character,
           'rotation',
-          -(degrees * Math.PI) / 180,
+          (degrees * Math.PI) / 180,
           duration
         );
-        setTimeout(() => (item.swinging = false), duration * 2 + 2);
-      }, duration + 1);
-    },
+        setTimeout(function () {
+          self.playAnimation(
+            character,
+            'rotation',
+            -(degrees * Math.PI) / 180,
+            duration
+          );
+          setTimeout(() => (item.swinging = false), duration * 2 + 2);
+        }, duration + 1);
+      },
 
-    throwItem: (x, y, range, speed) => {
-      if (speed === undefined) speed = 5;
-      if (range === undefined) range = 1000;
-      let position = self.getItemPosition(character);
-      let id = self.nextCharacterId(item.name);
-      if (!this.counts[item.name]) self.setupCharacters(item.name);
-      self.createACharacter(item.name, id, { x: position.x, y: position.y });
-      let newCharacter = self.getACharacter(item.name, id);
-      let dx =
-        Math.cos(Math.atan((y - newCharacter.y) / (x - newCharacter.x))) *
-        range;
-      let dy =
-        Math.sin(Math.atan((y - newCharacter.y) / (x - newCharacter.x))) *
-        range;
-      if (x - newCharacter.x < 0) {
-        dx = -dx;
-        dy = -dy;
-      }
-      let duration = speed * range;
-      self.playAnimation(newCharacter, 'x', dx, duration);
-      self.playAnimation(newCharacter, 'y', dy, duration);
-      self.playAnimation(newCharacter, 'rotation', Math.PI / 3, duration/2);
-      setTimeout(function () {
-        self.deleteACharacter(item.name, id);
-      }, duration + 1);
-    },
-
-    placeItem: (x, y) => {
-      let id = self.nextCharacterId(item.name);
-      if (x !== undefined && y !== undefined) {
-        self.createACharacter(item.name, id, { x, y });
-      } else {
+      throwItem: (x, y, range, speed) => {
+        if (speed === undefined) speed = 5;
+        if (range === undefined) range = 1000;
         let position = self.getItemPosition(character);
-        console.log(character.rotation);
-        self.createACharacter(item.name, id, { x: position.x, y: position.y, rotation:character.rotation });
-      }
-    }
-  }
+        let id = self.nextCharacterId(item.name);
+        if (!this.counts[item.name]) self.setupCharacters(item.name);
+        self.createACharacter(item.name, id, { x: position.x, y: position.y });
+        let newCharacter = self.getACharacter(item.name, id);
+        let dx =
+          Math.cos(Math.atan((y - newCharacter.y) / (x - newCharacter.x))) *
+          range;
+        let dy =
+          Math.sin(Math.atan((y - newCharacter.y) / (x - newCharacter.x))) *
+          range;
+        if (x - newCharacter.x < 0) {
+          dx = -dx;
+          dy = -dy;
+        }
+        let duration = speed * range;
+        self.playAnimation(newCharacter, 'x', dx, duration);
+        self.playAnimation(newCharacter, 'y', dy, duration);
+        self.playAnimation(newCharacter, 'rotation', Math.PI / 3, duration / 2);
+        setTimeout(function () {
+          self.deleteACharacter(item.name, id);
+        }, duration + 1);
+      },
+
+      placeItem: (x, y) => {
+        let id = self.nextCharacterId(item.name);
+        if (x !== undefined && y !== undefined) {
+          self.createACharacter(item.name, id, { x, y });
+        } else {
+          let position = self.getItemPosition(character);
+          self.createACharacter(item.name, id, {
+            x: position.x,
+            y: position.y,
+            rotation: character.rotation,
+          });
+        }
+      },
+    };
 
     if (item) item.useItem(character, data, actions);
   }
-
 }
 
 function getItemPosition(
   character // string: name of the character
 ) {
   let item = Object.values(character.items).find(
-    (item) => item.index === character.selectedItem
+    (itm) => itm.index === character.selectedItem
   );
-  console.log('position', Math.sin(character.rotation));
   return {
-    x: character.x + Math.cos(character.rotation) * (item.x/2),
-    y: character.y + Math.sin(character.rotation) * (item.y/2),
+    x: character.x + Math.cos(character.rotation) * (item.x / 2),
+    y: character.y + Math.sin(character.rotation) * (item.y / 2),
   };
 }
 
@@ -187,12 +189,9 @@ function removeItemFromCharacter(
   character, // object: The character that will have access to the item.
   type // string: The type of item to add.
 ) {
-  let index;
   if (typeof type === 'string') {
-    index = character.items[type].index;
     delete character.items[type];
   } else {
-    index = type;
     newType = Object.keys(character.items).find(
       (item) => character.items[item].index === type
     );
