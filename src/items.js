@@ -77,7 +77,8 @@ function useItem(
   if (item.uses > 0 || item.uses === undefined) {
     const self = this;
     if (item.uses !== undefined) item.uses -= 1;
-    let swingItem = (degrees, duration) => {
+    let actions = {
+    swingItem: (degrees, duration) => {
       if (degrees === undefined) degrees = 30;
       if (duration === undefined) duration = 50;
       item.swinging = true;
@@ -96,13 +97,14 @@ function useItem(
         );
         setTimeout(() => (item.swinging = false), duration * 2 + 2);
       }, duration + 1);
-    };
+    },
 
-    let throwItem = (x, y, range, speed) => {
+    throwItem: (x, y, range, speed) => {
       if (speed === undefined) speed = 5;
       if (range === undefined) range = 1000;
       let position = self.getItemPosition(character);
       let id = self.nextCharacterId(item.name);
+      if (!this.counts[item.name]) self.setupCharacters(item.name);
       self.createACharacter(item.name, id, { x: position.x, y: position.y });
       let newCharacter = self.getACharacter(item.name, id);
       let dx =
@@ -118,13 +120,13 @@ function useItem(
       let duration = speed * range;
       self.playAnimation(newCharacter, 'x', dx, duration);
       self.playAnimation(newCharacter, 'y', dy, duration);
-      self.playAnimation(newCharacter, 'rotation', Math.PI / 3, duration);
+      self.playAnimation(newCharacter, 'rotation', Math.PI / 3, duration/2);
       setTimeout(function () {
         self.deleteACharacter(item.name, id);
       }, duration + 1);
-    };
+    },
 
-    let placeItem = (x, y) => {
+    placeItem: (x, y) => {
       let id = self.nextCharacterId(item.name);
       if (x !== undefined && y !== undefined) {
         self.createACharacter(item.name, id, { x, y });
@@ -134,8 +136,9 @@ function useItem(
         self.createACharacter(item.name, id, { x: position.x, y: position.y, rotation:character.rotation });
       }
     }
+  }
 
-    if (item) item.useItem(character, data, swingItem, throwItem, placeItem);
+    if (item) item.useItem(character, data, actions);
   }
 
 }
@@ -146,9 +149,10 @@ function getItemPosition(
   let item = Object.values(character.items).find(
     (item) => item.index === character.selectedItem
   );
+  console.log('position', Math.sin(character.rotation));
   return {
-    x: character.x + Math.cos(character.rotation) * item.x,
-    y: character.y + Math.sin(character.rotation) * item.y,
+    x: character.x + Math.cos(character.rotation) * (item.x/2),
+    y: character.y + Math.sin(character.rotation) * (item.y/2),
   };
 }
 

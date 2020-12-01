@@ -66,6 +66,7 @@ function getCharacters(
       if (change.operation == 'add' && change.value && change.value.type) {
         let x = game[type][change.value.id].sprite.x;
         let y = game[type][change.value.id].sprite.y;
+        console.log()
         if (change.value.type == 'text') {
           let text = game.add
             .text(
@@ -83,9 +84,9 @@ function getCharacters(
         if (change.value.type == 'item') {
           let item = game.front_layer
             .create(change.value.x, change.value.y, change.value.name)
-            .setScale(change.value.scale);
+            .setScale(game[type][change.value.id].sprite._scaleX * 4 * change.value.scale);
           console.log(change.value);
-          self.sendSpriteSize(change.value.name, change.value.scale);
+          // self.sendSpriteSize(change.value.name, change.value.scale);
           game[type][change.value.id].sprite.add(item);
           game[type][change.value.id].attached[change.value.name] = {
             ...change.value,
@@ -233,6 +234,7 @@ function setupCharacters(
   shape = 'box' // string: box or circle | The shape of the character image.
 ) {
   this.game.state[type] = {};
+  this.counts[type] = 0;
   this.game.shapes[type] = shape;
 }
 
@@ -274,7 +276,9 @@ function deleteACharacter(
 function nextCharacterId(
   type // string: The type of characters.
 ) {
-  return `${type}${Object.keys(this.game.state[type]).length + 1}`;
+  this.counts[type] += 1;
+  console.log(this.counts[type])
+  return `${type}${this.counts[type]}`;
 }
 
 // Attach something to the character or other things.
