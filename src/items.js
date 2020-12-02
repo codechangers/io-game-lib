@@ -146,6 +146,7 @@ function useItem(
   }
 }
 
+// Get the position of an item relative to the game.
 function getItemPosition(
   character // string: name of the character
 ) {
@@ -170,6 +171,7 @@ function switchItem(
   }
 }
 
+// Get a character's currently selected item.
 function getSelectedItem(
   character // object: The character thaat you get the item from
 ) {
@@ -178,6 +180,7 @@ function getSelectedItem(
   );
 }
 
+// Get a created in-game item instance.
 function getItem(
   type // string: Name of the item that you are accessing
 ) {
