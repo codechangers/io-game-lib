@@ -152,7 +152,7 @@ function handleCollision(
   });
 }
 
-// Check for a collision between a character held item and another character/resrouce.
+// Check for a collision between a character held item and another character/resource.
 function handleItemCollision(
   characterType, // string: The type of the character who is holding the item.
   itemName, // string: The name of the item being held.

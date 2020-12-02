@@ -47,7 +47,8 @@ function createSquare(
   graphics.fillRectShape(rect);
   return graphics;
 }
-// Update a previously drawn squre.
+
+// Update a previously drawn square.
 function updateSquare(width, height, x, y, color, graphics) {
   const rect = new Phaser.Geom.Rectangle(width, height, x, y);
   graphics.clear();
