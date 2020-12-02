@@ -23,6 +23,7 @@ function getCharacters(
   onUpdate = function () {} // function: This will get run when a character is updated.
 ) {
   const { game } = this;
+  const self = this;
   if (game.roomJoined) {
     game.room.listen(`${type}/:id`, function (change) {
       if (change.operation === 'add') {
@@ -78,13 +79,12 @@ function getCharacters(
           };
         }
         if (change.value.type === 'item') {
+          const itemScale =
+            game[type][change.value.id].sprite._scaleX * 4 * change.value.scale;
           let item = game.front_layer
             .create(change.value.x, change.value.y, change.value.name)
-            .setScale(
-              game[type][change.value.id].sprite._scaleX *
-                4 *
-                change.value.scale
-            );
+            .setScale(itemScale);
+          self.sendSpriteSize(change.value.name, itemScale || 1);
           game[type][change.value.id].sprite.add(item);
           game[type][change.value.id].attached[change.value.name] = {
             ...change.value,
