@@ -33,7 +33,7 @@ require('./../css/main.css');
     $(window).trigger('resize');
   });
 
-  const height = 720;
+  const height = window.innerHeight;
   const width = height * aspectRatio;
   var config = {
     type: Phaser.AUTO,

@@ -26,11 +26,10 @@ function getCharacters(
   const self = this;
   if (game.roomJoined) {
     game.room.listen(`${type}/:id`, function (change) {
-      if (change.operation == 'add') {
+      if (change.operation === 'add') {
         const { id, x, y } = change.value;
         let sprite = game.add.container(x, y);
         let character = game.front_layer.create(0, 0, type);
-        console.log(change.value);
         character.rotation = change.value.rotation;
         sprite.add([character]);
         sprite.setScale(game.scales[type] || 1);
@@ -40,7 +39,7 @@ function getCharacters(
           attached: {},
         };
         onAdd(game[type][id], change.value);
-      } else if (change.operation == 'remove') {
+      } else if (change.operation === 'remove') {
         const { id } = change.path;
         game[type][id].sprite.destroy();
         for (item in game[type][id].attached) {
@@ -52,8 +51,8 @@ function getCharacters(
     });
     game.room.listen(`${type}/:id/:attribute`, function (change) {
       if (
-        change.rawPath[2] == 'selectedItem' &&
-        game.room.sessionId == change.path.id
+        change.rawPath[2] === 'selectedItem' &&
+        game.room.sessionId === change.path.id
       ) {
         const selecteds = document.getElementsByClassName('selected');
         if (selecteds.length > 0) {
@@ -63,10 +62,9 @@ function getCharacters(
             [change.value].classList.add('selected');
         }
       }
-      if (change.operation == 'add' && change.value && change.value.type) {
-        let x = game[type][change.value.id].sprite.x;
-        let y = game[type][change.value.id].sprite.y;
-        if (change.value.type == 'text') {
+      if (change.operation === 'add' && change.value && change.value.type) {
+        const { x, y } = game[type][change.value.id].sprite;
+        if (change.value.type === 'text') {
           let text = game.add
             .text(
               x + change.value.x,
@@ -80,40 +78,41 @@ function getCharacters(
             sprite: text,
           };
         }
-        if (change.value.type == 'item') {
+        if (change.value.type === 'item') {
+          const itemScale =
+            game[type][change.value.id].sprite._scaleX * 4 * change.value.scale;
           let item = game.front_layer
             .create(change.value.x, change.value.y, change.value.name)
-            .setScale(change.value.scale);
-          console.log(change.value);
-          self.sendSpriteSize(change.value.name, change.value.scale);
+            .setScale(itemScale);
+          self.sendSpriteSize(change.value.name, itemScale || 1);
           game[type][change.value.id].sprite.add(item);
           game[type][change.value.id].attached[change.value.name] = {
             ...change.value,
             sprite: item,
           };
         }
-        if (change.value.type == 'bar') {
-          var rect = new Phaser.Geom.Rectangle(
+        if (change.value.type === 'bar') {
+          let rect = new Phaser.Geom.Rectangle(
             0,
             0,
             change.value.width,
             change.value.height
           );
-          var graphics = game.add.graphics({
-            fillStyle: { color: `0x999999` },
+          let graphics = game.add.graphics({
+            fillStyle: { color: '0x999999' },
           });
           rect = graphics.fillRectShape(rect);
           game[type][change.value.id].attached[
             `${change.value.name}Background`
           ] = { ...change.value, sprite: rect };
-          var newRect = new Phaser.Geom.Rectangle(
+          let newRect = new Phaser.Geom.Rectangle(
             0,
             0,
             change.value.width,
             change.value.height
           );
-          var graphics = game.add.graphics({
-            fillStyle: { color: `0x999900` },
+          graphics = game.add.graphics({
+            fillStyle: { color: '0x999900' },
           });
           newRect = graphics.fillRectShape(newRect);
           rect.x = x + change.value.x;
@@ -127,12 +126,12 @@ function getCharacters(
           };
         }
       }
-      if (change.operation == 'remove') {
+      if (change.operation === 'remove') {
         game[type][change.path.id].attached[
           change.path.attribute
         ].sprite.destroy();
         if (
-          game[type][change.path.id].attached[change.path.attribute].type ==
+          game[type][change.path.id].attached[change.path.attribute].type ===
           'bar'
         ) {
           game[type][change.path.id].attached[
@@ -141,25 +140,25 @@ function getCharacters(
         }
         delete game[type][change.path.id].attached[change.path.attribute];
       }
-      if (change.operation == 'replace') {
+      if (change.operation === 'replace') {
         const { id, attribute } = change.path;
-        if (attribute == 'x' || attribute == 'y') {
+        if (attribute === 'x' || attribute === 'y') {
           for (let item in game[type][id].attached) {
-            if (game[type][id].attached[item].type !== 'item')
+            if (game[type][id].attached[item].type !== 'item') {
               game[type][id].attached[item].sprite[attribute] =
                 change.value + game[type][id].attached[item][attribute];
+            }
           }
           game[type][id].sprite[attribute] = change.value;
-        }  else if (attribute == 'rotation') {
-              game[type][id][attribute] = change.value;
-        }else {
+        } else if (attribute === 'rotation') {
+          game[type][id][attribute] = change.value;
+        } else {
           game[type][id][attribute] = change.value;
         }
         onUpdate(id, attribute, change.value);
       }
     });
     game.room.listen(`${type}/:id/:attribute/:id`, function (change) {
-      if (change.rawPath[2] === 'items') console.log(change);
       if (change.operation === 'add' && change.rawPath[2] === 'items') {
         document.getElementsByClassName('item')[
           change.value.index
@@ -176,14 +175,15 @@ function getCharacters(
         document
           .getElementsByClassName('item')
           [change.value.index].setAttribute('name', change.value.name);
-        if (change.value.uses)
+        if (change.value.uses) {
           document.getElementsByClassName('used')[
             change.value.index
           ].innerHTML = change.value.uses;
-        else
+        } else {
           document.getElementsByClassName('used')[
             change.value.index
           ].innerHTML = '∞';
+        }
         document.getElementsByClassName('used')[
           change.value.index
         ].style.display = 'block';
@@ -212,8 +212,13 @@ function getCharacters(
     game.room.listen(`${type}/:id/:attribute/:id/:attribute`, function (
       change
     ) {
-      if (change.rawPath[2] === 'items' && change.path.attribute === 'uses' && game.room.sessionId == change.rawPath[1]) {
-        document.getElementsByName(change.path.id)[0].firstChild.innerHTML = change.value;
+      if (
+        change.rawPath[2] === 'items' &&
+        change.path.attribute === 'uses' &&
+        game.room.sessionId === change.rawPath[1]
+      ) {
+        document.getElementsByName(change.path.id)[0].firstChild.innerHTML =
+          change.value;
       }
     });
   } else {
@@ -233,6 +238,7 @@ function setupCharacters(
   shape = 'box' // string: box or circle | The shape of the character image.
 ) {
   this.game.state[type] = {};
+  this.counts[type] = 0;
   this.game.shapes[type] = shape;
 }
 
@@ -274,7 +280,8 @@ function deleteACharacter(
 function nextCharacterId(
   type // string: The type of characters.
 ) {
-  return `${type}${Object.keys(this.game.state[type]).length + 1}`;
+  this.counts[type] += 1;
+  return `${type}${this.counts[type]}`;
 }
 
 // Attach something to the character or other things.
@@ -332,12 +339,11 @@ function follow(
   if (Object.keys(this.game.state[type2]).length >= 1) {
     Object.keys(this.game.state[type2]).forEach((otherId) => {
       if (Object.keys(this.game.state[type1]).length >= 1) {
-        let x = this.game.state[type2][otherId].x;
-        let y = this.game.state[type2][otherId].y;
+        const { x, y } = this.game.state[type2][otherId];
         let closestPlayer = null;
         let closestDistance = 0;
         Object.keys(this.game.state[type1]).forEach((playerId) => {
-          if (closestPlayer == null) {
+          if (closestPlayer === null) {
             closestPlayer = playerId;
             closestDistance = Math.sqrt(
               (x - this.game.state[type1][playerId].x) ** 2 +
@@ -353,22 +359,17 @@ function follow(
             }
           }
         });
-        if (closestDistance < range || closestDistance == 0) {
-          return;
-        } else {
+        if (!(closestDistance < range || closestDistance === 0)) {
           let distanceX = x - this.game.state[type1][closestPlayer].x;
           let distanceY = y - this.game.state[type1][closestPlayer].y;
           let dx;
           let dy;
-          let degrees = 0;
           if (distanceX >= 0) {
             dx = Math.cos(Math.atan(distanceY / distanceX));
             dy = Math.sin(Math.atan(distanceY / distanceX));
-            degrees = Math.atan(distanceY / distanceX) * (180 / Math.PI) - 90;
           } else {
             dx = -Math.cos(Math.atan(distanceY / distanceX));
             dy = -Math.sin(Math.atan(distanceY / distanceX));
-            degrees = -Math.atan(distanceY / -distanceX) * (180 / Math.PI) + 90;
           }
           this.game.state[type2][otherId].x -= dx * speed;
           this.game.state[type2][otherId].y -= dy * speed;

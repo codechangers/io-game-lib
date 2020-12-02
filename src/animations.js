@@ -41,7 +41,7 @@ function handleAnimations(
         const completed = dt / duration;
         obj[attribute] += dValue * completed - animation.currentValue;
         animation.currentValue = dValue * completed;
-        if (currentTime >= startTime + duration){
+        if (currentTime >= startTime + duration) {
           delete obj.animations[attribute];
         }
       }
