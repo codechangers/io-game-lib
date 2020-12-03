@@ -1,6 +1,6 @@
 ---
 title: myId
-subtitle: 'Get your player's id!'
+subtitle: "Get your player's id!"
 tags: []
 author: jason
 ---
