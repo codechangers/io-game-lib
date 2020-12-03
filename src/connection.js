@@ -64,7 +64,10 @@ function sendAction(
   }
 }
 
-// Get your player's id!
+/**
+ * Get your player's id!
+ * @returns {string} Your current session/player id.
+ */
 function myId() {
   return this.game.room.sessionId;
 }

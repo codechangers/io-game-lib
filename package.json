@@ -9,6 +9,7 @@
   "scripts": {
     "format": "prettier \"**/*.{js,html}\" --write",
     "build": "webpack --config webpack.client.js && webpack --config webpack.server.js",
+    "docs": "jsdoc -t docs src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -32,6 +33,7 @@
     "eslint-config-prettier": "^6.12.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-prettier": "^3.1.4",
+    "jsdoc": "^3.6.6",
     "prettier": "^2.1.2",
     "webpack": "^5.1.3",
     "webpack-cli": "^4.1.0",

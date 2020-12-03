@@ -5,13 +5,15 @@
  * ==== Server Methods: ====
  * ========================= */
 
-// Set an animation to be played on a character/resource.
-function playAnimation(
-  obj, // object: The character/resource instance.
-  attribute, // string: The attribute that will be animated.
-  value, // number: The value the attribute should be changed by.
-  duration // number: (milliseconds) how long the animation should run.
-) {
+/**
+ * Set an animation to be played on a character/resource.
+ * @param {object} obj - The character/resource instance.
+ * @param {string} attribute - The attribute that will be animated.
+ * @param {number} value - The value the attribute should be changed by.
+ * @param {number} duration - (milliseconds) how long the animation should run.
+ * @returns {void}
+ */
+function playAnimation(obj, attribute, value, duration) {
   if (!obj.animations[attribute]) {
     obj.animations = {
       ...obj.animations,
