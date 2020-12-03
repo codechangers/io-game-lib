@@ -2,24 +2,24 @@
 
 const fs = require('fs');
 
+function tagMd({ name, type, description }) {
+  const nameMd = name ? `**${name}** ` : '';
+  const typeMd = type.names.length > 0 ? `\`${type.names.join('/')}\` ` : '';
+  const descriptionMd = description ? `- ${description}` : '';
+  return nameMd + typeMd + descriptionMd;
+}
+
 function paramsMd(params) {
-  const md = params
-    .map(
-      ({ name, type, description }) =>
-        `**${name}** \`${type.names.join('/')}\` - ${description}`
-    )
-    .join('\n\n');
-  return md === '' ? '**None**' : md;
+  return params.map(tagMd).join('\n\n') || '**None**';
 }
 
 function returnsMd(returns) {
-  const md = returns
-    .filter((ret) => ret.type.names.join('/') !== 'void')
-    .map(
-      ({ type, description }) => `\`${type.names.join('/')}\` - ${description}`
-    )
-    .join('\n\n');
-  return md === '' ? '**Nothing**' : md;
+  return (
+    returns
+      .filter((ret) => ret.type.names.join('/') !== 'void')
+      .map(tagMd)
+      .join('\n\n') || '**Nothing**'
+  );
 }
 
 const getDocumentation = ({ name, description, params, returns }) =>
