@@ -1,7 +1,7 @@
 /* =====================
  * === GLOBAL STYLES ===
  * ===================== */
-body {
+ body {
   margin: 0;
   overflow: hidden;
 }
@@ -37,6 +37,7 @@ body {
 #input-overlay > div,
 #input-overlay > form {
   width: 100%;
+  position: relative;
   min-width: 500px;
   max-width: 1000px;
   display: flex;
@@ -161,11 +162,142 @@ body {
   cursor: pointer;
   transition: all 200ms ease;
 }
+
+#input-overlay > .login > #howTo {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  border: none;
+  outline: none;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
+  background-color: #6cbbef;
+  background: linear-gradient(45deg, #6cbbef, #3fd7e3);
+  height: 50px;
+  width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+#input-overlay > .login > #howTo:hover {
+  background: linear-gradient(180deg, #6cbbef, #3fd7e3);
+  box-shadow: 0px 3px 6px 1px rgba(0, 0, 0, 0.2);
+  margin-top: -4px;
+  margin-bottom: 4px;
+}
+
 #input-overlay > .login > button:hover {
   background: linear-gradient(180deg, #6cbbef, #3fd7e3);
   box-shadow: 0px 3px 6px 1px rgba(0, 0, 0, 0.2);
   margin-top: -4px;
   margin-bottom: 4px;
+}
+
+#input-overlay > .login > #characters {
+  box-sizing: border-box;
+  height: 150px;
+  width: 90%;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+
+
+#input-overlay > .login > #characters > .character {
+  height: 140px;
+  width: 140px;
+  background: orange;
+  margin: 5px;
+  cursor: pointer;
+}
+#input-overlay > .login > #characters > .character:hover {
+  box-shadow: 0 2px 5px 1px rgba(0,0,0,.3);
+  margin: 0px;
+  width: calc(18% + 8px);
+}
+#input-overlay > .login > #characters > .selectedCharacter {
+  box-shadow: 0 2px 5px 1px rgba(0,0,0,.3);
+  margin: 0px;
+  width: calc(18% + 8px);
+}
+
+#input-overlay > .howTo {
+    height: 90%;
+    width: 90%;
+    background: lightgrey;
+    position: absolute;
+    padding: 0 0 0 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+#input-overlay > .howTo > #exit-button {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  border: none;
+  outline: none;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
+  background-color: #6cbbef;
+  background: linear-gradient(45deg, #6cbbef, #3fd7e3);
+  height: 30px;
+  width: 30px;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+#input-overlay > .howTo > #exit-button:hover {
+  background: linear-gradient(180deg, #6cbbef, #3fd7e3);
+  box-shadow: 0px 3px 6px 1px rgba(0, 0, 0, 0.2);
+  margin-top: -4px;
+  margin-bottom: 4px;
+}
+
+#input-overlay > .howTo > .descriptions {
+  box-sizing: border-box;
+  width: 60%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-right: 5px solid grey;
+  overflow: scroll;
+}
+#input-overlay > .howTo > .contributors {
+box-sizing: border-box;
+width: 40%;
+display: flex;
+flex-direction: column;
+padding-left: 20px;
+overflow: scroll;
+}
+
+
+#input-overlay > .howTo > .descriptions > h1 {
+  align-self: center;
+}
+#input-overlay > .howTo > .contributors > h1 {
+  align-self: center;
+}
+
+#input-overlay > .howTo > .description {
+  position: relative;
+  left: 10px;
 }
 
 /* ===================
