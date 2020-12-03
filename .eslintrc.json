@@ -16,6 +16,28 @@
         "ecmaVersion": 12
     },
     "rules": {
-        "prettier/prettier": "error"
+        "prettier/prettier": "error",
+        "comma-dangle": 0,
+        "func-names": 0,
+        "prefer-arrow-callback": 0,
+        "guard-for-in": 0,
+        "operator-linebreak": 0,
+        "no-unexpected-multiline": 0,
+        "no-underscore-dangle": 0,
+        "no-param-reassign": 0,
+        "max-len": 0,
+        "no-undef": 0,
+        "no-plusplus": 0,
+        "class-methods-use-this": 0,
+        "implicit-arrow-linebreak": 0,
+        "function-paren-newline": 0,
+        "object-curly-newline": 0,
+        "no-restricted-properties": 1,
+        "consistent-return": 0,
+        "max-classes-per-file": 0,
+        "no-use-before-define": 0,
+        "no-restricted-syntax": 0,
+        "prefer-const": 0,
+        "no-return-assign": 0
     }
 }
