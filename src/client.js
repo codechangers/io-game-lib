@@ -4,6 +4,7 @@
 const Colyseus = require('colyseus.js');
 const { clientMethods, linkMethods } = require('./helpers');
 
+/* eslint-disable */
 const gameConfig = require('../config.json');
 const endpoint =
   window.location.hostname === 'localhost'
@@ -11,6 +12,7 @@ const endpoint =
     : `${window.location.protocol.replace('http', 'ws')}//${
         window.location.hostname
       }`; // production (remote)
+/* eslint-enable */
 
 // This is the Library of Client side functionallity.
 module.exports = class ClientLib {

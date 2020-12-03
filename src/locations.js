@@ -26,7 +26,7 @@ function getLocations(
   const self = this;
   if (game.roomJoined) {
     game.room.listen(`${type}/:id`, function (change) {
-      if (change.operation == 'add') {
+      if (change.operation === 'add') {
         const { id, x, y, width, height, color } = change.value;
         if (game.textures.exists(type)) {
           const sprite = game.add.sprite(x, y, type);
@@ -43,7 +43,7 @@ function getLocations(
           };
         }
         onAdd(game[type][id], change.value);
-      } else if (change.operation == 'remove') {
+      } else if (change.operation === 'remove') {
         const { id } = change.path;
         const { graphics, sprite } = game[type][id];
         if (graphics) graphics.destroy();
@@ -53,16 +53,16 @@ function getLocations(
       }
     });
     game.room.listen(`${type}/:id/:attribute`, function (change) {
-      if (change.operation == 'replace') {
+      if (change.operation === 'replace') {
         const { id, attribute } = change.path;
         const location = game[type][id];
         if (
           location.graphics &&
-          (attribute == 'x' ||
-            attribute == 'y' ||
-            attribute == 'width' ||
-            attribute == 'height' ||
-            attribute == 'color')
+          (attribute === 'x' ||
+            attribute === 'y' ||
+            attribute === 'width' ||
+            attribute === 'height' ||
+            attribute === 'color')
         ) {
           location[attribute] = change.value;
           self.updateSquare(
@@ -73,7 +73,10 @@ function getLocations(
             location.color,
             location.graphics
           );
-        } else if (location.sprite && (attribute == 'x' || attribute == 'y')) {
+        } else if (
+          location.sprite &&
+          (attribute === 'x' || attribute === 'y')
+        ) {
           location.sprite[attribute] = change.value;
         } else {
           location[attribute] = change.value;
