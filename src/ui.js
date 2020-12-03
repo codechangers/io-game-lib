@@ -1,8 +1,6 @@
 /* -- CodeChangers io-game-lib 2020 --
  * This file contains the source code to create some helpful user interfaces. */
 
-const characters = require("./characters");
-
 /* ==========================
  * ==== Ignored Methods: ====
  * ========================== */
@@ -80,59 +78,66 @@ function useLoginScreen(
     const name = document.getElementById('displayName').value || 'player';
     loginForm.classList.add('hide');
     _showInputOverlay(false);
-    let character = document.querySelector('.selectedCharacter')
-    if(character) onStart(name, character.name);
+    let character = document.querySelector('.selectedCharacter');
+    if (character) onStart(name, character.name);
     else onStart(name);
   };
 }
 
-//Show a how to page that allows them to explain there game
+// Show a how to page that allows them to explain there game
 function useHowToScreen(
   title = 'How To', // string: What the header should say.
   theDescriptions, // object: All of the descriptions that they want to explain
-  theContributors // object: All of the people that have contributed 
+  theContributors // object: All of the people that have contributed
 ) {
   const loginForm = document.querySelector('#input-overlay > form.login');
-  let button = document.createElement("div");
-  button.id="howTo";
-  button.innerHTML = "?";
-  document.getElementById('exit-button').onclick = function(e) {
+  let button = document.createElement('div');
+  button.id = 'howTo';
+  button.innerHTML = '?';
+  document.getElementById('exit-button').onclick = function (e) {
     e.preventDefault();
     const howTo = document.querySelector('#input-overlay > div.howTo');
     howTo.classList.add('hide');
-  }
-  button.onclick = function(e) {
+  };
+  button.onclick = function (e) {
     e.preventDefault();
-    const descriptions = document.querySelector('#input-overlay > div.howTo > div.descriptions');
-    const contributors = document.querySelector('#input-overlay > div.howTo > div.contributors');
+    const descriptions = document.querySelector(
+      '#input-overlay > div.howTo > div.descriptions'
+    );
+    const contributors = document.querySelector(
+      '#input-overlay > div.howTo > div.contributors'
+    );
     const howTo = document.querySelector('#input-overlay > div.howTo');
     howTo.classList.remove('hide');
     let allDescriptions = [];
     for (key in theDescriptions) {
-      allDescriptions.push(`<div class='description'><h3>${key}</h3><p>${theDescriptions[key]}</p></div>`)
+      allDescriptions.push(
+        `<div class='description'><h3>${key}</h3><p>${theDescriptions[key]}</p></div>`
+      );
     }
     let allContributors = [];
     for (key in theContributors) {
-      allContributors.push(`<div class='description'><h3>${key}</h3><p>${theContributors[key]}</p></div>`);
+      allContributors.push(
+        `<div class='description'><h3>${key}</h3><p>${theContributors[key]}</p></div>`
+      );
     }
-    descriptions.innerHTML = _render([
-      `<h1>${title}</h1>`,
-      ...allDescriptions
-    ])
+    descriptions.innerHTML = _render([`<h1>${title}</h1>`, ...allDescriptions]);
     contributors.innerHTML = _render([
-      `<h1>Contributors</h1>`,
-      ...allContributors
-    ])
-  }
+      '<h1>Contributors</h1>',
+      ...allContributors,
+    ]);
+  };
   loginForm.prepend(button);
 }
 
-//Show a player select on the loginScreen that allows them to explain their game
+// Show a player select on the loginScreen that allows them to explain their game
 function usePlayerSelectScreen(
   data // object: The names and pictures they can choose from
 ) {
-  const charactersDiv = document.querySelector('#input-overlay > form.login > div#characters');
-  charactersDiv.classList.remove("hide");
+  const charactersDiv = document.querySelector(
+    '#input-overlay > form.login > div#characters'
+  );
+  charactersDiv.classList.remove('hide');
   newCharacters = [];
   for (key in data) {
     let thisCharacter = document.createElement('div');
@@ -142,10 +147,12 @@ function usePlayerSelectScreen(
     thisCharacter.style.backgroundPosition = 'center';
     thisCharacter.style.backgroundRepeat = 'no-repeat';
     thisCharacter.name = key;
-    thisCharacter.onclick = function() {
-      document.querySelector('.selectedCharacter').classList.remove('selectedCharacter');
+    thisCharacter.onclick = function () {
+      document
+        .querySelector('.selectedCharacter')
+        .classList.remove('selectedCharacter');
       thisCharacter.classList.add('selectedCharacter');
-    }
+    };
     charactersDiv.appendChild(thisCharacter);
     // newCharacters.push(`<div class='character' style='background: url(../asset/${data[key]}); background-size: contain; background-repeat: no-repeat; background-position: center'></div>`)
   }
