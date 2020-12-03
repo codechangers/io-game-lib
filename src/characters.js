@@ -329,6 +329,35 @@ function unAttach(
   delete this.game.state[type][id][name];
 }
 
+// Returns the rotation that you need to rotate towards a point
+function getRotationTowards(
+  character, // object: a character you want to rotate
+  x, // int: the x value you want to rotate towards.
+  y // int: the y value you want to rotate towards.
+) {
+  return character.x - x < 0
+    ? Math.atan((character.y - y) / (character.x - x)) + Math.PI / 2
+    : Math.atan((character.y - y) / (character.x - x)) - Math.PI / 2;
+}
+
+// Calculate the x change you need to get closer to a point.
+function getXTowards(
+  character, // object: a character you want to rotate
+  x, // int: the x value you want to rotate towards.
+  y // int: the y value you want to rotate towards.
+) {
+  return Math.cos(this.getRotationTowards(character, x, y) - Math.PI / 2);
+}
+
+// Calculate the y change you need to get close to a point.
+function getYTowards(
+  character, // object: a character you want to rotate
+  x, // int: the x value you want to rotate towards.
+  y // int: the y value you want to rotate towards.
+) {
+  return Math.sin(this.getRotationTowards(character, x, y) - Math.PI / 2);
+}
+
 // Add some simple following AI to a set of characters.
 function follow(
   type1, // string: The type of characters that will be followed.
@@ -386,6 +415,9 @@ const server = {
   deleteACharacter,
   nextCharacterId,
   attachTo,
+  getRotationTowards,
+  getXTowards,
+  getYTowards,
   unAttach,
   follow,
 };
