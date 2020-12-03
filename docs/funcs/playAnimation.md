@@ -7,13 +7,13 @@ author: jason
 
 ## Parameters
 
-**obj** `object` - The character/resource instance.
+**obj**: `object` - The character/resource instance.
 
-**attribute** `string` - The attribute that will be animated.
+**attribute**: `string` - The attribute that will be animated.
 
-**value** `number` - The value the attribute should be changed by.
+**value**: `number` - The value the attribute should be changed by.
 
-**duration** `number` - (milliseconds) how long the animation should run.
+**duration**: `number` - (milliseconds) how long the animation should run.
 
 ## Returns
 

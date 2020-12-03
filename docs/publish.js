@@ -4,7 +4,7 @@
 const fs = require('fs');
 
 function tagMd({ name, type, description }) {
-  const nameMd = name ? `**${name}** ` : '';
+  const nameMd = name ? `**${name}**: ` : '';
   const typeMd = type.names.length > 0 ? `\`${type.names.join('/')}\` ` : '';
   const descriptionMd = description ? `- ${description}` : '';
   return nameMd + typeMd + descriptionMd;
