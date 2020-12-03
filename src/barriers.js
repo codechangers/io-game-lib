@@ -1,5 +1,5 @@
 /* -- CodeChangers io-game-lib 2020 --
- * This file contains the source code for creating characters in an io-game. */
+ * This file contains the source code for creating barriers in an io-game. */
 
 /* ==========================
  * ==== Ignored Methods: ====
@@ -100,29 +100,29 @@ function checkBarriers(
       this.handleCollision(
         { ...object, [axis]: object[axis] + distance },
         bType,
-        (object, barrier, colDist) => {
+        (obj, barrier, colDist) => {
           validMove = false;
-          if (shapes[bType] === 'circle' && shapes[object.type] === 'circle') {
+          if (shapes[bType] === 'circle' && shapes[obj.type] === 'circle') {
             // Circle on Circle
-            fallbackPos = _circleRebound(object, barrier, axis);
+            fallbackPos = _circleRebound(obj, barrier, axis);
           } else if (shapes[bType] === 'circle') {
             // Box on Circle
-            const cornerPos = _cornerRebound(barrier, object, axis, colDist);
+            const cornerPos = _cornerRebound(barrier, obj, axis, colDist);
             // TODO: Handle Blip
             fallbackPos =
               cornerPos !== -1
-                ? object[axis] + barrier[axis] - cornerPos
-                : _boxRebound(object, barrier, axis, distance);
-          } else if (shapes[object.type] === 'circle') {
+                ? obj[axis] + barrier[axis] - cornerPos
+                : _boxRebound(obj, barrier, axis, distance);
+          } else if (shapes[obj.type] === 'circle') {
             // Circle on Box
-            const cornerPos = _cornerRebound(object, barrier, axis, colDist);
+            const cornerPos = _cornerRebound(obj, barrier, axis, colDist);
             fallbackPos =
               cornerPos !== -1
                 ? cornerPos
-                : _boxRebound(object, barrier, axis, distance);
+                : _boxRebound(obj, barrier, axis, distance);
           } else {
             // Box on Box
-            fallbackPos = _boxRebound(object, barrier, axis, distance);
+            fallbackPos = _boxRebound(obj, barrier, axis, distance);
           }
         }
       );

@@ -4,6 +4,7 @@
 const Colyseus = require('colyseus.js');
 const { clientMethods, linkMethods } = require('./helpers');
 
+/* eslint-disable */
 const gameConfig = require('../config.json');
 const endpoint =
   window.location.hostname === 'localhost'
@@ -11,6 +12,7 @@ const endpoint =
     : `${window.location.protocol.replace('http', 'ws')}//${
         window.location.hostname
       }`; // production (remote)
+/* eslint-enable */
 
 // This is the Library of Client side functionallity.
 module.exports = class ClientLib {
@@ -35,7 +37,10 @@ module.exports = class ClientLib {
     game.front_layer = game.add.group();
     // ADDS AN EVENT TO ALLOW FOR CLICKING
     document.addEventListener('click', function (e) {
-      if (game.click) {
+      if (
+        !e.path.includes(document.getElementById('input-overlay')) &&
+        game.click
+      ) {
         const moveX = e.clientX - window.innerWidth / 2;
         const moveY = e.clientY - window.innerHeight / 2;
         game.click(

@@ -17,7 +17,7 @@ function _showInputOverlay(yes) {
 
 // PLEASE IGNORE ME IN THE DOCS
 function _exampleOnStart(name) {
-  console.log(name + ' is joining...');
+  console.log(`${name} is joining...`); // eslint-disable-line
 }
 
 // PLEASE IGNORE ME IN THE DOCS
@@ -81,6 +81,7 @@ function useLoginScreen(
   };
 }
 
+/* eslint-disable */
 // Show the lives, names, and scores of a specific type of character on the leaderboard.
 function handleLeaderboard(
   type, // string: The type of characters.
@@ -124,6 +125,7 @@ function handleLeaderboard(
     ),
   ]);
 }
+/* eslint-enable */
 
 // Show a store interface for selling items.
 function useStore(

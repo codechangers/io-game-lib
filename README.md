@@ -11,43 +11,6 @@ This is the official IO Game Library for building awesome games on the CodeChang
 
 # Setup:
 
-## Example Game Setup
-
-Setup a local development environment for one of the example games.
-
-> **Note:** replace `{game}` with the name of the example game you are setting up in all of the following:
-
-```
-git clone https://github.com/codechangers/io-game-lib.git
-cd io-game-lib
-git submodule update --init --recursive
-
-./bin/setup.sh examples/{game}
-
-cd examples/{game}/code
-npm install
-npm run dev
-```
-
----
-
-## Adding Example Games
-
-Add a new example game to the examples directory.
-
-> **Note:** the game must be hosted on a remote git repository that you have access to. The repo must also contain a code directory with the same structure as the `template` directory. It is highly recommended that this repo is also hooked up to a repl.it project.
-
-> **Note:** replace `https://repo.url/path/to/game.git` with a url pointing to your git repository.
-
-```
-cd examples
-git submodule add https://repo.url/path/to/game.git
-```
-
----
-
-## Library Dev Setup
-
 Setup a development environment for the IO Game Library source.
 
 > **Note:** replace `{game}` with the name of the example game you are setting up in all of the following:
@@ -103,7 +66,7 @@ git checkout -- code
 
 # Deploying:
 
-The _IO Platform_ pulls the latest changes from the `template` directory upon setup, to deploy the latest library updates run the following commands:
+The _IO Platform_ pulls the latest changes from the `template` directory, to deploy the latest library updates run the following commands:
 
 ```
 npm run build
@@ -112,4 +75,4 @@ git commit
 git push
 ```
 
-Submit a Pull Request to merge your current branch into `master`. Once the Pull Request is merged, run the setup script on the _IO Platform_ server and it will pull the latest library updates.
+> **Note:** to avoid merge conflicts, please only build the library from the [develop](https://github.com/codechangers/io-game-lib/tree/develop) branch. After the library has been built rebase `master` on `develop` to make the changes public.

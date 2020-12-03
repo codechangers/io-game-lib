@@ -22,7 +22,7 @@ function connect(
     }
   });
   game.room.listen('board/:id', function (change) {
-    if (change.operation == 'add') {
+    if (change.operation === 'add') {
       self.setSize(500, 500);
       self.createSquare(
         0,

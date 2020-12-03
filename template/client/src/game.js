@@ -21,7 +21,7 @@ module.exports = class Game extends Phaser.Scene {
 
   init() {
     g.setup(this);
-    g.addCharacters('players');
+    g.addCharacters('players', 0.5);
   }
 
   preload() {
@@ -31,10 +31,7 @@ module.exports = class Game extends Phaser.Scene {
   create() {
     g.connect();
     g.setupKeys(keys);
-    g.getCharacters(
-      'players',
-      (player) => player.sprite.setScale(0.5) // On Add
-    );
+    g.getCharacters('players');
   }
 
   update() {

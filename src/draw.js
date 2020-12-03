@@ -22,9 +22,9 @@ function drawBackground(
   for (let i = 0; i <= Math.floor(gameW / width) + 1; i++) {
     for (let j = 0; j <= Math.floor(gameH / height) + 1; j++) {
       if (i > 0 || j > 0) {
-        const floor = game.add.sprite(width * i, height * j, img);
-        floor.setScale(scale);
-        floor.depth = 0;
+        const flr = game.add.sprite(width * i, height * j, img);
+        flr.setScale(scale);
+        flr.depth = 0;
       }
     }
   }
@@ -47,7 +47,8 @@ function createSquare(
   graphics.fillRectShape(rect);
   return graphics;
 }
-// Update a previously drawn squre.
+
+// Update a previously drawn square.
 function updateSquare(width, height, x, y, color, graphics) {
   const rect = new Phaser.Geom.Rectangle(width, height, x, y);
   graphics.clear();
