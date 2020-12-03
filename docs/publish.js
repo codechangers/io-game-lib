@@ -1,4 +1,5 @@
 /** @module publish */
+/* eslint-disable no-console */
 
 const fs = require('fs');
 
@@ -31,21 +32,38 @@ author: jason
 ---
 
 ## Parameters
+
 ${paramsMd(params)}
 
 ## Returns
+
 ${returnsMd(returns)}
 `;
 
-function createDocFile(doclet) {
+const getInfo = (fName) =>
+  new Promise((resolve, reject) => {
+    fs.readFile(`./docs/info/${fName}`, 'utf8', (err, data) => {
+      if (err && err.errno === -2) resolve('');
+      else if (err) reject(err);
+      else resolve(data);
+    });
+  });
+
+let totalDocs;
+let count = 0;
+async function createDocFile(doclet) {
   if (!doclet.undocumented && doclet.kind === 'function') {
-    console.log(`    funcs/${doclet.name}.md`);
+    const fName = `${doclet.name}.md`;
+    console.log(`    funcs/${fName}`);
+    const info = await getInfo(fName);
     fs.writeFile(
-      `./docs/funcs/${doclet.name}.md`,
-      getDocumentation(doclet),
+      `./docs/funcs/${fName}`,
+      `${getDocumentation(doclet)}\n${info}`,
       (err) => err !== null && console.error(err)
     );
   }
+  count += 1;
+  if (count === totalDocs) console.log('\n * Finished!\n');
 }
 
 /**
@@ -55,7 +73,7 @@ function createDocFile(doclet) {
  *                       all the symbols documented in your code.
  */
 exports.publish = function (data) {
-  console.log('\n\nCreating Documentation Files:\n');
+  console.log(' * Generating Documentation...\n');
+  totalDocs = data().count();
   data().each(createDocFile);
-  console.log('\nFinished!\n\n');
 };
