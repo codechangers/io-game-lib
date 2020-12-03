@@ -6,7 +6,10 @@ author: jason
 ---
 
 ## Parameters
+
 **None**
 
 ## Returns
+
 `string` - Your current session/player id.
+
