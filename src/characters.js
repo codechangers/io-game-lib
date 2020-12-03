@@ -27,9 +27,9 @@ function getCharacters(
   if (game.roomJoined) {
     game.room.listen(`${type}/:id`, function (change) {
       if (change.operation === 'add') {
-        const { id, x, y } = change.value;
+        const { id, x, y, spriteName } = change.value;
         let sprite = game.add.container(x, y);
-        let character = game.front_layer.create(0, 0, type);
+        let character = game.front_layer.create(0, 0, spriteName || type);
         character.rotation = change.value.rotation;
         sprite.add([character]);
         sprite.setScale(game.scales[type] || 1);

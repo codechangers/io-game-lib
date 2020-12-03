@@ -153,10 +153,10 @@ function usePlayerSelectScreen(
         .classList.remove('selectedCharacter');
       thisCharacter.classList.add('selectedCharacter');
     };
-    charactersDiv.appendChild(thisCharacter);
-    // newCharacters.push(`<div class='character' style='background: url(../asset/${data[key]}); background-size: contain; background-repeat: no-repeat; background-position: center'></div>`)
+    const wrapper = document.createElement('div');
+    wrapper.appendChild(thisCharacter);
+    charactersDiv.appendChild(wrapper);
   }
-  // charactersDiv.innerHTML = _render(newCharacters);
   document.querySelector('.character').classList.add('selectedCharacter');
 }
 
