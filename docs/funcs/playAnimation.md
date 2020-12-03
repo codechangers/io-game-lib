@@ -1,6 +1,6 @@
 ---
 title: playAnimation
-subtitle: 'Set an animation to be played on a character/resource.'
+subtitle: "Set an animation to be played on a character/resource."
 tags: [server, animations, play]
 author: jason
 ---
