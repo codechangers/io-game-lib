@@ -7,6 +7,7 @@
 
 /**
  * Set an animation to be played on a character/resource.
+ * @tags server, animations, play
  * @param {object} obj - The character/resource instance.
  * @param {string} attribute - The attribute that will be animated.
  * @param {number} value - The value the attribute should be changed by.

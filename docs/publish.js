@@ -23,11 +23,11 @@ function returnsMd(returns) {
   );
 }
 
-const getDocumentation = ({ name, description, params, returns }) =>
+const getDocumentation = ({ name, description, params, returns, tags }) =>
   `---
 title: ${name}
 subtitle: '${description}'
-tags: []
+tags: [${tags ? tags.map((t) => t.text).join(', ') : ''}]
 author: jason
 ---
 
