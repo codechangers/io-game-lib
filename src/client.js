@@ -44,6 +44,17 @@ module.exports = class ClientLib {
         );
       }
     });
+    // ADDS AN EVENT TO ALLOW FOR MOUSEMOVE
+    document.addEventListener('mousemove', function (e) {
+      if (game.mousemove) {
+        const moveX = e.clientX - window.innerWidth / 2;
+        const moveY = e.clientY - window.innerHeight / 2;
+        game.mousemove(
+          game.cameras.main.scrollX + window.innerWidth / 2 + moveX,
+          game.cameras.main.scrollY + window.innerHeight / 2 + moveY
+        );
+      }
+    });
     linkMethods(this, clientMethods);
   }
 };
