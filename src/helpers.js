@@ -1,6 +1,8 @@
 /* -- CodeChangers io-game-lib 2020 --
  * This file contains helpful reusable functions */
 
+const version = '1.0.0';
+
 const characters = require('./characters');
 const connection = require('./connection');
 const items = require('./items');
@@ -43,4 +45,4 @@ function linkMethods(lib, methods) {
   }
 }
 
-module.exports = { clientMethods, serverMethods, linkMethods };
+module.exports = { clientMethods, serverMethods, linkMethods, version };

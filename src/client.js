@@ -2,7 +2,7 @@
  * This file contains the io game client library class definition. */
 
 const Colyseus = require('colyseus.js');
-const { clientMethods, linkMethods } = require('./helpers');
+const { clientMethods, linkMethods, version } = require('./helpers');
 
 /* eslint-disable */
 const gameConfig = require('../config.json');
@@ -17,16 +17,30 @@ const endpoint =
 // This is the Library of Client side functionallity.
 module.exports = class ClientLib {
   constructor() {
+    this.version = version;
     this.game = null;
     this.keys = null;
     this.connectEvents = {};
     this.colyseus = new Colyseus.Client(endpoint);
   }
 
+  // Show the current library version.
+  showVersion() {
+    const versionStr = `┃  IO Game Library v${this.version}    ┃`;
+    let siteLink = '┃  https://codecontest.org';
+    siteLink += ' '.repeat(versionStr.length - siteLink.length - 1);
+    siteLink += '┃';
+    const flat = '━'.repeat(versionStr.length - 2);
+    const top = `┏${flat}┓`;
+    const bottom = `┗${flat}┛`;
+    console.log(`\n${top}\n${versionStr}\n${siteLink}\n${bottom}\n `); // eslint-disable-line
+  }
+
   // Bind the Game and setup initial state.
   setup(
     game // game.js/Game: Your Game!
   ) {
+    this.showVersion();
     this.game = game;
     game.room = null;
     game.roomJoined = false;
