@@ -151,9 +151,9 @@ function getCharacters(
           }
           game[type][id].sprite[attribute] = change.value;
         } else if (attribute === 'rotation') {
-          game[type][id][attribute] = change.value;
+          game[type][id].sprite[attribute] = change.value;
         } else {
-          game[type][id][attribute] = change.value;
+          game[type][id].sprite[attribute] = change.value;
         }
         onUpdate(id, attribute, change.value);
       }
