@@ -181,7 +181,7 @@ function getCharacters(
         } else {
           document.getElementsByClassName('used')[
             change.value.index
-          ].innerHTML = 'âˆž';
+          ].innerHTML = '∞';
         }
         document.getElementsByClassName('used')[
           change.value.index
