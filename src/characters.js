@@ -363,8 +363,8 @@ function follow(
   type1, // string: The type of characters that will be followed.
   type2, // string: The type of characters that will follow them.
   range = 0, // number: How far away should the followers be before they stop following.
-  speed = 1,
-  cb // number: The rate of speed the followers move at, ie. 0.5 for half speed, 2 for double speed.
+  speed = 1, // number: The rate of speed the followers move at, ie. 0.5 for half speed, 2 for double speed.
+  cb = () => {} // function: A callback that runs after the follow logic.
 ) {
   if (Object.keys(this.game.state[type2]).length >= 1) {
     Object.keys(this.game.state[type2]).forEach((otherId) => {
