@@ -18,9 +18,9 @@ function addCharacters(
 // Listen to Characters on the server.
 function getCharacters(
   type, // string: The type of characters.
-  onAdd = function () { }, // function: This will get run when a character is added.
-  onRemove = function () { }, // function: This will get run when a character is removed.
-  onUpdate = function () { } // function: This will get run when a character is updated.
+  onAdd = function () {}, // function: This will get run when a character is added.
+  onRemove = function () {}, // function: This will get run when a character is removed.
+  onUpdate = function () {} // function: This will get run when a character is updated.
 ) {
   const { game } = this;
   const self = this;
@@ -59,7 +59,7 @@ function getCharacters(
           selecteds[0].classList.remove('selected');
           document
             .getElementsByClassName('item')
-          [change.value].classList.add('selected');
+            [change.value].classList.add('selected');
         }
       }
       if (change.operation === 'add' && change.value && change.value.type) {
@@ -79,9 +79,6 @@ function getCharacters(
           };
         }
         if (change.value.type === 'item') {
-          console.log(game[type][change.value.id].sprite._scaleX)
-          console.log(change.value.scale);
-          console.log(change.value.scale/game[type][change.value.id].sprite._scaleX)
           const itemScale =
           change.value.scale/game[type][change.value.id].sprite._scaleX;
           let item = game.front_layer
@@ -177,7 +174,7 @@ function getCharacters(
         ].style.backgroundRepeat = 'no-repeat';
         document
           .getElementsByClassName('item')
-        [change.value.index].setAttribute('name', change.value.name);
+          [change.value.index].setAttribute('name', change.value.name);
         if (change.value.uses) {
           document.getElementsByClassName('used')[
             change.value.index
@@ -333,11 +330,11 @@ function unAttach(
   delete this.game.state[type][id][name];
 }
 
-// Returns the rotation that you need to rotate towards a point
+//Returns the rotation that you need to rotate towards a point
 function getRotationTowards(
   character, // object: a character you want to rotate
   x, // int: the x value you want to rotate towards.
-  y // int: the y value you want to rotate towards.
+  y, // int: the y value you want to rotate towards.
 ) {
   return character.x - x < 0
     ? Math.atan((character.y - y) / (character.x - x)) + Math.PI / 2
