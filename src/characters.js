@@ -37,6 +37,7 @@ function getCharacters(
           ...change.value,
           attached: {},
         };
+        if (change.value.rotation) sprite.rotation = change.value.rotation;
         onAdd(game[type][id], change.value);
       } else if (change.operation === 'remove') {
         const { id } = change.path;
@@ -79,9 +80,9 @@ function getCharacters(
         }
         if (change.value.type === 'item') {
           const itemScale =
-            game[type][change.value.id].sprite._scaleX * 4 * change.value.scale;
+          change.value.scale/game[type][change.value.id].sprite._scaleX;
           let item = game.front_layer
-            .create(change.value.x, change.value.y, change.value.name)
+            .create(change.value.x * (1/game[type][change.value.id].sprite._scaleX), change.value.y * (1/game[type][change.value.id].sprite._scaleX), change.value.name)
             .setScale(itemScale);
           self.sendSpriteSize(change.value.name, itemScale || 1);
           game[type][change.value.id].sprite.add(item);
@@ -329,11 +330,11 @@ function unAttach(
   delete this.game.state[type][id][name];
 }
 
-// Returns the rotation that you need to rotate towards a point
+//Returns the rotation that you need to rotate towards a point
 function getRotationTowards(
   character, // object: a character you want to rotate
   x, // int: the x value you want to rotate towards.
-  y // int: the y value you want to rotate towards.
+  y, // int: the y value you want to rotate towards.
 ) {
   return character.x - x < 0
     ? Math.atan((character.y - y) / (character.x - x)) + Math.PI / 2
