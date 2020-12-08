@@ -122,7 +122,6 @@ function useItem(
         let duration = 1000 / (speed / 10);
         self.playAnimation(newCharacter, 'x', dx, duration);
         self.playAnimation(newCharacter, 'y', dy, duration);
-        // self.playAnimation(newCharacter, 'rotation', Math.PI / 3 * 100, duration);
         setTimeout(function () {
           self.deleteACharacter(item.name, id);
         }, duration + 1);
