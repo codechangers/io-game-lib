@@ -50,6 +50,7 @@ function createNewItem(
   this.game.state[type] = {};
   this.game.shapes[type] = 'circle';
   this.items[type] = { name: type, useItem: cb, image };
+  this.setupCharacters(type, { rotation: 0 });
 }
 
 // Give a character access to an item in the game.
@@ -101,7 +102,7 @@ function useItem(
       },
 
       throwItem: (x, y, range, speed) => {
-        if (speed === undefined) speed = 5;
+        if (speed === undefined) speed = 1;
         if (range === undefined) range = 1000;
         let position = self.getItemPosition(character);
         let id = self.nextCharacterId(item.name);
@@ -118,10 +119,9 @@ function useItem(
           dx = -dx;
           dy = -dy;
         }
-        let duration = speed * range;
+        let duration = 1000 / (speed / 10);
         self.playAnimation(newCharacter, 'x', dx, duration);
         self.playAnimation(newCharacter, 'y', dy, duration);
-        self.playAnimation(newCharacter, 'rotation', Math.PI / 3, duration / 2);
         setTimeout(function () {
           self.deleteACharacter(item.name, id);
         }, duration + 1);
@@ -130,13 +130,14 @@ function useItem(
       placeItem: (x, y) => {
         let id = self.nextCharacterId(item.name);
         if (x !== undefined && y !== undefined) {
-          self.createACharacter(item.name, id, { x, y });
+          self.createACharacter(item.name, id, { x, y, scale: item.scale });
         } else {
           let position = self.getItemPosition(character);
           self.createACharacter(item.name, id, {
             x: position.x,
             y: position.y,
             rotation: character.rotation,
+            scale: item.scale,
           });
         }
       },
@@ -153,9 +154,13 @@ function getItemPosition(
   let item = Object.values(character.items).find(
     (itm) => itm.index === character.selectedItem
   );
+  let theta = character.rotation;
+  const { x, y } = item;
+  let newX = x * Math.cos(theta) - y * Math.sin(theta);
+  let newY = x * Math.sin(theta) + y * Math.cos(theta);
   return {
-    x: character.x + Math.cos(character.rotation) * (item.x / 2),
-    y: character.y + Math.sin(character.rotation) * (item.y / 2),
+    x: character.x + newX,
+    y: character.y + newY,
   };
 }
 
