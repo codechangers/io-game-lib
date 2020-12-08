@@ -50,7 +50,7 @@ function createNewItem(
   this.game.state[type] = {};
   this.game.shapes[type] = 'circle';
   this.items[type] = { name: type, useItem: cb, image };
-  this.setupCharacters(type, {rotation: 0});
+  this.setupCharacters(type, { rotation: 0 });
 }
 
 // Give a character access to an item in the game.
@@ -107,7 +107,7 @@ function useItem(
         let position = self.getItemPosition(character);
         let id = self.nextCharacterId(item.name);
         if (!this.counts[item.name]) self.setupCharacters(item.name);
-        self.createACharacter(item.name, id, { x: position.x, y: position.y});
+        self.createACharacter(item.name, id, { x: position.x, y: position.y });
         let newCharacter = self.getACharacter(item.name, id);
         let dx =
           Math.cos(Math.atan((y - newCharacter.y) / (x - newCharacter.x))) *
@@ -119,7 +119,7 @@ function useItem(
           dx = -dx;
           dy = -dy;
         }
-        let duration = 1000 / (speed/10);
+        let duration = 1000 / (speed / 10);
         self.playAnimation(newCharacter, 'x', dx, duration);
         self.playAnimation(newCharacter, 'y', dy, duration);
         // self.playAnimation(newCharacter, 'rotation', Math.PI / 3 * 100, duration);
@@ -131,15 +131,14 @@ function useItem(
       placeItem: (x, y) => {
         let id = self.nextCharacterId(item.name);
         if (x !== undefined && y !== undefined) {
-          self.createACharacter(item.name, id, { x, y, scale:item.scale });
+          self.createACharacter(item.name, id, { x, y, scale: item.scale });
         } else {
-          console.log(id, character.rotation);
           let position = self.getItemPosition(character);
           self.createACharacter(item.name, id, {
             x: position.x,
             y: position.y,
             rotation: character.rotation,
-            scale: item.scale
+            scale: item.scale,
           });
         }
       },
@@ -157,8 +156,7 @@ function getItemPosition(
     (itm) => itm.index === character.selectedItem
   );
   let theta = character.rotation;
-  let x = item.x;
-  let y = item.y;
+  const { x, y } = item;
   let newX = x * Math.cos(theta) - y * Math.sin(theta);
   let newY = x * Math.sin(theta) + y * Math.cos(theta);
   return {
