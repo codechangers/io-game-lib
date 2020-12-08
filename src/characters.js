@@ -18,9 +18,9 @@ function addCharacters(
 // Listen to Characters on the server.
 function getCharacters(
   type, // string: The type of characters.
-  onAdd = function () { }, // function: This will get run when a character is added.
-  onRemove = function () { }, // function: This will get run when a character is removed.
-  onUpdate = function () { } // function: This will get run when a character is updated.
+  onAdd = function () {}, // function: This will get run when a character is added.
+  onRemove = function () {}, // function: This will get run when a character is removed.
+  onUpdate = function () {} // function: This will get run when a character is updated.
 ) {
   const { game } = this;
   const self = this;
@@ -58,7 +58,7 @@ function getCharacters(
           selecteds[0].classList.remove('selected');
           document
             .getElementsByClassName('item')
-          [change.value].classList.add('selected');
+            [change.value].classList.add('selected');
         }
       }
       if (change.operation === 'add' && change.value && change.value.type) {
@@ -173,7 +173,7 @@ function getCharacters(
         ].style.backgroundRepeat = 'no-repeat';
         document
           .getElementsByClassName('item')
-        [change.value.index].setAttribute('name', change.value.name);
+          [change.value.index].setAttribute('name', change.value.name);
         if (change.value.uses) {
           document.getElementsByClassName('used')[
             change.value.index
@@ -377,7 +377,7 @@ function follow(
             closestPlayer = playerId;
             closestDistance = Math.sqrt(
               (x - this.game.state[type1][playerId].x) ** 2 +
-              (y - this.game.state[type1][playerId].y) ** 2
+                (y - this.game.state[type1][playerId].y) ** 2
             );
           } else {
             let distanceX = x - this.game.state[type1][playerId].x;
@@ -403,7 +403,10 @@ function follow(
           }
           this.game.state[type2][otherId].x -= dx * speed;
           this.game.state[type2][otherId].y -= dy * speed;
-          cb(this.game.state[type1][closestPlayer], this.game.state[type2][otherId])
+          cb(
+            this.game.state[type1][closestPlayer],
+            this.game.state[type2][otherId]
+          );
         }
       }
     });
