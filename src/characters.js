@@ -18,9 +18,9 @@ function addCharacters(
 // Listen to Characters on the server.
 function getCharacters(
   type, // string: The type of characters.
-  onAdd = function () {}, // function: This will get run when a character is added.
-  onRemove = function () {}, // function: This will get run when a character is removed.
-  onUpdate = function () {} // function: This will get run when a character is updated.
+  onAdd = function () { }, // function: This will get run when a character is added.
+  onRemove = function () { }, // function: This will get run when a character is removed.
+  onUpdate = function () { } // function: This will get run when a character is updated.
 ) {
   const { game } = this;
   const self = this;
@@ -30,7 +30,6 @@ function getCharacters(
         const { id, x, y, spriteName } = change.value;
         let sprite = game.add.container(x, y);
         let character = game.front_layer.create(0, 0, spriteName || type);
-        character.rotation = change.value.rotation;
         sprite.add([character]);
         sprite.setScale(game.scales[type] || 1);
         game[type][id] = {
@@ -59,7 +58,7 @@ function getCharacters(
           selecteds[0].classList.remove('selected');
           document
             .getElementsByClassName('item')
-            [change.value].classList.add('selected');
+          [change.value].classList.add('selected');
         }
       }
       if (change.operation === 'add' && change.value && change.value.type) {
@@ -153,7 +152,7 @@ function getCharacters(
         } else if (attribute === 'rotation') {
           game[type][id].sprite[attribute] = change.value;
         } else {
-          game[type][id].sprite[attribute] = change.value;
+          game[type][id][attribute] = change.value;
         }
         onUpdate(id, attribute, change.value);
       }
@@ -174,7 +173,7 @@ function getCharacters(
         ].style.backgroundRepeat = 'no-repeat';
         document
           .getElementsByClassName('item')
-          [change.value.index].setAttribute('name', change.value.name);
+        [change.value.index].setAttribute('name', change.value.name);
         if (change.value.uses) {
           document.getElementsByClassName('used')[
             change.value.index
@@ -182,7 +181,7 @@ function getCharacters(
         } else {
           document.getElementsByClassName('used')[
             change.value.index
-          ].innerHTML = '∞';
+          ].innerHTML = 'âˆž';
         }
         document.getElementsByClassName('used')[
           change.value.index
@@ -208,6 +207,7 @@ function getCharacters(
           change.rawPath[2]
         ].sprite.setText(change.value);
       }
+      onUpdate(change.path.id, change.path.attribute, change.value);
     });
     game.room.listen(`${type}/:id/:attribute/:id/:attribute`, function (
       change
@@ -363,7 +363,8 @@ function follow(
   type1, // string: The type of characters that will be followed.
   type2, // string: The type of characters that will follow them.
   range = 0, // number: How far away should the followers be before they stop following.
-  speed = 1 // number: The rate of speed the followers move at, ie. 0.5 for half speed, 2 for double speed.
+  speed = 1,
+  cb // number: The rate of speed the followers move at, ie. 0.5 for half speed, 2 for double speed.
 ) {
   if (Object.keys(this.game.state[type2]).length >= 1) {
     Object.keys(this.game.state[type2]).forEach((otherId) => {
@@ -376,7 +377,7 @@ function follow(
             closestPlayer = playerId;
             closestDistance = Math.sqrt(
               (x - this.game.state[type1][playerId].x) ** 2 +
-                (y - this.game.state[type1][playerId].y) ** 2
+              (y - this.game.state[type1][playerId].y) ** 2
             );
           } else {
             let distanceX = x - this.game.state[type1][playerId].x;
@@ -402,6 +403,7 @@ function follow(
           }
           this.game.state[type2][otherId].x -= dx * speed;
           this.game.state[type2][otherId].y -= dy * speed;
+          cb(this.game.state[type1][closestPlayer], this.game.state[type2][otherId])
         }
       }
     });
