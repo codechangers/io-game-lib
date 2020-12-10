@@ -30,7 +30,6 @@ function getCharacters(
         const { id, x, y, spriteName } = change.value;
         let sprite = game.add.container(x, y);
         let character = game.front_layer.create(0, 0, spriteName || type);
-        character.rotation = change.value.rotation;
         sprite.add([character]);
         sprite.setScale(game.scales[type] || 1);
         game[type][id] = {
@@ -38,6 +37,7 @@ function getCharacters(
           ...change.value,
           attached: {},
         };
+        if (change.value.rotation) sprite.rotation = change.value.rotation;
         onAdd(game[type][id], change.value);
       } else if (change.operation === 'remove') {
         const { id } = change.path;
@@ -80,9 +80,13 @@ function getCharacters(
         }
         if (change.value.type === 'item') {
           const itemScale =
-            game[type][change.value.id].sprite._scaleX * 4 * change.value.scale;
+            change.value.scale / game[type][change.value.id].sprite._scaleX;
           let item = game.front_layer
-            .create(change.value.x, change.value.y, change.value.name)
+            .create(
+              change.value.x * (1 / game[type][change.value.id].sprite._scaleX),
+              change.value.y * (1 / game[type][change.value.id].sprite._scaleX),
+              change.value.name
+            )
             .setScale(itemScale);
           self.sendSpriteSize(change.value.name, itemScale || 1);
           game[type][change.value.id].sprite.add(item);
@@ -151,7 +155,7 @@ function getCharacters(
           }
           game[type][id].sprite[attribute] = change.value;
         } else if (attribute === 'rotation') {
-          game[type][id][attribute] = change.value;
+          game[type][id].sprite[attribute] = change.value;
         } else {
           game[type][id][attribute] = change.value;
         }
@@ -208,6 +212,7 @@ function getCharacters(
           change.rawPath[2]
         ].sprite.setText(change.value);
       }
+      onUpdate(change.path.id, change.path.attribute, change.value);
     });
     game.room.listen(`${type}/:id/:attribute/:id/:attribute`, function (
       change
@@ -363,7 +368,8 @@ function follow(
   type1, // string: The type of characters that will be followed.
   type2, // string: The type of characters that will follow them.
   range = 0, // number: How far away should the followers be before they stop following.
-  speed = 1 // number: The rate of speed the followers move at, ie. 0.5 for half speed, 2 for double speed.
+  speed = 1, // number: The rate of speed the followers move at, ie. 0.5 for half speed, 2 for double speed.
+  cb = () => {} // function: A callback that runs after the follow logic.
 ) {
   if (Object.keys(this.game.state[type2]).length >= 1) {
     Object.keys(this.game.state[type2]).forEach((otherId) => {
@@ -402,6 +408,10 @@ function follow(
           }
           this.game.state[type2][otherId].x -= dx * speed;
           this.game.state[type2][otherId].y -= dy * speed;
+          cb(
+            this.game.state[type1][closestPlayer],
+            this.game.state[type2][otherId]
+          );
         }
       }
     });
