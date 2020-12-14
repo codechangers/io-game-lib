@@ -292,8 +292,8 @@ function nextCharacterId(
 }
 
 function getAllCharacters(
-  type, // string: the type of characters
-  cb //function:  what you want to do to each character
+  type, // string: The type of characters.
+  cb // function:  What you want to do to each character.
 ) {
   Object.keys(this.game.state[type]).forEach((character, i) => {
     cb(this.game.state[type][character], i);
@@ -419,14 +419,10 @@ function follow(
           }
           this.game.state[type2][otherId].x -= dx * speed;
           this.game.state[type2][otherId].y -= dy * speed;
-<<<<<<< HEAD
-          if (cb) cb(this.game.state[type1][closestPlayer], this.game.state[type2][otherId])
-=======
           cb(
             this.game.state[type1][closestPlayer],
             this.game.state[type2][otherId]
           );
->>>>>>> develop
         }
       }
     });
