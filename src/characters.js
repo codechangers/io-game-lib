@@ -80,9 +80,13 @@ function getCharacters(
         }
         if (change.value.type === 'item') {
           const itemScale =
-          change.value.scale/game[type][change.value.id].sprite._scaleX;
+            change.value.scale / game[type][change.value.id].sprite._scaleX;
           let item = game.front_layer
-            .create(change.value.x * (1/game[type][change.value.id].sprite._scaleX), change.value.y * (1/game[type][change.value.id].sprite._scaleX), change.value.name)
+            .create(
+              change.value.x * (1 / game[type][change.value.id].sprite._scaleX),
+              change.value.y * (1 / game[type][change.value.id].sprite._scaleX),
+              change.value.name
+            )
             .setScale(itemScale);
           self.sendSpriteSize(change.value.name, itemScale || 1);
           game[type][change.value.id].sprite.add(item);
@@ -341,11 +345,11 @@ function unAttach(
   delete this.game.state[type][id][name];
 }
 
-//Returns the rotation that you need to rotate towards a point
+// Returns the rotation that you need to rotate towards a point
 function getRotationTowards(
   character, // object: a character you want to rotate
   x, // int: the x value you want to rotate towards.
-  y, // int: the y value you want to rotate towards.
+  y // int: the y value you want to rotate towards.
 ) {
   return character.x - x < 0
     ? Math.atan((character.y - y) / (character.x - x)) + Math.PI / 2
@@ -375,8 +379,8 @@ function follow(
   type1, // string: The type of characters that will be followed.
   type2, // string: The type of characters that will follow them.
   range = 0, // number: How far away should the followers be before they stop following.
-  speed = 1,
-  cb // number: The rate of speed the followers move at, ie. 0.5 for half speed, 2 for double speed.
+  speed = 1, // number: The rate of speed the followers move at, ie. 0.5 for half speed, 2 for double speed.
+  cb = () => {} // function: A callback that runs after the follow logic.
 ) {
   if (Object.keys(this.game.state[type2]).length >= 1) {
     Object.keys(this.game.state[type2]).forEach((otherId) => {
@@ -389,7 +393,7 @@ function follow(
             closestPlayer = playerId;
             closestDistance = Math.sqrt(
               (x - this.game.state[type1][playerId].x) ** 2 +
-              (y - this.game.state[type1][playerId].y) ** 2
+                (y - this.game.state[type1][playerId].y) ** 2
             );
           } else {
             let distanceX = x - this.game.state[type1][playerId].x;
@@ -415,7 +419,14 @@ function follow(
           }
           this.game.state[type2][otherId].x -= dx * speed;
           this.game.state[type2][otherId].y -= dy * speed;
+<<<<<<< HEAD
           if (cb) cb(this.game.state[type1][closestPlayer], this.game.state[type2][otherId])
+=======
+          cb(
+            this.game.state[type1][closestPlayer],
+            this.game.state[type2][otherId]
+          );
+>>>>>>> develop
         }
       }
     });

@@ -1,11 +1,12 @@
 /* -- CodeChangers io-game-lib 2020 --
  * This file contains the io game server library class definition. */
 
-const { serverMethods, linkMethods } = require('./helpers');
+const { serverMethods, linkMethods, version } = require('./helpers');
 
 // This is the Library of Server side functionallity.
 module.exports = class ServerLib {
   constructor() {
+    this.version = version;
     this.game = null;
     this.counts = {};
     this.boardWidth = 500;
