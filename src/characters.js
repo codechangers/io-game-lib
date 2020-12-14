@@ -152,6 +152,8 @@ function getCharacters(
           game[type][id].sprite[attribute] = change.value;
         } else if (attribute === 'rotation') {
           game[type][id].sprite[attribute] = change.value;
+        } else if (attribute === 'spriteName') {
+          game[type][id].sprite.list[0].setTexture(change.value);
         } else {
           game[type][id][attribute] = change.value;
         }
@@ -208,7 +210,7 @@ function getCharacters(
           change.rawPath[2]
         ].sprite.setText(change.value);
       }
-      onUpdate(change.path.id, change.path.attribute, change.value);
+      onUpdate(change.rawPath[1], change.path.id, change.value);
     });
     game.room.listen(`${type}/:id/:attribute/:id/:attribute`, function (
       change
@@ -283,6 +285,15 @@ function nextCharacterId(
 ) {
   this.counts[type] += 1;
   return `${type}${this.counts[type]}`;
+}
+
+function getAllCharacters(
+  type, // string: the type of characters
+  cb //function:  what you want to do to each character
+) {
+  Object.keys(this.game.state[type]).forEach((character, i) => {
+    cb(this.game.state[type][character], i);
+  });
 }
 
 // Attach something to the character or other things.
@@ -404,7 +415,7 @@ function follow(
           }
           this.game.state[type2][otherId].x -= dx * speed;
           this.game.state[type2][otherId].y -= dy * speed;
-          cb(this.game.state[type1][closestPlayer], this.game.state[type2][otherId])
+          if (cb) cb(this.game.state[type1][closestPlayer], this.game.state[type2][otherId])
         }
       }
     });
@@ -415,6 +426,7 @@ const server = {
   setupCharacters,
   createACharacter,
   getACharacter,
+  getAllCharacters,
   deleteACharacter,
   nextCharacterId,
   attachTo,

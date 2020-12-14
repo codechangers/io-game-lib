@@ -39,7 +39,7 @@ function createSquare(
   color, // string: The color of your square.
   depth = 0 // number: The ranking used to decide what is drawn over and below the sqare.
 ) {
-  const rect = new Phaser.Geom.Rectangle(width, height, x, y);
+  const rect = new Phaser.Geom.Rectangle(x, y, width, height);
   const graphics = this.game.add.graphics({
     fillStyle: { color: `0x${color}` },
     depth,
