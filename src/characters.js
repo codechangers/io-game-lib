@@ -292,8 +292,8 @@ function nextCharacterId(
 }
 
 function getAllCharacters(
-  type, // string: the type of characters
-  cb //function:  what you want to do to each character
+  type, // string: The type of characters.
+  cb // function:  What you want to do to each character.
 ) {
   Object.keys(this.game.state[type]).forEach((character, i) => {
     cb(this.game.state[type][character], i);
