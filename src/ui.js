@@ -169,8 +169,14 @@ function handleLeaderboard(
   const { game } = this;
   document.querySelector('#game-overlay > .leaderboard').innerHTML = _render([
     `<h3>${title}</h3>`,
-    ...Object.entries(game[type]).map(
-      ([id, data]) => `<div class="player" id="${id}">
+    ...Object.entries(game[type])
+      .sort(([a, da], [b, db]) =>
+        typeof da.score === 'number' && typeof db.score === 'number'
+          ? db.score - da.score
+          : 1
+      )
+      .map(
+        ([id, data]) => `<div class="player" id="${id}">
       ${
         typeof data.lives === 'number'
           ? _render(['<div class="lives">', _renderLives(data), '</div>'])
@@ -201,7 +207,7 @@ function handleLeaderboard(
           }
         </div>
       </div>`
-    ),
+      ),
   ]);
 }
 /* eslint-enable */
