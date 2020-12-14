@@ -1,7 +1,7 @@
 /* -- CodeChangers io-game-lib 2020 --
  * This file contains helpful reusable functions */
 
-const version = '1.0.1';
+const version = '1.0.2';
 
 const characters = require('./characters');
 const connection = require('./connection');
