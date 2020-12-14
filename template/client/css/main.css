@@ -127,11 +127,7 @@ body {
   font-family: sans-serif;
   font-weight: bold;
   color: #022433;
-  background: linear-gradient(30deg, #0a618c, #05576d);
   text-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   margin-top: 0;
 }
 
