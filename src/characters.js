@@ -293,7 +293,7 @@ function nextCharacterId(
 
 function getAllCharacters(
   type, // string: the type of characters
-  cb //function:  what you want to do to each character
+  cb // function:  what you want to do to each character
 ) {
   Object.keys(this.game.state[type]).forEach((character, i) => {
     cb(this.game.state[type][character], i);
@@ -324,7 +324,7 @@ function attachTo(
       x: data.x ? data.x : 0,
       y: data.y ? data.y : 0,
       type: 'item',
-      scale: data.scale ? data.scale: 1,
+      scale: data.scale ? data.scale : 1,
       id,
     };
     this.game.state[type][id].items[dataItem.name].x = data.x;
