@@ -417,8 +417,8 @@ function follow(
             dx = -Math.cos(Math.atan(distanceY / distanceX));
             dy = -Math.sin(Math.atan(distanceY / distanceX));
           }
-          this.game.state[type2][otherId].x -= dx * speed;
-          this.game.state[type2][otherId].y -= dy * speed;
+          this.move(this.game.state[type2][otherId], 'x', -dx * speed);
+          this.move(this.game.state[type2][otherId], 'y', -dy * speed);
           cb(
             this.game.state[type1][closestPlayer],
             this.game.state[type2][otherId]
