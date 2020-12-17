@@ -321,10 +321,10 @@ function attachTo(
     this.game.state[type][id][dataItem.name] = {
       ...data,
       ...dataItem,
-      x: data.x,
-      y: data.y,
+      x: data.x || 0,
+      y: data.y || 0,
       type: 'item',
-      scale: data.scale,
+      scale: data.scale || 1,
       id,
     };
     this.game.state[type][id].items[dataItem.name].x = data.x;
@@ -417,8 +417,8 @@ function follow(
             dx = -Math.cos(Math.atan(distanceY / distanceX));
             dy = -Math.sin(Math.atan(distanceY / distanceX));
           }
-          this.game.state[type2][otherId].x -= dx * speed;
-          this.game.state[type2][otherId].y -= dy * speed;
+          this.move(this.game.state[type2][otherId], 'x', -dx * speed);
+          this.move(this.game.state[type2][otherId], 'y', -dy * speed);
           cb(
             this.game.state[type1][closestPlayer],
             this.game.state[type2][otherId]
