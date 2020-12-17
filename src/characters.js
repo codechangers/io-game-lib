@@ -88,7 +88,7 @@ function getCharacters(
               change.value.name
             )
             .setScale(itemScale);
-          self.sendSpriteSize(change.value.name, itemScale || 1);
+          self.sendSpriteSize(change.value.name, change.value.scale || 1);
           game[type][change.value.id].sprite.add(item);
           game[type][change.value.id].attached[change.value.name] = {
             ...change.value,
