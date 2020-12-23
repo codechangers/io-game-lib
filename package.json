@@ -1,6 +1,6 @@
 {
   "name": "io-game-lib",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "This is the official IO Game Library for building awesome games on the CodeChangers IO Platform.",
   "main": "client-lib.js",
   "directories": {
