@@ -24,7 +24,7 @@
   "homepage": "https://github.com/codechangers/io-game-lib#readme",
   "dependencies": {
     "colyseus.js": "^0.9.1",
-    "ws": "^7.3.1"
+    "ws": "^7.4.6"
   },
   "devDependencies": {
     "eslint": "^7.10.0",
