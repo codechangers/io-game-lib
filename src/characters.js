@@ -5,22 +5,33 @@
  * ==== Client Methods: ====
  * ========================= */
 
-// Create a new set of Characters.
-function addCharacters(
-  type, // string: The type of characters.
-  scale = 1 // number: The scale of the sprite, ie. 0.5 for half size.
-) {
+/**
+ * Create a new set of Characters.
+ * @tags client, characters, add
+ * @param {string} type - The type of characters.
+ * @param {number} scale - The scale of the sprite, ie. 0.5 for half size.
+ * @returns {void}
+ */
+function addCharacters(type, scale = 1) {
   this.game[type] = {};
   this.game.scales[type] = scale;
   this.sendSpriteSize(type, scale);
 }
 
-// Listen to Characters on the server.
+/**
+ * Listen to Characters on the server.
+ * @tags client, characters, get
+ * @param {string} type - The type of characters.
+ * @param {function} onAdd - This will get run when a character is added.
+ * @param {function} onRemove - This will get run when a character is removed.
+ * @param {function} onUpdate - This will get run when a character is updated.
+ * @returns {void}
+ */
 function getCharacters(
-  type, // string: The type of characters.
-  onAdd = function () {}, // function: This will get run when a character is added.
-  onRemove = function () {}, // function: This will get run when a character is removed.
-  onUpdate = function () {} // function: This will get run when a character is updated.
+  type,
+  onAdd = function () {},
+  onRemove = function () {},
+  onUpdate = function () {}
 ) {
   const { game } = this;
   const self = this;
@@ -239,22 +250,28 @@ const client = { addCharacters, getCharacters };
  * ==== Server Methods: ====
  * ========================= */
 
-// Setup a set of Characters.
-function setupCharacters(
-  type, // string: The type of characters.
-  shape = 'box' // string: box or circle | The shape of the character image.
-) {
+/**
+ * Setup a set of Characters.
+ * @tags server, characters, setup
+ * @param {string} type - The type of characters.
+ * @param {string} shape - box or circle | The shape of the character image.
+ * @returns {void}
+ */
+function setupCharacters(type, shape = 'box') {
   this.game.state[type] = {};
   this.counts[type] = 0;
   this.game.shapes[type] = shape;
 }
 
-// Create a Character instance.
-function createACharacter(
-  type, // string: The type of characters.
-  id, // string: A unique character id.
-  data // object: The characters data.
-) {
+/**
+ * Create a Character instance.
+ * @tags server, characters, create
+ * @param {string} type - The type of characters.
+ * @param {string} id - A unique character id.
+ * @param {object} data - The characters data.
+ * @returns {void}
+ */
+function createACharacter(type, id, data) {
   this.game.state[type][id] = {
     rotation: 0,
     ...this.getSize(type),
@@ -267,54 +284,61 @@ function createACharacter(
   };
 }
 
-// Get a Character instance.
-function getACharacter(
-  type, // string: The type of characters.
-  id // string: A unique character id.
-) {
+/**
+ * Get a Character instance.
+ * @tags server, characters, get
+ * @param {string} type - The type of characters.
+ * @param {string} id - A unique character id.
+ * @returns {object} A character object.
+ */
+function getACharacter(type, id) {
   return this.game.state[type][id];
 }
 
-// Delete a Character instance.
-function deleteACharacter(
-  type, // string: The type of characters.
-  id // string: A unique character id.
-) {
+/**
+ * Delete a Character instance.
+ * @tags server, characters, delete
+ * @param {string} type - The type of characters.
+ * @param {string} id - A unique character id.
+ * @returns {void}
+ */
+function deleteACharacter(type, id) {
   delete this.game.state[type][id];
 }
 
-// Get an incremental Id for a character.
-function nextCharacterId(
-  type // string: The type of characters.
-) {
+/**
+ * Get an incremental Id for a character.
+ * @tags server, characters, next, id
+ * @param {string} type - The type of characters.
+ * @returns {string} The next available id.
+ */
+function nextCharacterId(type) {
   this.counts[type] += 1;
   return `${type}${this.counts[type]}`;
 }
 
-function getAllCharacters(
-  type, // string: The type of characters.
-  cb // function:  What you want to do to each character.
-) {
+/**
+ * Get all the characters of a given type, and perform a given callback on each.
+ * @tags server, characters, get, all
+ * @param {string} type - The type of characters.
+ * @param {function} cb - What you want to do to each character.
+ * @returns {void}
+ */
+function getAllCharacters(type, cb) {
   Object.keys(this.game.state[type]).forEach((character, i) => {
     cb(this.game.state[type][character], i);
   });
 }
 
-// Attach something to the character or other things.
-function attachTo(
-  type, // string: The type of characters/resources.
-  id, // string: A unique character/resource id.
-  data /* object: {
-    item: object: An item instance. Only for items.
-    x: number: horizontal position relative to character.
-    y: number: vertical position relative to character.
-    scale | int : number between 0 and 1 to represent size
-    type: string: bar or text
-    text | string : text if it is a TEXT
-    filled | int : amount of bar filled if it is a BAR
-  }
-  */
-) {
+/**
+ * Attach something to the character or other things.
+ * @tags server, characters, attach
+ * @param {string} type - The type of characters/resources.
+ * @param {string} id - A unique character/resource id.
+ * @param {object} data - The attachement configuration data.
+ * @returns {void}
+ */
+function attachTo(type, id, data) {
   if (data.item) {
     const dataItem = data.item;
     delete data.item;
@@ -336,52 +360,67 @@ function attachTo(
   }
 }
 
-// Remove an attachment from a character or other things.
-function unAttach(
-  type, // string: The type of characters/resources.
-  id, // string: A unique character/resource id.
-  name // string: name of the item you want to unattach
-) {
+/**
+ * Remove an attachment from a character or other things.
+ * @tags server, characters, unattach
+ * @param {string} type - The type of characters/resources.
+ * @param {string} id - A unique character/resource id.
+ * @param {string} name - The name of the item you want to unattach.
+ * @returns {void}
+ */
+function unAttach(type, id, name) {
   delete this.game.state[type][id][name];
 }
 
-// Returns the rotation that you need to rotate towards a point
-function getRotationTowards(
-  character, // object: a character you want to rotate
-  x, // int: the x value you want to rotate towards.
-  y // int: the y value you want to rotate towards.
-) {
+/**
+ * Returns the rotation that you need to rotate towards a point
+ * @tags server, characters, rotation, get
+ * @param {object} character - A character you want to rotate.
+ * @param {number} x - The x value you want to rotate towards.
+ * @param {number} y - The y value you want to rotate towards.
+ * @returns {number} The rotation of the character towards a position.
+ */
+function getRotationTowards(character, x, y) {
   return character.x - x < 0
     ? Math.atan((character.y - y) / (character.x - x)) + Math.PI / 2
     : Math.atan((character.y - y) / (character.x - x)) - Math.PI / 2;
 }
 
-// Calculate the x change you need to get closer to a point.
-function getXTowards(
-  character, // object: a character you want to rotate
-  x, // int: the x value you want to rotate towards.
-  y // int: the y value you want to rotate towards.
-) {
+/**
+ * Calculate the x change you need to get closer to a point.
+ * @tags server, characters, x, get
+ * @param {object} character - A character you want to move.
+ * @param {number} x - The x value you want to move towards.
+ * @param {number} y - The y value you want to move towards.
+ * @returns {number} The delta x value of the character from the position.
+ */
+function getXTowards(character, x, y) {
   return Math.cos(this.getRotationTowards(character, x, y) - Math.PI / 2);
 }
 
-// Calculate the y change you need to get close to a point.
-function getYTowards(
-  character, // object: a character you want to rotate
-  x, // int: the x value you want to rotate towards.
-  y // int: the y value you want to rotate towards.
-) {
+/**
+ * Calculate the y change you need to get close to a point.
+ * @tags server, characters, y, get
+ * @param {object} character - A character you want to move.
+ * @param {number} x - The x value you want to move towards.
+ * @param {number} y - The y value you want to move towards.
+ * @returns {number} The delta y value of the character from the position.
+ */
+function getYTowards(character, x, y) {
   return Math.sin(this.getRotationTowards(character, x, y) - Math.PI / 2);
 }
 
-// Add some simple following AI to a set of characters.
-function follow(
-  type1, // string: The type of characters that will be followed.
-  type2, // string: The type of characters that will follow them.
-  range = 0, // number: How far away should the followers be before they stop following.
-  speed = 1, // number: The rate of speed the followers move at, ie. 0.5 for half speed, 2 for double speed.
-  cb = () => {} // function: A callback that runs after the follow logic.
-) {
+/**
+ * Add some simple following AI to a set of characters.
+ * @tags server, characters, follow
+ * @param {string} type1 - The type of characters that will be followed.
+ * @param {string} type2 - The type of characters that will follow them.
+ * @param {number} range - How far away should the followers be before they stop following.
+ * @param {number} speed - The rate of speed the followers move at, ie. 0.5 for half speed, 2 for double speed.
+ * @param {function} cb - A callback that runs after the follow logic.
+ * @returns {void}
+ */
+function follow(type1, type2, range = 0, speed = 1, cb = () => {}) {
   if (Object.keys(this.game.state[type2]).length >= 1) {
     Object.keys(this.game.state[type2]).forEach((otherId) => {
       if (Object.keys(this.game.state[type1]).length >= 1) {
