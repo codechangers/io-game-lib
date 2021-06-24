@@ -1,7 +1,14 @@
 /* -- CodeChangers io-game-lib 2020 --
  * This file contains the source code for detecting collisions in an io-game. */
 
-// A basic class for handling rectangular shape collisions.
+/**
+ * A basic class for handling rectangular shape collisions.
+ * @class CollisionBox
+ * @param {number} x - The x position of the box.
+ * @param {number} y - The y position of the box.
+ * @param {number} width - The width of the box.
+ * @param {number} height - The height of the box.
+ */
 class CollisionBox {
   constructor(x, y, width, height) {
     this.width = !Number.isNaN(width) ? width : 0;
@@ -32,7 +39,13 @@ class CollisionBox {
   }
 }
 
-// A basic class for handling circular shape collisions.
+/**
+ * A basic class for handling circular shape collisions.
+ * @class CollisionCircle
+ * @param {number} x - The x position of the circle.
+ * @param {number} y - The y position of the circle.
+ * @param {number} diameter - The diameter of the circle.
+ */
 class CollisionCircle {
   constructor(x, y, diameter) {
     this.x = !Number.isNaN(x) && x >= 0 ? x : -100;
@@ -117,12 +130,15 @@ class CollisionCircle {
  * ==== Server Methods: ====
  * ========================= */
 
-// Check for collisions between two types of objects in your game.
-function handleCollision(
-  typeA, // string/object: The first type of object OR a single object instance.
-  typeB, // string/object: The second type of object OR a single object instance.
-  callback // function: What to do if there is a collision.
-) {
+/**
+ * Check for collision between two types of objects in your game.
+ * @tags server, collisions, handle
+ * @param {(string|object)} typeA - The first type of object OR a single object instance.
+ * @param {(string|object)} typeB - The second type of object OR a single object instance.
+ * @param {function} callback - What to do if there is a collision.
+ * @returns {void}
+ */
+function handleCollision(typeA, typeB, callback) {
   const { state, shapes } = this.game;
   const shapeA = typeof typeA === 'string' ? shapes[typeA] : shapes[typeA.type];
   const shapeB = typeof typeB === 'string' ? shapes[typeB] : shapes[typeB.type];
@@ -152,13 +168,16 @@ function handleCollision(
   });
 }
 
-// Check for a collision between a character held item and another character/resource.
-function handleItemCollision(
-  characterType, // string: The type of the character who is holding the item.
-  itemName, // string: The name of the item being held.
-  objectType, // string: The type of character/resource to check collisions against.
-  callback // function: What to do if there is a collision.
-) {
+/**
+ * Check for a collision between a character held item and another character/resource.
+ * @tags server, collision, handle, item
+ * @param {string} characterType - The type of the character who is holding the item.
+ * @param {string} itemName - The name of the item being held.
+ * @param {string} objectType - The type of character/resource to check collisions against.
+ * @param {function} callback - What to do if there is a collision.
+ * @returns {void}
+ */
+function handleItemCollision(characterType, itemName, objectType, callback) {
   const self = this;
   const { game } = this;
   Object.values(game.state[characterType]).forEach((character) => {
