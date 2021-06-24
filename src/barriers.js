@@ -44,8 +44,6 @@ function _cornerRebound(circle, box, axis, colDist) {
   };
   function check(xDir, yDir) {
     const x = box.x + (box.width / 2) * (reverse[xDir] ? 1 : -1);
-    const y = box.y + (box.height / 2) * (reverse[yDir] ? 1 : -1);
-    const Xs = reverse[xDir] ? [x, circle.x] : [circle.x, x];
     const Ys = reverse[yDir] ? [y, circle.y] : [circle.y, y];
     if (
       cols.includes(`${xDir}Dist`) &&
@@ -73,11 +71,14 @@ function _cornerRebound(circle, box, axis, colDist) {
  * ==== Server Methods: ====
  * ========================= */
 
-// Make a type of object unable to pass through another type of object.
-function useBarrier(
-  type, // string: The type of object which should not pass through barriers.
-  barrierType // string: The type of object which should become a barrier.
-) {
+/**
+ * Make a type of object unable to pass through another type of object.
+ * @tags server, barriers, use
+ * @param {string} type - The type of object which should not pass through barriers.
+ * @param {string} barrierType - The type of object which should become a barrier.
+ * @returns {void}
+ */
+function useBarrier(type, barrierType) {
   const { barriers } = this.game;
   if (Object.keys(barriers).includes(type)) {
     barriers[type].push(barrierType);
@@ -86,12 +87,15 @@ function useBarrier(
   }
 }
 
-// Check if a move runs into a barrier.
-function checkBarriers(
-  object, // object: The game object you want to move.
-  axis, // string: x or y axis of movement.
-  distance // number: How far to move along the given axis.
-) {
+/**
+ * Check if a move runs into a barrier.
+ * @tags server, barriers, check
+ * @param {object} object - The game object you want to move.
+ * @param {string} axis - x or y axis of movement.
+ * @param {number} distance - How far to move along the given axis.
+ * @returns {object} Was the move valid and where to go if it wasn't.
+ */
+function checkBarriers(object, axis, distance) {
   const { barriers, shapes } = this.game;
   let validMove = true;
   let fallbackPos = -1;
