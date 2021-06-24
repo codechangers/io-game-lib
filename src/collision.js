@@ -126,23 +126,23 @@ function handleCollision(
   const { state, shapes } = this.game;
   const shapeA = typeof typeA === 'string' ? shapes[typeA] : shapes[typeA.type];
   const shapeB = typeof typeB === 'string' ? shapes[typeB] : shapes[typeB.type];
+  function getCol(data, shape) {
+    const { x, y, width, height } = data;
+    const col =
+      shape === 'circle'
+        ? new CollisionCircle(x, y, width)
+        : new CollisionBox(x, y, width, height);
+    return col;
+  }
   Object.entries(
     typeof typeA === 'string' ? state[typeA] : { [typeA.id]: typeA }
   ).forEach(function ([idA, dataA]) {
-    const { x, y, width, height } = dataA;
-    const colA =
-      shapeA === 'circle'
-        ? new CollisionCircle(x, y, width)
-        : new CollisionBox(x, y, width, height);
+    const colA = getCol(dataA, shapeA);
     Object.entries(
       typeof typeB === 'string' ? state[typeB] : { [typeB.id]: typeB }
     ).forEach(function ([idB, dataB]) {
       if (idA !== idB) {
-        const { x, y, width, height } = dataB;
-        const colB =
-          shapeB === 'circle'
-            ? new CollisionCircle(x, y, width)
-            : new CollisionBox(x, y, width, height);
+        const colB = getCol(dataB, shapeB);
         const check = colA.collide(colB);
         if (check.collided) {
           callback(dataA, dataB, check.distance);
