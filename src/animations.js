@@ -28,10 +28,13 @@ function playAnimation(obj, attribute, value, duration) {
   }
 }
 
-// Play animations that have been setup for a character/resource.
-function handleAnimations(
-  type // string: The type of characters/resources.
-) {
+/**
+ * Play animations that have been setup for a character/resource.
+ * @tags server, animations, handle
+ * @param {string} type - The type of characters/resources.
+ * @returns {void}
+ */
+function handleAnimations(type) {
   const { game } = this;
   Object.values(game.state[type]).forEach((obj) => {
     for (let attr in obj.animations) {
